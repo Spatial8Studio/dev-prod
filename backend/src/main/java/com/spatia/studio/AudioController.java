@@ -18,7 +18,7 @@ public class AudioController {
         return audio.save(file, auth.require(AuthController.token(header)).id());
     }
     @PostMapping("/renders")
-    public RenderView render(@RequestHeader("Authorization") String header, @RequestBody SourceRequest request) {
+    public RenderView render(@RequestHeader("Authorization") String header, @RequestBody SceneRequest request) {
         return audio.render(request, auth.require(AuthController.token(header)).id());
     }
     @GetMapping("/renders/{id}")

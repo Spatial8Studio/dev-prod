@@ -1,26 +1,36 @@
-function metadata = spatializeAudio(inputFile, outputFile, xyz, varargin)
-%SPATIALIZEAUDIO HRTF-based 3-D binaural MP3 renderer.
+function metadata = spatializeAudio(inputFile, outputFile, startPosition, varargin)
+%SPATIALIZEAUDIO Moving 3-D binaural MP3 renderer.
+%
+% Coordinate system:
+%   +X = front
+%   -X = behind
+%   +Y = left
+%   -Y = right
+%   +Z = above
+%   -Z = below
+%
+% The source moves:
+%   start -> destination -> start -> destination ...
 %
 % Example:
-% metadata = spatializeAudio( ...
-%     "input.mp3", ...
-%     "output.mp3", ...
-%     [2 1 0.5], ...
-%     'AllowSynthetic', true);
+% spatializeAudio("input.mp3", "output.mp3", [2 1 0.5], ...
+%     "EndPosition", [-2 -1 1], ...
+%     "TravelTime", 10, ...
+%     "AllowSynthetic", true);
 
-%% Default settings
+%% Default options
 
-hrirFile = "";
-subjectName = "";
-ffmpegPath = "ffmpeg";
-maxDistance = 1;
-referenceDistance = 1;
-speedOfSound = 343;
-headRadius = 0.0875;
-applyExtraITD = false;
+endPosition = startPosition;
+travelTime = 10;
+blockSize = 1024;
 allowSynthetic = false;
-normalizeOutput = true;
+ffmpegPath = "ffmpeg";
 mp3Bitrate = "320k";
+hrirFile = "";
+normalizeOutput = true;
+headRadius = 0.0875;
+speedOfSound = 343;
+applyExtraITD = false;
 
 %% Read name-value options
 
@@ -35,170 +45,271 @@ for k = 1:2:length(varargin)
 
     switch optionName
 
-        case "hrirfile"
-            hrirFile = string(optionValue);
+        case "endposition"
+            endPosition = double(optionValue);
 
-        case "subject"
-            subjectName = string(optionValue);
+        case "traveltime"
+            travelTime = double(optionValue);
 
-        case "ffmpegpath"
-            ffmpegPath = string(optionValue);
-
-        case "maxdistance"
-            maxDistance = double(optionValue);
-
-        case "referencedistance"
-            referenceDistance = double(optionValue);
-
-        case "speedofsound"
-            speedOfSound = double(optionValue);
-
-        case "headradius"
-            headRadius = double(optionValue);
-
-        case "applyextraitd"
-            applyExtraITD = logical(optionValue);
+        case "blocksize"
+            blockSize = double(optionValue);
 
         case "allowsynthetic"
             allowSynthetic = logical(optionValue);
 
-        case "normalize"
-            normalizeOutput = logical(optionValue);
+        case "ffmpegpath"
+            ffmpegPath = string(optionValue);
 
         case "mp3bitrate"
             mp3Bitrate = string(optionValue);
+
+        case "hrirfile"
+            hrirFile = string(optionValue);
+
+        case "normalize"
+            normalizeOutput = logical(optionValue);
+
+        case "headradius"
+            headRadius = double(optionValue);
+
+        case "speedofsound"
+            speedOfSound = double(optionValue);
+
+        case "applyextraitd"
+            applyExtraITD = logical(optionValue);
 
         otherwise
             error("Unknown option: " + optionName);
     end
 end
 
-%% Validate input
+%% Validate inputs
 
-if length(xyz) ~= 3
-    error("xyz must contain exactly three values: [x y z].");
+if length(startPosition) ~= 3
+    error("Start position must be [x1 y1 z1].");
 end
 
-if norm(xyz) == 0
-    error("The source position cannot be [0 0 0].");
+if length(endPosition) ~= 3
+    error("End position must be [x2 y2 z2].");
+end
+
+if norm(startPosition) == 0 || norm(endPosition) == 0
+    error("Source positions cannot be [0 0 0].");
+end
+
+if travelTime <= 0
+    error("TravelTime must be greater than zero.");
+end
+
+if blockSize <= 0 || mod(blockSize, 1) ~= 0
+    error("BlockSize must be a positive integer.");
 end
 
 if ~isfile(inputFile)
-    error("Input audio file not found: " + inputFile);
+    error("Input file not found: " + inputFile);
 end
 
-%% Read MP3 or WAV input
+%% Read input MP3 or WAV
 
 [source, sampleRate] = audioread(inputFile);
 
 if isempty(source)
-    error("Input audio file is empty.");
+    error("Input audio is empty.");
 end
 
-% Convert stereo input into mono.
+% Convert stereo input to mono.
 if size(source, 2) > 1
     source = mean(source, 2);
 end
 
 source = double(source(:));
 
-%% Calculate spatial parameters
+%% Load measured HRIR data if supplied
 
-distance = norm(xyz);
-
-% Coordinate convention:
-% +X = forward
-% +Y = left
-% +Z = upward
-
-azimuth = atan2d(xyz(2), xyz(1));
-elevation = asind(xyz(3) / distance);
-
-% Inverse-distance attenuation
-distanceGain = min(1, maxDistance / ...
-    max(distance, referenceDistance));
-
-%% Load measured HRIR data
-
-[hrirLeft, hrirRight, hrirSampleRate, directionInfo] = ...
-    loadHrir(hrirFile, subjectName);
+[hrirData, hrirSampleRate] = loadHrir(hrirFile);
 
 if ~isempty(hrirSampleRate) && hrirSampleRate ~= sampleRate
     error("Input and HRIR sample rates must be equal.");
 end
 
-%% Select HRIR
+if isempty(hrirData) && ~allowSynthetic
+    error("Provide HrirFile or set AllowSynthetic to true.");
+end
 
-if isempty(hrirLeft)
+%% Render moving source
 
-    if ~allowSynthetic
-        error([ ...
-            "No HRIR file was provided. Use " + ...
-            "'HrirFile','your_hrir_file.mat' or set " + ...
-            "'AllowSynthetic',true."]);
-    end
+numberOfSamples = length(source);
 
-    % Testing-only synthetic HRIR
-    [hrirLeft, hrirRight] = createSyntheticHrir( ...
-        sampleRate, azimuth, speedOfSound, headRadius);
-
-    selectedDirection = NaN;
-    selectedAzimuth = azimuth;
-    selectedElevation = elevation;
-
+% Output length includes the HRIR tail.
+if isempty(hrirData)
+    maximumHrirLength = 3;
 else
-
-    [selectedDirection, selectedAzimuth, selectedElevation] = ...
-        selectNearestDirection(directionInfo, azimuth, elevation);
-
-    hrirLeft = hrirLeft(:, selectedDirection);
-    hrirRight = hrirRight(:, selectedDirection);
+    maximumHrirLength = size(hrirData.left, 1);
 end
 
-%% Optional ITD
+leftOutput = zeros(numberOfSamples + maximumHrirLength - 1, 1);
+rightOutput = zeros(numberOfSamples + maximumHrirLength - 1, 1);
 
-if applyExtraITD
+sampleStart = 1;
+blockNumber = 1;
+previousTailLeft = [];
+previousTailRight = [];
 
-    itdSeconds = headRadius / speedOfSound * ...
-        (deg2rad(azimuth) + sind(azimuth));
+while sampleStart <= numberOfSamples
 
-    if itdSeconds > 0
+    sampleEnd = min( ...
+        sampleStart + blockSize - 1, ...
+        numberOfSamples);
 
-        hrirLeft = [hrirLeft; zeros(round(itdSeconds * sampleRate), 1)];
-        hrirRight = fractionalDelay( ...
-            hrirRight, itdSeconds * sampleRate);
+    audioBlock = source(sampleStart:sampleEnd);
+    blockLength = length(audioBlock);
 
-    elseif itdSeconds < 0
+    % Time at the middle of the current block.
+    timeSeconds = ...
+        ((sampleStart - 1) + blockLength / 2) / sampleRate;
 
-        hrirLeft = fractionalDelay( ...
-            hrirLeft, -itdSeconds * sampleRate);
+    % One cycle is start -> destination -> start.
+    cycleLength = 2 * travelTime;
+    cycleTime = mod(timeSeconds, cycleLength);
 
-        hrirRight = [ ...
-            hrirRight; zeros(round(-itdSeconds * sampleRate), 1)];
+    if cycleTime <= travelTime
+
+        % Start to destination.
+        amount = cycleTime / travelTime;
+
+    else
+
+        % Destination to start.
+        amount = 1 - ((cycleTime - travelTime) / travelTime);
     end
+
+    % Linear interpolation of x, y, and z.
+    currentPosition = ...
+        (1 - amount) * startPosition + ...
+        amount * endPosition;
+
+    distance = norm(currentPosition);
+
+    if distance == 0
+        distance = eps;
+    end
+
+    azimuth = atan2d( ...
+        currentPosition(2), ...
+        currentPosition(1));
+
+    elevation = asind( ...
+        currentPosition(3) / distance);
+
+    % Distance attenuation.
+    gain = min(1, 1 / max(distance, 1));
+
+    %% Get HRIR for current position
+
+    if isempty(hrirData)
+
+        [hrirLeft, hrirRight] = syntheticHrir( ...
+            sampleRate, ...
+            azimuth, ...
+            speedOfSound, ...
+            headRadius);
+
+    else
+
+        directionIndex = nearestDirection( ...
+            hrirData.azimuth, ...
+            hrirData.elevation, ...
+            azimuth, ...
+            elevation);
+
+        hrirLeft = hrirData.left(:, directionIndex);
+        hrirRight = hrirData.right(:, directionIndex);
+
+        if applyExtraITD
+
+            itd = headRadius / speedOfSound * ...
+                (deg2rad(azimuth) + sind(azimuth));
+
+            if itd > 0
+                hrirRight = fractionalDelay( ...
+                    hrirRight, itd * sampleRate);
+            elseif itd < 0
+                hrirLeft = fractionalDelay( ...
+                    hrirLeft, -itd * sampleRate);
+            end
+        end
+    end
+
+    % Equalize HRIR lengths.
+    filterLength = max(length(hrirLeft), length(hrirRight));
+
+    hrirLeft(end+1:filterLength, 1) = 0;
+    hrirRight(end+1:filterLength, 1) = 0;
+
+    %% FIR convolution for this block
+
+    filteredLeft = conv(audioBlock, hrirLeft) * gain;
+    filteredRight = conv(audioBlock, hrirRight) * gain;
+
+    % Crossfade the beginning of a block with the previous block tail.
+    fadeLength = min( ...
+        round(0.01 * sampleRate), ...
+        min(length(filteredLeft), length(filteredRight)));
+
+    if blockNumber > 1 && ~isempty(previousTailLeft)
+
+        fadeLength = min(fadeLength, length(previousTailLeft));
+        fadeLength = min(fadeLength, length(previousTailRight));
+
+        fadeIn = linspace(0, 1, fadeLength).';
+        fadeOut = 1 - fadeIn;
+
+        filteredLeft(1:fadeLength) = ...
+            filteredLeft(1:fadeLength) .* fadeIn + ...
+            previousTailLeft(1:fadeLength) .* fadeOut;
+
+        filteredRight(1:fadeLength) = ...
+            filteredRight(1:fadeLength) .* fadeIn + ...
+            previousTailRight(1:fadeLength) .* fadeOut;
+    end
+
+    %% Add this block to the output
+
+    outputStart = sampleStart;
+    outputEnd = sampleStart + length(filteredLeft) - 1;
+
+    if outputEnd > length(leftOutput)
+
+        extraSamples = outputEnd - length(leftOutput);
+
+        leftOutput(end+1:end+extraSamples) = 0;
+        rightOutput(end+1:end+extraSamples) = 0;
+    end
+
+    leftOutput(outputStart:outputEnd) = ...
+        leftOutput(outputStart:outputEnd) + filteredLeft;
+
+    rightOutput(outputStart:outputEnd) = ...
+        rightOutput(outputStart:outputEnd) + filteredRight;
+
+    previousTailLeft = filteredLeft;
+    previousTailRight = filteredRight;
+
+    sampleStart = sampleEnd + 1;
+    blockNumber = blockNumber + 1;
 end
 
-% Equalize filter lengths
-filterLength = max(length(hrirLeft), length(hrirRight));
+binauralAudio = [leftOutput, rightOutput];
 
-hrirLeft(end+1:filterLength, 1) = 0;
-hrirRight(end+1:filterLength, 1) = 0;
-
-%% FIR convolution
-
-leftAudio = conv(source, hrirLeft) * distanceGain;
-rightAudio = conv(source, hrirRight) * distanceGain;
-
-binauralAudio = [leftAudio, rightAudio];
-
-%% Normalize
+%% Normalize output
 
 if normalizeOutput
 
     peakValue = max(abs(binauralAudio(:)));
 
     if peakValue > 0
-        binauralAudio = 0.98 * binauralAudio / peakValue;
+        binauralAudio = ...
+            0.98 * binauralAudio / peakValue;
     end
 end
 
@@ -212,61 +323,54 @@ audiowrite( ...
     sampleRate, ...
     "BitsPerSample", 24);
 
-%% Convert WAV to MP3 using FFmpeg
+%% Replace existing MP3
 
-command = sprintf( ...
+if isfile(outputFile)
+    delete(outputFile);
+end
+
+%% Convert WAV to MP3
+
+ffmpegCommand = sprintf( ...
     '"%s" -y -i "%s" -codec:a libmp3lame -b:a %s "%s"', ...
     ffmpegPath, ...
     temporaryWav, ...
     mp3Bitrate, ...
     outputFile);
 
-[status, commandOutput] = system(command);
-
-if status ~= 0
-
-    if isfile(temporaryWav)
-        delete(temporaryWav);
-    end
-
-    error("FFmpeg conversion failed:" + newline + commandOutput);
-end
-
-%% Delete temporary WAV
+[status, commandOutput] = system(ffmpegCommand);
 
 if isfile(temporaryWav)
     delete(temporaryWav);
 end
 
+if status ~= 0
+    error("FFmpeg conversion failed:" + newline + commandOutput);
+end
+
 %% Return metadata
 
-metadata = struct( ...
-    "inputFile", inputFile, ...
-    "outputFile", outputFile, ...
-    "sampleRate", sampleRate, ...
-    "distanceMetres", distance, ...
-    "azimuthDegrees", azimuth, ...
-    "elevationDegrees", elevation, ...
-    "distanceGain", distanceGain, ...
-    "selectedHrirDirection", selectedDirection, ...
-    "selectedHrirAzimuth", selectedAzimuth, ...
-    "selectedHrirElevation", selectedElevation, ...
-    "outputFormat", "MP3", ...
-    "mp3Bitrate", mp3Bitrate);
+metadata = struct();
+
+metadata.inputFile = inputFile;
+metadata.outputFile = outputFile;
+metadata.sampleRate = sampleRate;
+metadata.startPosition = startPosition;
+metadata.destinationPosition = endPosition;
+metadata.travelTimeSeconds = travelTime;
+metadata.cycleTimeSeconds = 2 * travelTime;
+metadata.audioDurationSeconds = numberOfSamples / sampleRate;
+metadata.outputFormat = "MP3";
+metadata.mp3Bitrate = mp3Bitrate;
 
 end
 
 
 %% ========================================================================
-function [left, right, fs, directionInfo] = loadHrir(fileName, subjectName)
+function [data, sampleRate] = loadHrir(fileName)
 
-left = [];
-right = [];
-fs = [];
-
-directionInfo = struct( ...
-    "azimuth", [], ...
-    "elevation", []);
+data = [];
+sampleRate = [];
 
 if strlength(fileName) == 0
     return;
@@ -276,140 +380,96 @@ if ~isfile(fileName)
     error("HRIR file not found: " + fileName);
 end
 
-data = load(fileName);
-names = fieldnames(data);
-subject = [];
+loaded = load(fileName);
 
-% Explicit subject name
-if strlength(subjectName) > 0 && isfield(data, char(subjectName))
+data.left = getField(loaded, ...
+    {"hrirL", "hrir_l", "left"});
 
-    subject = data.(char(subjectName));
+data.right = getField(loaded, ...
+    {"hrirR", "hrir_r", "right"});
 
-% Generic file
-elseif isfield(data, "hrirL") || isfield(data, "hrir_l")
-
-    subject = data;
-
-% Automatically search for CIPIC subject structure
-else
-
-    for k = 1:length(names)
-
-        candidate = data.(names{k});
-
-        if isstruct(candidate) && ...
-                (isfield(candidate, "hrir_l") || ...
-                 isfield(candidate, "hrirL"))
-
-            subject = candidate;
-            break;
-        end
-    end
-end
-
-if isempty(subject)
-    error("Unsupported HRIR MAT file.");
-end
-
-%% Read HRIR arrays
-
-left = getField(subject, {"hrirL", "hrir_l", "left"});
-right = getField(subject, {"hrirR", "hrir_r", "right"});
-
-if isempty(left) || isempty(right)
-    error("Both left and right HRIR arrays are required.");
-end
-
-if ~isequal(size(left), size(right))
-    error("Left and right HRIR arrays must have equal dimensions.");
-end
-
-%% Read directions
-
-azimuthGrid = getField(subject, ...
+data.azimuth = getField(loaded, ...
     {"azimuth", "azimuths", "SourceAzimuth", "azim_v"});
 
-elevationGrid = getField(subject, ...
+data.elevation = getField(loaded, ...
     {"elevation", "elevations", "SourceElevation", "elev_v"});
 
-if isempty(azimuthGrid) || isempty(elevationGrid)
-    error("HRIR azimuth and elevation arrays are required.");
+sampleRate = getField(loaded, ...
+    {"fs", "Fs", "sampleRate", "samplingRate"});
+
+if isempty(data.left) || isempty(data.right)
+    error("HRIR file must contain left and right HRIR arrays.");
 end
 
-azimuthGrid = double(azimuthGrid(:));
-elevationGrid = double(elevationGrid(:));
+if isempty(data.azimuth) || isempty(data.elevation)
+    error("HRIR file must contain azimuth and elevation arrays.");
+end
 
-%% Convert CIPIC format
+data.left = double(data.left);
+data.right = double(data.right);
+data.azimuth = double(data.azimuth(:));
+data.elevation = double(data.elevation(:));
 
-% CIPIC format:
-% [azimuth x elevation x samples]
+if ndims(data.left) == 3
 
-if ndims(left) == 3
+    % Format: [azimuth x elevation x samples]
+    numberOfAzimuths = length(data.azimuth);
+    numberOfElevations = length(data.elevation);
 
-    if size(left, 1) ~= length(azimuthGrid) || ...
-            size(left, 2) ~= length(elevationGrid)
+    if size(data.left, 1) ~= numberOfAzimuths || ...
+            size(data.left, 2) ~= numberOfElevations
 
-        error([ ...
-            "3-D HRIR arrays must use format " ...
-            "[azimuth x elevation x samples]."]);
+        error("Unsupported 3-D HRIR dimensions.");
     end
 
-    left = reshape( ...
-        permute(left, [3 1 2]), ...
-        size(left, 3), []);
+    data.left = reshape( ...
+        permute(data.left, [3 1 2]), ...
+        size(data.left, 3), []);
 
-    right = reshape( ...
-        permute(right, [3 1 2]), ...
-        size(right, 3), []);
+    data.right = reshape( ...
+        permute(data.right, [3 1 2]), ...
+        size(data.right, 3), []);
 
-    [azimuthMatrix, elevationMatrix] = ...
-        ndgrid(azimuthGrid, elevationGrid);
+    [azimuthGrid, elevationGrid] = ...
+        ndgrid(data.azimuth, data.elevation);
 
-    directionInfo.azimuth = azimuthMatrix(:);
-    directionInfo.elevation = elevationMatrix(:);
+    data.azimuth = azimuthGrid(:);
+    data.elevation = elevationGrid(:);
 
 else
 
-    % Format [samples x directions]
-    if size(left, 2) == length(azimuthGrid)
+    % Format: [samples x directions]
+    if size(data.left, 2) == length(data.azimuth)
 
         % Already correct.
 
-    % Format [directions x samples]
-    elseif size(left, 1) == length(azimuthGrid)
+    % Format: [directions x samples]
+    elseif size(data.left, 1) == length(data.azimuth)
 
-        left = left.';
-        right = right.';
+        data.left = data.left.';
+        data.right = data.right.';
 
     else
-        error("HRIR direction count does not match direction arrays.");
+        error("HRIR directions do not match direction arrays.");
     end
-
-    directionInfo.azimuth = azimuthGrid;
-    directionInfo.elevation = elevationGrid;
 end
 
-%% Read HRIR sample rate
-
-sampleRate = getField(subject, ...
-    {"fs", "Fs", "samplingRate", "sampleRate"});
-
 if ~isempty(sampleRate)
-    fs = double(sampleRate);
+    sampleRate = double(sampleRate);
 end
 
 end
 
 
 %% ========================================================================
-function value = getField(data, fieldNames)
+function value = getField(data, names)
 
 value = [];
 
-for k = 1:length(fieldNames)
+for k = 1:length(names)
 
-    if isfield(data, fieldNames{k})
-        value = data.(fieldNames{k});
+    if isfield(data, names{k})
+        value = data.(names{k});
         return;
     end
 end
@@ -418,52 +478,54 @@ end
 
 
 %% ========================================================================
-function [index, selectedAzimuth, selectedElevation] = ...
-    selectNearestDirection(info, targetAzimuth, targetElevation)
+function index = nearestDirection( ...
+    azimuthGrid, elevationGrid, targetAzimuth, targetElevation)
 
 azimuthDifference = mod( ...
-    info.azimuth - targetAzimuth + 180, 360) - 180;
+    azimuthGrid - targetAzimuth + 180, 360) - 180;
 
 elevationDifference = ...
-    info.elevation - targetElevation;
+    elevationGrid - targetElevation;
 
-angularDistance = hypot( ...
+distance = hypot( ...
     azimuthDifference, elevationDifference);
 
-[~, index] = min(angularDistance);
-
-selectedAzimuth = info.azimuth(index);
-selectedElevation = info.elevation(index);
+[~, index] = min(distance);
 
 end
 
 
 %% ========================================================================
-function [left, right] = createSyntheticHrir( ...
-    fs, azimuth, speedOfSound, headRadius)
+function [left, right] = syntheticHrir( ...
+    sampleRate, azimuth, speedOfSound, headRadius)
 
-% Testing-only HRIR.
-% Use a measured HRIR database for final results.
+% Testing-only synthetic HRIR.
+% Use a measured HRIR database for final project results.
 
-itd = headRadius / speedOfSound * ...
+itdSeconds = headRadius / speedOfSound * ...
     (deg2rad(azimuth) + sind(azimuth));
+
+itdSamples = abs(itdSeconds * sampleRate);
 
 baseImpulse = [1; 0.15; 0.05];
 
 left = baseImpulse;
 right = baseImpulse;
 
+% Simple ILD approximation.
 levelDifference = ...
     10^(min(6, abs(azimuth) / 90 * 6) / 20);
 
-if itd > 0
+if itdSeconds > 0
 
-    right = fractionalDelay(right, itd * fs);
+    % Source is on the left.
+    right = fractionalDelay(right, itdSamples);
     left = left * levelDifference;
 
-else
+elseif itdSeconds < 0
 
-    left = fractionalDelay(left, -itd * fs);
+    % Source is on the right.
+    left = fractionalDelay(left, itdSamples);
     right = right * levelDifference;
 end
 

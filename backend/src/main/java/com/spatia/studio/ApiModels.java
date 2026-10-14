@@ -11,5 +11,8 @@ record LoginRequest(@NotBlank @Email String email, @NotBlank String password) {}
 record AuthResponse(String token, UserView user) {}
 record UserView(String id, String email, String name) {}
 record UploadView(String id, String filename, long size, String contentType, Instant uploadedAt) {}
-record SourceRequest(String uploadId, double x, double y, double z, String outputName) {}
+record SourceRequest(String uploadId, double startX, double startY, double startZ,
+                     double destinationX, double destinationY, double destinationZ,
+                     double travelTimeSeconds) {}
+record SceneRequest(List<SourceRequest> sources, String outputName) {}
 record RenderView(String id, String filename, String status, String downloadUrl, String message, List<Double> position) {}

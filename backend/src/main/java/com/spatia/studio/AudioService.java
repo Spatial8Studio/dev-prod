@@ -38,21 +38,18 @@ public class AudioService {
         return new UploadView(id, name, upload.size(), upload.contentType(), upload.uploadedAt());
     }
 
-    public RenderView render(SourceRequest request, String userId) {
-        StoredUpload upload = uploads.get(request.uploadId());
-        if (upload == null || !upload.userId().equals(userId)) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Upload not found");
-        if (Math.sqrt(request.x() * request.x() + request.y() * request.y() + request.z() * request.z()) == 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Source cannot be placed at the listener origin");
-        }
+    public RenderView render(SceneRequest request, String userId) {
+        if (request.sources() == null || request.sources().isEmpty()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Add at least one audio source");
         String id = UUID.randomUUID().toString();
         String outputName = Optional.ofNullable(request.outputName()).filter(s -> !s.isBlank()).orElse("spatia-render.mp3");
         Path output = root.resolve(id + "-" + Paths.get(outputName).getFileName());
         try {
             if (matlabCommand == null || matlabCommand.isBlank()) {
-                Files.copy(upload.path(), output, StandardCopyOption.REPLACE_EXISTING);
+                StoredUpload first = ownedUpload(request.sources().get(0), userId);
+                Files.copy(first.path(), output, StandardCopyOption.REPLACE_EXISTING);
             } else {
                 Path script = root.resolve(id + ".m");
-                Files.writeString(script, matlabScript(upload.path(), output, request));
+                Files.writeString(script, matlabScript(request, output, userId));
                 Process process = new ProcessBuilder(matlabCommand, "-batch", "run('" + script.toString().replace("'", "''") + "')").redirectErrorStream(true).start();
                 String log = new String(process.getInputStream().readAllBytes());
                 if (process.waitFor() != 0) throw new IOException("MATLAB failed: " + log);
@@ -62,7 +59,10 @@ public class AudioService {
             Thread.currentThread().interrupt();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Spatial render failed: " + e.getMessage(), e);
         }
-        RenderView view = new RenderView(id, outputName, "complete", "/api/audio/renders/" + id, "Render complete", List.of(request.x(), request.y(), request.z()));
+        SourceRequest first = request.sources().get(0);
+        RenderView view = new RenderView(id, outputName, "complete", "/api/audio/renders/" + id,
+            "Rendered " + request.sources().size() + " moving source(s) into one stereo file",
+            List.of(first.startX(), first.startY(), first.startZ()));
         renders.put(id, view);
         return view;
     }
@@ -73,10 +73,33 @@ public class AudioService {
         return root.resolve(id + "-" + render.filename());
     }
 
-    private String matlabScript(Path input, Path output, SourceRequest request) {
-        return "addpath('" + root.resolve("../matlab").normalize().toString().replace("'", "''") + "');\n" +
-            "spatializeAudio('" + input.toString().replace("'", "''") + "','" + output.toString().replace("'", "''") +
-            "',[" + request.x() + " " + request.y() + " " + request.z() + "],'AllowSynthetic',true,'FfmpegPath','ffmpeg');\n";
+    private StoredUpload ownedUpload(SourceRequest source, String userId) {
+        StoredUpload upload = uploads.get(source.uploadId());
+        if (upload == null || !upload.userId().equals(userId)) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Upload not found");
+        validatePosition(source.startX(), source.startY(), source.startZ());
+        validatePosition(source.destinationX(), source.destinationY(), source.destinationZ());
+        if (source.travelTimeSeconds() <= 0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Transition time must be greater than zero");
+        return upload;
+    }
+
+    private void validatePosition(double x, double y, double z) {
+        if (Math.sqrt(x * x + y * y + z * z) == 0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A source cannot be placed at the listener origin");
+    }
+
+    private String matlabScript(SceneRequest request, Path output, String userId) {
+        StringBuilder script = new StringBuilder("addpath('")
+            .append(root.resolve("../matlab").normalize().toString().replace("'", "''")).append("');\n")
+            .append("sources = struct('inputFile',{},'startPosition',{},'destinationPosition',{},'travelTime',{});\n");
+        for (int i = 0; i < request.sources().size(); i++) {
+            SourceRequest source = request.sources().get(i);
+            StoredUpload upload = ownedUpload(source, userId);
+            script.append("sources(").append(i + 1).append(").inputFile='").append(upload.path().toString().replace("'", "''")).append("';\n")
+                .append("sources(").append(i + 1).append(").startPosition=[").append(source.startX()).append(" ").append(source.startY()).append(" ").append(source.startZ()).append("];\n")
+                .append("sources(").append(i + 1).append(").destinationPosition=[").append(source.destinationX()).append(" ").append(source.destinationY()).append(" ").append(source.destinationZ()).append("];\n")
+                .append("sources(").append(i + 1).append(").travelTime=").append(source.travelTimeSeconds()).append(";\n");
+        }
+        return script.append("renderScene(sources,'").append(output.toString().replace("'", "''"))
+            .append("','FfmpegPath','ffmpeg');\n").toString();
     }
     private record StoredUpload(String id, String userId, Path path, String filename, long size, String contentType, Instant uploadedAt) {}
 }
