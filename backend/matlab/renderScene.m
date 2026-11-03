@@ -2,8 +2,13 @@ function metadata = renderScene(sources, outputFile, varargin)
 %RENDERSCENE Render multiple moving sources and sum them into one MP3.
 % Each source has inputFile, startPosition, destinationPosition, travelTime.
 ffmpegPath = "ffmpeg";
+hrirFile = "";
+allowSynthetic = true;
 for k = 1:2:length(varargin)
-    if lower(string(varargin{k})) == "ffmpegpath", ffmpegPath = string(varargin{k+1}); end
+    optionName = lower(string(varargin{k}));
+    if optionName == "ffmpegpath", ffmpegPath = string(varargin{k+1}); end
+    if optionName == "hrirfile", hrirFile = string(varargin{k+1}); end
+    if optionName == "allowsynthetic", allowSynthetic = logical(varargin{k+1}); end
 end
 if isempty(sources), error("At least one source is required."); end
 work = string(outputFile) + ".sources";
@@ -15,7 +20,8 @@ for k = 1:numel(sources)
     spatializeAudio(sources(k).inputFile, sourceOutput, sources(k).startPosition, ...
         "EndPosition", sources(k).destinationPosition, ...
         "TravelTime", sources(k).travelTime, ...
-        "AllowSynthetic", true, "FfmpegPath", ffmpegPath);
+        "AllowSynthetic", allowSynthetic, "HrirFile", hrirFile, ...
+        "FfmpegPath", ffmpegPath);
     [audio, rate] = audioread(sourceOutput);
     if isempty(sampleRate), sampleRate = rate; end
     if rate ~= sampleRate, error("All source sample rates must match."); end

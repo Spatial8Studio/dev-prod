@@ -3,4 +3,6 @@ backend/storage/
 backend/target/
 frontend/node_modules/
 frontend/dist/
+.m2/
+.npm-cache/
 *.log
