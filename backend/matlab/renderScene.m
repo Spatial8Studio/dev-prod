@@ -17,11 +17,15 @@ mixed = [];
 sampleRate = [];
 for k = 1:numel(sources)
     sourceOutput = fullfile(work, sprintf("source_%03d.mp3", k));
-    spatializeAudio(sources(k).inputFile, sourceOutput, sources(k).startPosition, ...
+    sourceMetadata = spatializeAudio(sources(k).inputFile, sourceOutput, sources(k).startPosition, ...
         "EndPosition", sources(k).destinationPosition, ...
         "TravelTime", sources(k).travelTime, ...
         "AllowSynthetic", allowSynthetic, "HrirFile", hrirFile, ...
         "FfmpegPath", ffmpegPath);
+    if k == 1
+        disp("SPATIA_DIRECTIONAL_CUES=measured-lateral-hrtf+front-rear-height-enhancement");
+        disp("SPATIA_ELEVATION_CUE_STRENGTH=" + string(sourceMetadata.elevationCueStrength));
+    end
     [audio, rate] = audioread(sourceOutput);
     if isempty(sampleRate), sampleRate = rate; end
     if rate ~= sampleRate, error("All source sample rates must match."); end

@@ -80,11 +80,14 @@ $env:SPATIA_HRIR_FILE = "C:\path\to\subject_003\hrir_final.mat"
 
 The included synthetic mode remains available when `SPATIA_HRIR_FILE` is
 empty; it uses deliberately stronger vertical spectral and pinna cues for
-demos. Measured HRIR renders also enable an intentionally obvious height cue
-by default: a short 4--10 ms ceiling/pinna reflection plus a signed spectral
-shelf. This makes above/below audibly different from front on ordinary
-headphones, where natural elevation differences can be very subtle. To disable
-that demo enhancement when comparing raw measured HRIRs, pass
+demos. Measured HRIR renders also keep the measured HRTF for left/right, then
+enable intentionally obvious depth and height cues by default: rear positions
+receive a head-shadow high-frequency roll-off, pinna notches, and an 8--20 ms
+rear cavity reflection; above/below positions receive a short 4--10 ms
+ceiling/pinna reflection plus a signed spectral shelf. This makes front/rear
+and above/below audibly different on ordinary headphones, where natural HRTF
+depth/elevation differences can be very subtle. To disable that demo
+enhancement when comparing raw measured HRIRs, pass
 `'ElevationCueStrength', 0` to `spatializeAudio`.
 
 The backend console logs each upload, render request, generated MATLAB script,

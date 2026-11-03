@@ -273,15 +273,15 @@ while sampleStart <= numberOfSamples
             end
         end
 
-        % Measured HRTFs can still sound nearly identical for front and
-        % overhead positions on ordinary headphones. Add a short, directional
-        % pinna/ceiling cue after HRIR selection so the height difference is
-        % obvious in the demo. Set ElevationCueStrength=0 for research-pure
-        % measured HRIR playback.
-        [hrirLeft, hrirRight] = addElevationDemoCue( ...
+        % Lateral HRTF cues remain measured. Add separate, deliberately strong
+        % front/rear head-shadow and above/below pinna cues after HRIR
+        % selection so depth and height survive ordinary headphones. Set
+        % ElevationCueStrength=0 for research-pure measured HRIR playback.
+        [hrirLeft, hrirRight] = addDirectionalDemoCue( ...
             hrirLeft, ...
             hrirRight, ...
             sampleRate, ...
+            azimuth, ...
             elevation, ...
             elevationCueStrength);
     end
@@ -385,6 +385,8 @@ metadata.mp3Bitrate = mp3Bitrate;
 metadata.highPassHz = highPassHz;
 metadata.noiseGateDb = noiseGateDb;
 metadata.elevationCueStrength = elevationCueStrength;
+metadata.directionalCueDescription = ...
+    "Measured lateral HRTF + explicit front/rear and height cues";
 
 end
 
@@ -629,16 +631,28 @@ end
 
 
 %% ========================================================================
-function [left, right] = addElevationDemoCue( ...
-    left, right, sampleRate, elevation, strength)
+function [left, right] = addDirectionalDemoCue( ...
+    left, right, sampleRate, azimuth, elevation, strength)
 
-% ADDELEVATIONDEMO CUE adds an intentionally obvious height signature.
-% A real HRTF's elevation cues are often only a few dB and are easy to lose
-% on laptop speakers. This cue combines a short ceiling/pinna reflection with
-% a signed high-frequency shelf: above is brighter and reflected, below is
-% darker and reflected differently, while front (elevation ~= 0) is untouched.
+% ADDDIRECTIONALDEMO CUE keeps measured HRTF left/right localization, then
+% adds intentionally obvious depth and height signatures. Natural front/back
+% and elevation differences can be only a few dB and disappear on ordinary
+% headphones, so this demo layer is stronger than a research-pure HRTF.
 
-if strength <= 0 || abs(elevation) < 1e-6
+if strength <= 0
+    return;
+end
+
+% Front/back is not represented by ITD when the source is centered. Use a
+% measured-HRTF-compatible head-shadow/pinna profile instead: rear sources are
+% darker, notched around the pinna resonances, and receive a short cavity
+% reflection. Front sources are left dry so the contrast is easy to hear.
+frontness = cosd(azimuth);
+rearAmount = max(0, min(1, (1 - frontness) / 2));
+left = applyRearCue(left, sampleRate, rearAmount, strength);
+right = applyRearCue(right, sampleRate, rearAmount, strength);
+
+if abs(elevation) < 1e-6
     return;
 end
 
@@ -648,7 +662,7 @@ perceptualElevation = sign(signedElevation) * min(1, ...
 aboveAmount = max(perceptualElevation, 0);
 belowAmount = max(-perceptualElevation, 0);
 
-% 4-9 ms reflections are long enough to read as a height/ceiling cue rather
+% 4-10 ms reflections are long enough to read as a height/ceiling cue rather
 % than a tiny HRIR notch, but short enough to avoid sounding like an echo.
 reflectionDelayOne = max(1, round(sampleRate * ...
     (0.0040 + 0.0025 * aboveAmount + 0.0015 * belowAmount)));
@@ -676,6 +690,54 @@ end
 
 
 %% ========================================================================
+function output = applyRearCue(input, sampleRate, rearAmount, strength)
+
+if rearAmount < 1e-6 || strength <= 0
+    output = input;
+    return;
+end
+
+rearStrength = min(2, strength) / 1.8;
+
+% An 8-20 ms cavity reflection makes a rear source temporally different from
+% a dry front source. This is intentionally audible as a short rear slapback
+% in the demo; a future room model can replace it with a measured BRIR.
+reflectionDelayOne = max(1, round(sampleRate * ...
+    (0.0080 + 0.0040 * rearAmount)));
+reflectionDelayTwo = reflectionDelayOne + max(1, round(sampleRate * ...
+    (0.0060 + 0.0020 * rearAmount)));
+reflectionGainOne = (0.42 + 0.30 * rearAmount) * rearStrength;
+reflectionGainTwo = (0.20 + 0.18 * rearAmount) * rearStrength;
+cue = zeros(reflectionDelayTwo + 1, 1);
+cue(1) = 1;
+cue(1 + reflectionDelayOne) = reflectionGainOne;
+cue(1 + reflectionDelayTwo) = reflectionGainTwo;
+output = conv(input, cue);
+
+% Head shadow: preserve bass/low mids but strongly attenuate the high band at
+% the rear. This is separate from the lateral HRTF/ILD, so a centered source
+% can still be distinguished as front versus back.
+rearHighGain = max(0.06, 1 - 0.94 * rearAmount * rearStrength);
+output = applySpectralShelf(output, sampleRate, rearHighGain, 1800);
+
+% Pinna notches provide an additional front/back spectral fingerprint.
+notchOneDelay = max(1, round(sampleRate / (2 * 2800)));
+notchTwoDelay = max(1, round(sampleRate / (2 * 4700)));
+notchDepthOne = 0.28 * rearAmount * rearStrength;
+notchDepthTwo = 0.18 * rearAmount * rearStrength;
+
+notchOne = zeros(notchOneDelay + 1, 1);
+notchOne(1) = 1 + notchDepthOne;
+notchOne(end) = -notchDepthOne;
+notchTwo = zeros(notchTwoDelay + 1, 1);
+notchTwo(1) = 1 + notchDepthTwo;
+notchTwo(end) = -notchDepthTwo;
+output = conv(conv(output, notchOne), notchTwo);
+
+end
+
+
+%% ========================================================================
 function output = applyHeightShelf(input, sampleRate, signedAmount)
 
 if abs(signedAmount) < 1e-6
@@ -690,8 +752,15 @@ else
     highBandGain = 0.22 + 0.78 * (1 - heightAmount);
 end
 
+output = applySpectralShelf(input, sampleRate, highBandGain, 2400);
+
+end
+
+
+%% ========================================================================
+function output = applySpectralShelf(input, sampleRate, highBandGain, cutoffHz)
+
 % One-pole low/high split, implemented without Signal Processing Toolbox.
-cutoffHz = 2400;
 alpha = exp(-2 * pi * cutoffHz / sampleRate);
 output = zeros(size(input));
 lowPart = 0;
@@ -784,6 +853,11 @@ directionalFilter(1 + reflectionDelayTwo) = reflectionGainTwo;
 rearFilter = [1 - 0.75 * rearAmount; 0.55 * rearAmount; ...
     0.20 * rearAmount];
 baseImpulse = conv(directionalFilter, rearFilter);
+
+% Apply the explicit front/rear profile to the synthetic fallback too. The
+% measured path uses the same helper after HRIR selection.
+baseImpulse = applyRearCue( ...
+    baseImpulse, sampleRate, rearAmount, elevationCueStrength);
 
 % Apply the signed vertical shelf after the pinna response. For an elevated
 % source [1+g, -g] keeps the low end intact while lifting the high end; for a
