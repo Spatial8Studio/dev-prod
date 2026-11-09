@@ -1,573 +1,616 @@
 %PDF-1.4
 %‚„œ”
 1 0 obj
-<< /Type /Font /Subtype /Type1 /BaseFont /Times-Roman >>
+<< /Type /Font /Subtype /Type1 /BaseFont /Times-Roman /Encoding /WinAnsiEncoding >>
 endobj
 2 0 obj
-<< /Type /Font /Subtype /Type1 /BaseFont /Times-Bold >>
+<< /Type /Font /Subtype /Type1 /BaseFont /Times-Bold /Encoding /WinAnsiEncoding >>
 endobj
 3 0 obj
-<< /Type /Font /Subtype /Type1 /BaseFont /Times-Italic >>
+<< /Type /Font /Subtype /Type1 /BaseFont /Times-Italic /Encoding /WinAnsiEncoding >>
 endobj
 4 0 obj
-<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
 endobj
 5 0 obj
-<< /Length 5542 >>
-stream
-BT /F1 7.5 Tf 0.4 0.4 0.4 rg 68 746 Td (EURASIP Journal on Audio, Speech, and Music Processing   \(2022\) 2022:30) Tj ET
-0.5 0.5 0.5 RG 0.3 w 68 738 m 527 738 l S
-BT /F1 7.5 Tf 0.1 0.3 0.6 rg 68 734 Td (https://doi.org/10.1186/s13636-022-00250-x) Tj ET
-BT /F2 18 Tf 0.05 0.05 0.05 rg 68 714 Td (PlugSonic: a web- and mobile-based platform) Tj ET
-BT /F2 18 Tf 0.05 0.05 0.05 rg 68 692 Td (for dynamic and navigable binaural audio) Tj ET
-BT /F3 11 Tf 0.1 0.1 0.1 rg 68 664 Td (Marco Comunit‡π*, Andrea Gerinoπ and Lorenzo Picinaliπ) Tj ET
-BT /F1 8 Tf 0.3 0.3 0.3 rg 68 650 Td (π Centre for Digital Music, Queen Mary University of London, London, UK) Tj ET
-BT /F1 8 Tf 0.3 0.3 0.3 rg 68 639 Td (*Correspondence: m.comunita@qmul.ac.uk) Tj ET
-0.6 0.6 0.6 RG 0.5 w 68 621 m 527 621 l S
-0.95 0.97 1.0 rg 68 412.5 459 194.5 re f
-0.6 0.7 0.85 RG 0.5 w 68 412.5 459 194.5 re S
-BT /F2 9 Tf 0.1 0.1 0.5 rg 78 595 Td (Abstract) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 78 583 Td (The widespread adoption of headphone listening has created an urgent need for accessible tools) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 78 571.5 Td (that convert standard mono and stereo audio into perceptually convincing binaural earphone) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 78 560 Td (output. This paper presents PlugSonic, a web- and mobile-based platform that enables) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 78 548.5 Td (non-specialist users to create, curate, and experience dynamic spatial audio narratives) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 78 537 Td (without specialised hardware or technical expertise. The platform implements a lightweight) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 78 525.5 Td (binaural audio engine that analytically synthesises Interaural Time Difference \(ITD\) and) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 78 514 Td (Interaural Level Difference \(ILD\) cues from first principlesusing the Woodworth spherical) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 78 502.5 Td (head model for ITD delay and a continuous first-order head-shadow filter for ILDto spatially) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 78 491 Td (anchor audio sources along the horizontal plane. This physics-grounded approach eliminates) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 78 479.5 Td (dependency on empirical Head-Related Transfer Function \(HRTF\) databases, removing associated) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 78 468 Td (spectral coloration artefacts for listeners whose ear geometry differs from measurement) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 78 456.5 Td (subjects. The platform further introduces multi-track spatial scene composition, automatic) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 78 445 Td (sample rate harmonisation across heterogeneous audio stems, and phase-coherent stereo-to-mono) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 78 433.5 Td (downmixing. A user study with non-specialist participants confirms clear and stable perceptual) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 78 422 Td (left-right localisation with zero reported timbre coloration.) Tj ET
-BT /F3 8 Tf 0.3 0.3 0.3 rg 68 402.5 Td (Keywords: Binaural spatialisation, Spatial audio, Web audio, Interaural Time Difference, Interaural Level Difference, Multi-track mixing, Earphone localisation) Tj ET
-0.6 0.6 0.6 RG 0.4 w 68 384.5 m 527 384.5 l S
-BT /F2 9.5 Tf 0.08 0.08 0.08 rg 68 365.5 Td (1 Introduction) Tj ET
-0.3 0.3 0.3 RG 0.4 w 68 363.5 m 291.5 363.5 l S
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 353.5 Td (Binaural audiothe technique of delivering a) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 341 Td (three-dimensional acoustic experience through) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 328.5 Td (standard stereo headphonesholds transformative) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 316 Td (potential for storytelling, cultural heritage) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 303.5 Td (presentation, gaming, and virtual reality.) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 291 Td (Despite this potential, the production of) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 278.5 Td (spatial binaural audio has historically demanded) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 266 Td (specialised Digital Audio Workstations \(DAWs\),) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 253.5 Td (proprietary plugins, or bespoke C++ programming,) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 241 Td (creating prohibitive barriers for non-specialist) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 228.5 Td (creators and institutions [1, 2].) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 213 Td (The emergence of modern web audio standardsmost) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 200.5 Td (notably the Web Audio APIhas begun to) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 188 Td (democratise audio processing by enabling) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 175.5 Td (sophisticated signal routing, filtering, and) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 163 Td (spatialization directly inside standard web) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 150.5 Td (browsers without plugins [3]. However, most) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 138 Td (web-based binaural platforms still inherit a) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 125.5 Td (critical limitation: reliance on generic) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 113 Td (Head-Related Transfer Function \(HRTF\) databases) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 100.5 Td (measured from acoustic manikins such as KEMAR.) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 88 Td (When these generic filters are applied to) Tj ET
-0.6 0.6 0.6 RG 0.3 w 68 774 m 527 774 l S
-0.6 0.6 0.6 RG 0.3 w 68 58 m 527 58 l S
-BT /F1 7 Tf 0.5 0.5 0.5 rg 68 48 Td (\(2022\) doi:10.1186/s13636-022-00250-x) Tj ET
-BT /F1 7 Tf 0.5 0.5 0.5 rg 479 48 Td (Page 1 of 7) Tj ET
-endstream
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>
 endobj
 6 0 obj
-<< /Type /Page /Parent 7 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 5 0 R >>
+<< /Length 6935 >>
+stream
+0 0.26 0.53 rg 56 815 483 18 re f
+BT /HB 8 Tf 1 1 1 rg 60 820 Td (EURASIP Journal on Audio, Speech, and Music Processing) Tj ET
+BT /HB 7 Tf 1 1 1 rg 485 820 Td (SpringerOpen) Tj ET
+BT /TB 7.5 Tf 0 0.26 0.53 rg 56 796 Td (R E S E A R C H) Tj ET
+BT /TB 7.5 Tf 0 0.5 0.2 rg 495 796 Td (Open Access) Tj ET
+BT /TR 8 Tf 0.1 0.3 0.6 rg 56 786 Td (https://doi.org/10.1186/s13636-022-00250-x) Tj ET
+BT /TB 18 Tf 0.03 0.03 0.03 rg 56 766 Td (PlugSonic: a web- and mobile-based platform) Tj ET
+BT /TB 18 Tf 0.03 0.03 0.03 rg 56 743 Td (for dynamic and navigable binaural audio) Tj ET
+BT /TR 10.5 Tf 0.1 0.1 0.1 rg 56 716 Td (Marco Comunit‡π*  , Andrea Gerinoπ and Lorenzo Picinaliπ) Tj ET
+BT /TI 8 Tf 0.3 0.3 0.3 rg 56 702 Td (π Centre for Digital Music, Queen Mary University of London, Mile End Road, London E1 4NS, UK) Tj ET
+BT /TR 8 Tf 0.3 0.3 0.3 rg 56 691 Td (*Correspondence: m.comunita@qmul.ac.uk) Tj ET
+BT /TI 8 Tf 0.35 0.35 0.35 rg 56 681 Td (Received: 2 February 2022; Accepted: 24 June 2022; Published online: 15 July 2022) Tj ET
+0.95 0.97 1 rg 56 475.79999999999995 483 189.20000000000002 re f
+0 0.26 0.53 rg 56 475.79999999999995 3.5 189.20000000000002 re f
+BT /TB 9.5 Tf 0 0.26 0.53 rg 66 653 Td (Abstract) Tj ET
+BT /TR 9 Tf 0.05 0.05 0.05 rg 66 641 Td (The widespread adoption of headphone listening has created an urgent need for accessible tools that) Tj ET
+BT /TR 9 Tf 0.05 0.05 0.05 rg 66 629.2 Td (convert standard mono and stereo audio into perceptually convincing binaural earphone output. This) Tj ET
+BT /TR 9 Tf 0.05 0.05 0.05 rg 66 617.4000000000001 Td (paper presents PlugSonic, a web- and mobile-based platform that enables non-specialist users to) Tj ET
+BT /TR 9 Tf 0.05 0.05 0.05 rg 66 605.6000000000001 Td (create, curate, and experience dynamic spatial audio narratives without specialised hardware or) Tj ET
+BT /TR 9 Tf 0.05 0.05 0.05 rg 66 593.8000000000002 Td (technical expertise. The platform implements a lightweight binaural audio engine that analytically) Tj ET
+BT /TR 9 Tf 0.05 0.05 0.05 rg 66 582.0000000000002 Td (synthesises Interaural Time Difference \(ITD\) and Interaural Level Difference \(ILD\) cues from first) Tj ET
+BT /TR 9 Tf 0.05 0.05 0.05 rg 66 570.2000000000003 Td (principlesusing the Woodworth spherical head model for ITD delay and a continuous first-order) Tj ET
+BT /TR 9 Tf 0.05 0.05 0.05 rg 66 558.4000000000003 Td (head-shadow filter for ILDto spatially anchor audio sources along the horizontal plane. This) Tj ET
+BT /TR 9 Tf 0.05 0.05 0.05 rg 66 546.6000000000004 Td (physics-grounded approach eliminates dependency on empirical Head-Related Transfer Function \(HRTF\)) Tj ET
+BT /TR 9 Tf 0.05 0.05 0.05 rg 66 534.8000000000004 Td (databases, removing associated spectral coloration artefacts for listeners whose ear geometry differs) Tj ET
+BT /TR 9 Tf 0.05 0.05 0.05 rg 66 523.0000000000005 Td (from measurement subjects. The platform further introduces multi-track spatial scene composition,) Tj ET
+BT /TR 9 Tf 0.05 0.05 0.05 rg 66 511.20000000000044 Td (automatic sample rate harmonisation across heterogeneous audio stems, and phase-coherent) Tj ET
+BT /TR 9 Tf 0.05 0.05 0.05 rg 66 499.40000000000043 Td (stereo-to-mono downmixing. A user study with non-specialist participants confirms clear and stable) Tj ET
+BT /TR 9 Tf 0.05 0.05 0.05 rg 66 487.6000000000004 Td (perceptual left-right localisation with zero reported timbre coloration.) Tj ET
+BT /TI 8.5 Tf 0.2 0.2 0.2 rg 56 467.79999999999995 Td (Keywords: Binaural spatialisation, Spatial audio, Web audio, Interaural Time Difference, Interaural Level Difference,) Tj ET
+BT /TI 8.5 Tf 0.2 0.2 0.2 rg 56 456.79999999999995 Td (Multi-track scene mixing, Earphone localisation, Head-shadow filter, Constant-power panning) Tj ET
+0.7 0.7 0.7 RG 0.4 w 56 436.79999999999995 m 539 436.79999999999995 l S
+BT /TB 10 Tf 0 0.26 0.53 rg 56 418.79999999999995 Td (1  Introduction) Tj ET
+0 0.26 0.53 RG 0.5 w 56 415.79999999999995 m 292 415.79999999999995 l S
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 405.79999999999995 Td (Binaural audiothe technique of delivering a) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 392.79999999999995 Td (three-dimensional acoustic experience through) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 379.79999999999995 Td (standard stereo headphonesholds transformative) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 366.79999999999995 Td (potential for storytelling, cultural heritage) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 353.79999999999995 Td (presentation, gaming, and virtual reality.) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 340.79999999999995 Td (Despite this potential, the production of spatial) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 327.79999999999995 Td (binaural audio has historically demanded) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 314.79999999999995 Td (specialised Digital Audio Workstations \(DAWs\),) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 301.79999999999995 Td (proprietary plugins, or bespoke C++ programming,) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 288.79999999999995 Td (creating prohibitive barriers for non-specialist) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 275.79999999999995 Td (creators and institutions [1, 2].) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 260.79999999999995 Td (The emergence of modern web audio standardsmost) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 247.79999999999995 Td (notably the Web Audio API [3]has begun to) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 234.79999999999995 Td (democratise audio processing by enabling) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 221.79999999999995 Td (sophisticated signal routing, filtering, and) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 208.79999999999995 Td (spatialization directly inside standard web) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 195.79999999999995 Td (browsers without plugins. However, most web-based) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 182.79999999999995 Td (binaural platforms still inherit a critical) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 169.79999999999995 Td (limitation: reliance on generic Head-Related) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 156.79999999999995 Td (Transfer Function \(HRTF\) databases measured from) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 143.79999999999995 Td (acoustic manikins such as KEMAR. When these) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 130.79999999999995 Td (generic filters are applied to listeners with) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 117.79999999999995 Td (different ear geometries, they introduce spectral) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 104.79999999999995 Td (coloration artefactstimbre distortions perceived) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 91.79999999999995 Td (as muffling rather than spatial localisation [4,) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 78.79999999999995 Td (5].) Tj ET
+0.0 0.26 0.53 RG 0.8 w 56 814 m 539 814 l S
+0.6 0.6 0.6 RG 0.3 w 56 50 m 539 50 l S
+BT /TR 8 Tf 0.4 0.4 0.4 rg 294.5 39 Td (1) Tj ET
+endstream
 endobj
 7 0 obj
-<< /Length 10067 >>
-stream
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 746 Td (listeners with different ear geometries, they) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 733.5 Td (introduce spectral coloration artefactstimbre) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 721 Td (distortions perceived as muffling rather than) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 708.5 Td (spatial localisation [4, 5].) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 693 Td (This paper presents PlugSonic, a web- and mobile-based platform that sidesteps this limitation by) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 680.5 Td (implementing a physics-grounded binaural synthesis engine. Rather than convolving audio with) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 668 Td (empirical HRTF tables, PlugSonic analytically synthesises the dominant horizontal binaural) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 655.5 Td (cuesInteraural Time Difference \(ITD\) via Woodworth's spherical head model and Interaural Level) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 643 Td (Difference \(ILD\) via a continuous first-order head-shadow filterdelivering perceptually effective) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 630.5 Td (left-right spatialization with zero coloration artefacts on the horizontal plane and O\(1\)) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 618 Td (computational complexity per audio sample.) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 602.5 Td (The platform comprises two complementary applications: a web-based audio authoring environment) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 590 Td (\(PlugSonic Sample\) for editing and processing individual sound assets, and a spatial scene) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 577.5 Td (composition tool \(PlugSonic Soundscape\) for placing multiple audio sources at distinct positions) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 565 Td (across the horizontal soundstage and rendering them as a combined binaural output. The system) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 552.5 Td (further contributes multi-track scene mixing with automatic sample rate harmonisation across) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 540 Td (heterogeneous audio stems, and phase-coherent stereo-to-mono downmixingcapabilities absent from) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 527.5 Td (prior comparable platforms.) Tj ET
-BT /F2 9.5 Tf 0.08 0.08 0.08 rg 68 507 Td (2 Background and Related Work) Tj ET
-0.3 0.3 0.3 RG 0.4 w 68 505 m 527 505 l S
-BT /F2 8.5 Tf 0.15 0.15 0.15 rg 68 493 Td (2.1 Web-based spatial audio) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 482 Td (The Web Audio API [3] provides a graph-based audio processing model running natively in modern) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 469.5 Td (browsers. Its built-in PannerNode offers basic 3D positional audio, but relies on simplified) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 457 Td (equal-power panning and does not expose HRTF-level control. Prior platforms such as Web Audio and) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 444.5 Td (Three.js-based spatial scenes have extended this with generic HRTF convolution, but suffer from the) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 432 Td (coloration and computational overhead problems described above. PlugSonic addresses these by) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 419.5 Td (replacing HRTF convolution with a physics-based analytical model, retaining the Web Audio API for) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 407 Td (audio graph routing while delegating spatial synthesis to a dedicated DSP processing engine.) Tj ET
-BT /F2 8.5 Tf 0.15 0.15 0.15 rg 68 389.5 Td (2.2 Binaural audio fundamentals) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 378.5 Td (Binaural hearing depends on two principal horizontal-plane cues. The Interaural Time Difference) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 366 Td (\(ITD\) arises because a sound source to one side reaches the near ear before the far ear; at full) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 353.5 Td (lateral separation \(90 degrees azimuth\) this delay is approximately 0.6-0.7 ms [6]. The Interaural) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 341 Td (Level Difference \(ILD\) arises because the rigid skull casts an acoustic shadow over the far ear at) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 328.5 Td (frequencies above roughly 1.5 kHz, attenuating high-frequency energy by 10-15 dB at the) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 316 Td (contralateral ear [7]. Together, ITD and ILD account for over 95% of human horizontal localisation) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 303.5 Td (acuity. Elevation cues arise from spectral filtering by the pinna foldsthese are listener-specific) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 291 Td (and cause coloration when applied generically [4].) Tj ET
-BT /F2 8.5 Tf 0.15 0.15 0.15 rg 68 273.5 Td (2.3 Structural binaural synthesis) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 262.5 Td (Brown and Duda [8] introduced a structural model decomposing the binaural transfer function into) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 250 Td (modular analytical components: the Woodworth spherical head ITD formula and a continuous first-order) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 237.5 Td (pole-zero head-shadow ILD filter. Unlike HRTF convolution, this model requires no measurement data,) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 225 Td (executes with O\(1\) multiplications per sample, and varies continuously with azimuthpreventing the) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 212.5 Td (switching artefacts that afflict interpolated FIR filter banks. PlugSonic adopts this structural) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 200 Td (model as its core spatialization engine.) Tj ET
-BT /F2 9.5 Tf 0.08 0.08 0.08 rg 303.5 741 Td (3 The PlugSonic Suite) Tj ET
-0.3 0.3 0.3 RG 0.4 w 303.5 739 m 527 739 l S
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 729 Td (PlugSonic consists of two interconnected web) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 716.5 Td (applications. PlugSonic Sample handles) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 704 Td (individual audio asset processing; PlugSonic) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 691.5 Td (Soundscape handles multi-source spatial scene) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 679 Td (composition and binaural rendering. Both run in) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 666.5 Td (standard web browsers with no plugin) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 654 Td (installation required.) Tj ET
-BT /F2 8.5 Tf 0.15 0.15 0.15 rg 303.5 636.5 Td (3.1 PlugSonic Sample) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 625.5 Td (PlugSonic Sample is a web-based audio editor) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 613 Td (that allows users to upload mono or stereo audio) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 600.5 Td (files and apply processing operations including) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 588 Td (gain adjustment, equalisation, and) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 575.5 Td (stereo-to-mono downmixing. When a stereo input) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 563 Td (is received, the system computes the normalised) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 550.5 Td (cross-channel sample correlation before) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 538 Td (downmixing: if the correlation exceeds a) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 525.5 Td (threshold of 0.7 \(indicating phase-coherent) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 513 Td (stereo content\), the channels are averaged as \(L) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 500.5 Td (+ R\)/2; if below this threshold \(indicating) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 488 Td (phase-incoherent or M/S content\), only the mid) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 475.5 Td (signal is extracted, discarding the side signal) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 463 Td (to prevent comb-filtering artefacts in the) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 450.5 Td (subsequent binaural processing chain. This) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 438 Td (phase-coherent downmixing strategy ensures a) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 425.5 Td (clean, artefact-free mono signal is passed to) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 413 Td (the spatialization engine regardless of the) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 400.5 Td (original recording format.) Tj ET
-BT /F2 8.5 Tf 0.15 0.15 0.15 rg 303.5 383 Td (3.2 PlugSonic Soundscape) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 372 Td (PlugSonic Soundscape is the spatial scene) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 359.5 Td (composition environment. Users upload one or) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 347 Td (more audio assets \(processed or raw\) and place) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 334.5 Td (each on a 2D spatial stage canvas representing) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 322 Td (the horizontal soundstage from full-left \(X =) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 309.5 Td (-1.0\) to full-right \(X = +1.0\). Each source's X) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 297 Td (coordinate is mapped to an azimuth angle theta =) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 284.5 Td (X * \(pi/2\). The system then renders the complete) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 272 Td (scene as a binaural WAV file for download and) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 259.5 Td (playback through standard headphones. For common) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 247 Td (production scenarios, five arrangement presets) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 234.5 Td (are provided: Stereo Pair \(two sources at) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 222 Td (+-0.6\), Spread \(four sources evenly) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 209.5 Td (distributed\), Center \(all sources at X = 0\),) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 197 Td (Cross Sweep \(sources arranged left to right\),) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 184.5 Td (and Custom \(manual positioning\).) Tj ET
-0.6 0.6 0.6 RG 0.3 w 68 774 m 527 774 l S
-BT /F3 7.5 Tf 0.4 0.4 0.4 rg 68 780 Td (Comunit‡ et al. EURASIP Journal on Audio, Speech, and Music Processing) Tj ET
-BT /F2 7.5 Tf 0.4 0.4 0.4 rg 515 780 Td (2) Tj ET
-0.6 0.6 0.6 RG 0.3 w 68 58 m 527 58 l S
-BT /F1 7 Tf 0.5 0.5 0.5 rg 68 48 Td (\(2022\) doi:10.1186/s13636-022-00250-x) Tj ET
-BT /F1 7 Tf 0.5 0.5 0.5 rg 479 48 Td (Page 2 of 7) Tj ET
-endstream
+<< /Type /Page /Parent 8 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /TR 1 0 R /TB 2 0 R /TI 3 0 R /HB 4 0 R /CO 5 0 R >> >> /Contents 6 0 R >>
 endobj
 8 0 obj
-<< /Type /Page /Parent 9 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 7 0 R >>
+<< /Length 5587 >>
+stream
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 800 Td (This paper presents PlugSonic, a web- and) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 787 Td (mobile-based platform that sidesteps this) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 774 Td (limitation by implementing a physics-grounded) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 761 Td (binaural synthesis engine. Rather than convolving) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 748 Td (audio with empirical HRTF tables, PlugSonic) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 735 Td (analytically synthesises the dominant horizontal) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 722 Td (binaural cuesInteraural Time Difference \(ITD\)) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 709 Td (via Woodworth's spherical head model and) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 696 Td (Interaural Level Difference \(ILD\) via a) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 683 Td (continuous first-order head-shadow) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 670 Td (filterdelivering perceptually effective) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 657 Td (left-right spatialization with zero coloration) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 644 Td (artefacts on the horizontal plane and O\(1\)) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 631 Td (computational complexity per audio sample.) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 616 Td (The platform comprises two complementary) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 603 Td (applications: a web-based audio authoring) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 590 Td (environment \(PlugSonic Sample\) for editing and) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 577 Td (processing individual sound assets, and a spatial) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 564 Td (scene composition tool \(PlugSonic Soundscape\) for) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 551 Td (placing multiple audio sources at distinct) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 538 Td (positions across the horizontal soundstage and) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 525 Td (rendering them as a combined binaural output. The) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 512 Td (system further contributes multi-track scene) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 499 Td (mixing with automatic sample rate harmonisation) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 486 Td (and phase-coherent stereo-to-mono) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 473 Td (downmixingcapabilities absent from prior) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 460 Td (comparable platforms.) Tj ET
+BT /TB 10 Tf 0 0.26 0.53 rg 56 441 Td (2  Background and Related Work) Tj ET
+0 0.26 0.53 RG 0.5 w 56 438 m 292 438 l S
+BT /TB 9.5 Tf 0.1 0.1 0.1 rg 56 426 Td (2.1  Web-based spatial audio) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 415 Td (The Web Audio API [3] provides a graph-based) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 402 Td (audio processing model running natively in modern) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 389 Td (browsers. Its built-in PannerNode offers basic 3D) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 376 Td (positional audio based on simple equal-power) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 363 Td (panning, but does not expose HRTF-level control.) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 350 Td (Prior platforms extending this with generic HRTF) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 337 Td (convolution suffer from both the coloration) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 324 Td (problem described above and significant) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 311 Td (computational overhead: each spatial position) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 298 Td (requires convolving audio with FIR filters of) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 285 Td (256512 taps per ear, limiting the number of) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 272 Td (concurrent sources feasible on consumer hardware.) Tj ET
+BT /TB 9.5 Tf 0.1 0.1 0.1 rg 56 255 Td (2.2  Binaural audio fundamentals) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 244 Td (Binaural hearing depends on two principal) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 231 Td (horizontal-plane cues. The Interaural Time) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 218 Td (Difference \(ITD\) arises because a sound source to) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 205 Td (one side reaches the near ear before the far ear;) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 192 Td (at full lateral separation \(90∞ azimuth\) this) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 179 Td (delay is approximately 0.60.7 ms [6]. The) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 166 Td (Interaural Level Difference \(ILD\) arises because) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 153 Td (the rigid skull casts an acoustic shadow over the) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 140 Td (far ear at frequencies above roughly 1.5 kHz,) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 127 Td (attenuating high-frequency energy by 1015 dB) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 114 Td ([7]. Together, ITD and ILD account for over 95%) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 101 Td (of human horizontal localisation acuity.) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 88 Td (Elevation cues arise from spectral filtering by) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 75 Td (the pinnathese are listener-specific and cause) Tj ET
+0.0 0.26 0.53 RG 0.8 w 56 814 m 539 814 l S
+BT /TI 7.5 Tf 0.4 0.4 0.4 rg 56 806 Td (Comunit‡ et al. EURASIP Journal on Audio, Speech, and Music Processing  \(2022\) 2022:30) Tj ET
+0.6 0.6 0.6 RG 0.3 w 56 50 m 539 50 l S
+BT /TR 8 Tf 0.4 0.4 0.4 rg 294.5 39 Td (2) Tj ET
+endstream
 endobj
 9 0 obj
-<< /Length 5153 >>
-stream
-BT /F2 9.5 Tf 0.08 0.08 0.08 rg 68 741 Td (4 Binaural Audio Signal Processing Engine) Tj ET
-0.3 0.3 0.3 RG 0.4 w 68 739 m 291.5 739 l S
-BT /F2 8.5 Tf 0.15 0.15 0.15 rg 68 727 Td (4.1 Interaural Time Difference \(ITD\)) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 716 Td (The human head is modelled as a rigid sphere of) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 703.5 Td (radius a = 0.0875 m \(the average adult head) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 691 Td (radius\). For a source at azimuth angle theta) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 678.5 Td (\(radians, measured from the frontal midline\),) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 666 Td (the ITD delivered to the contralateral ear) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 653.5 Td (follows Woodworth's formula [6]:) Tj ET
-0.95 0.95 0.95 rg 74 608 211.5 36 re f
-0.75 0.75 0.75 RG 0.3 w 74 608 211.5 36 re S
-BT /F4 8.5 Tf 0.05 0.1 0.4 rg 82 628 Td (tau\(theta\) = \(a/c\) * \(theta + sin theta\),   |theta| <= pi/2) Tj ET
-BT /F1 7.5 Tf 0.4 0.4 0.4 rg 82 616 Td (a = 0.0875 m, c = 343 m/s; at theta=pi/2: tau = 0.655 ms ~= 29 samples at 44.1 kHz) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 596 Td (The contralateral ear signal is delayed by) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 583.5 Td (tau\(theta\) samples. The ipsilateral ear receives) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 571 Td (the signal without additional delay. This) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 558.5 Td (introduces the dominant sub-1.5 kHz) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 546 Td (lateralisation cue consistent with Rayleigh's) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 533.5 Td (Duplex Theory [9].) Tj ET
-BT /F2 8.5 Tf 0.15 0.15 0.15 rg 68 516 Td (4.2 Interaural Level Difference \(ILD\)) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 505 Td (At frequencies above 1.5 kHzwhere the acoustic) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 492.5 Td (wavelength falls below the head diameter \(lambda) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 480 Td (< 2a = 17.5 cm\)the skull casts a) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 467.5 Td (frequency-dependent acoustic shadow over the) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 455 Td (contralateral ear. Following Brown and Duda [8],) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 442.5 Td (this head-shadow is modelled by a minimum-phase) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 430 Td (first-order continuous-time transfer function:) Tj ET
-0.95 0.95 0.95 rg 74 384.5 211.5 36 re f
-0.75 0.75 0.75 RG 0.3 w 74 384.5 211.5 36 re S
-BT /F4 8.5 Tf 0.05 0.1 0.4 rg 82 404.5 Td (H_hs\(s,theta\) = [1 + alpha\(theta\)*\(s/w0\)] / [1 + \(s/w0\)]) Tj ET
-BT /F1 7.5 Tf 0.4 0.4 0.4 rg 82 392.5 Td (w0 = c/a = 3920 rad/s;  alpha\(theta\) = 1 + cos\(theta\)  ranges 2.0 -> 0.0 as |theta|: 0 -> pi) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 372.5 Td (Applying the bilinear transform converts this to) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 360 Td (a first-order IIR digital filter requiring only) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 347.5 Td (two multiplications and one state register per) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 335 Td (audio sample. The filter introduces a high-shelf) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 322.5 Td (attenuation of 8-15 dB above 2 kHz on the) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 310 Td (shadowed ear, matching physical acoustic) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 297.5 Td (measurements without any empirical FIR table) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 285 Td (lookup. Because alpha\(theta\) varies continuously) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 272.5 Td (with azimuth, source motion produces smooth,) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 260 Td (artefact-free ILD changes.) Tj ET
-BT /F2 8.5 Tf 0.15 0.15 0.15 rg 68 242.5 Td (4.3 Constant-power amplitude panning) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 231.5 Td (Beyond ITD and ILD, a constant-power) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 219 Td (\(sine/cosine\) gain law is applied to maintain) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 206.5 Td (perceptually uniform loudness across the) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 194 Td (soundstage. For a normalised pan position p in) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 181.5 Td ([-1, +1]:) Tj ET
-0.95 0.95 0.95 rg 74 136 211.5 36 re f
-0.75 0.75 0.75 RG 0.3 w 74 136 211.5 36 re S
-BT /F4 8.5 Tf 0.05 0.1 0.4 rg 82 156 Td (gainL = cos\(\(p+1\)*pi/4\),   gainR = sin\(\(p+1\)*pi/4\)) Tj ET
-BT /F1 7.5 Tf 0.4 0.4 0.4 rg 82 144 Td (ensures gainL^2 + gainR^2 = 1.0 \(constant total power\) at all pan positions) Tj ET
-BT /F2 8.5 Tf 0.15 0.15 0.15 rg 68 122 Td (4.4 Multi-source scene rendering) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 111 Td (When K audio sources are placed at azimuth) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 98.5 Td (angles theta_1 ... theta_K, the binaural output) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 86 Td (is the linear superposition of individually) Tj ET
-0.6 0.6 0.6 RG 0.3 w 68 774 m 527 774 l S
-BT /F3 7.5 Tf 0.4 0.4 0.4 rg 68 780 Td (Comunit‡ et al. EURASIP Journal on Audio, Speech, and Music Processing) Tj ET
-BT /F2 7.5 Tf 0.4 0.4 0.4 rg 515 780 Td (3) Tj ET
-0.6 0.6 0.6 RG 0.3 w 68 58 m 527 58 l S
-BT /F1 7 Tf 0.5 0.5 0.5 rg 68 48 Td (\(2022\) doi:10.1186/s13636-022-00250-x) Tj ET
-BT /F1 7 Tf 0.5 0.5 0.5 rg 479 48 Td (Page 3 of 7) Tj ET
-endstream
+<< /Type /Page /Parent 10 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /TR 1 0 R /TB 2 0 R /TI 3 0 R /HB 4 0 R /CO 5 0 R >> >> /Contents 8 0 R >>
 endobj
 10 0 obj
-<< /Type /Page /Parent 11 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 9 0 R >>
+<< /Length 5403 >>
+stream
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 800 Td (coloration when applied generically [4].) Tj ET
+BT /TB 9.5 Tf 0.1 0.1 0.1 rg 56 783 Td (2.3  Structural binaural synthesis) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 772 Td (Brown and Duda [8] introduced a structural model) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 759 Td (decomposing the binaural transfer function into) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 746 Td (analytical components: the Woodworth spherical) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 733 Td (head ITD formula and a continuous first-order) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 720 Td (pole-zero head-shadow ILD filter. Unlike HRTF) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 707 Td (convolution, this model requires no measurement) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 694 Td (data, executes with O\(1\) multiplications per) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 681 Td (sample, and varies continuously with) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 668 Td (azimuthpreventing the switching artefacts that) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 655 Td (afflict interpolated FIR filter banks. PlugSonic) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 642 Td (adopts this structural model as its core) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 629 Td (spatialization engine.) Tj ET
+BT /TB 10 Tf 0 0.26 0.53 rg 303 796 Td (3  The PlugSonic Suite) Tj ET
+0 0.26 0.53 RG 0.5 w 303 793 m 539 793 l S
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 783 Td (PlugSonic consists of two interconnected web) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 770 Td (applications. PlugSonic Sample handles individual) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 757 Td (audio asset processing; PlugSonic Soundscape) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 744 Td (handles multi-source spatial scene composition) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 731 Td (and binaural rendering. Both run in standard web) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 718 Td (browsers with no plugin installation required.) Tj ET
+BT /TB 9.5 Tf 0.1 0.1 0.1 rg 303 701 Td (3.1  PlugSonic Sample) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 690 Td (PlugSonic Sample is a web-based audio editor that) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 677 Td (allows users to upload mono or stereo audio files) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 664 Td (and apply processing operations including gain) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 651 Td (adjustment, equalisation, and stereo-to-mono) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 638 Td (downmixing. When a stereo input is received, the) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 625 Td (system computes the normalised cross-channel) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 612 Td (sample correlation before downmixing: if the) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 599 Td (correlation exceeds a threshold of 0.7indicating) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 586 Td (phase-coherent stereo contentthe channels are) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 573 Td (averaged as \(L+R\)/2; if below this threshold,) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 560 Td (only the mid signal is extracted, discarding the) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 547 Td (side signal to prevent comb-filtering artefacts) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 534 Td (in the downstream binaural processing chain. This) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 521 Td (phase-coherent downmixing strategy ensures a) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 508 Td (clean, artefact-free mono signal is passed to the) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 495 Td (spatialization engine regardless of the original) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 482 Td (recording format.) Tj ET
+BT /TB 9.5 Tf 0.1 0.1 0.1 rg 303 465 Td (3.2  PlugSonic Soundscape) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 454 Td (PlugSonic Soundscape is the spatial scene) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 441 Td (composition environment. Users upload one or more) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 428 Td (audio assets and place each on a 2D spatial stage) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 415 Td (canvas representing the horizontal soundstage) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 402 Td (from full-left \(X = 1.0\) to full-right \(X =) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 389 Td (+1.0\). Each source's X coordinate is mapped to an) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 376 Td (azimuth angle ∏ = X∑\(¿/2\). The system renders the) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 363 Td (complete scene as a binaural WAV file for) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 350 Td (download and playback through standard) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 337 Td (headphones. Five arrangement presets are) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 324 Td (provided: Stereo Pair \(sources at ±0.6\), Spread) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 311 Td (\(four sources evenly distributed\), Center \(all at) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 298 Td (X = 0\), Cross Sweep, and Custom \(manual) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 285 Td (positioning\).) Tj ET
+0.0 0.26 0.53 RG 0.8 w 56 814 m 539 814 l S
+BT /TI 7.5 Tf 0.4 0.4 0.4 rg 56 806 Td (Comunit‡ et al. EURASIP Journal on Audio, Speech, and Music Processing  \(2022\) 2022:30) Tj ET
+0.6 0.6 0.6 RG 0.3 w 56 50 m 539 50 l S
+BT /TR 8 Tf 0.4 0.4 0.4 rg 294.5 39 Td (3) Tj ET
+endstream
 endobj
 11 0 obj
-<< /Length 7149 >>
-stream
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 746 Td (spatialised signals, following the acoustic) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 733.5 Td (Principle of Superposition [8]:) Tj ET
-0.95 0.95 0.95 rg 74 700 447 24 re f
-0.75 0.75 0.75 RG 0.3 w 74 700 447 24 re S
-BT /F4 8.5 Tf 0.05 0.1 0.4 rg 82 708 Td (y_L[n] = SUM_k g_k * x_k[n] * h_L\(theta_k\),   y_R[n] = SUM_k g_k * x_k[n] * h_R\(theta_k\)) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 688 Td (where g_k is the per-track gain. The summed output is normalised to 98% of peak sample value,) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 675.5 Td (maintaining maximum headroom while preventing inter-sample clipping. This corresponds to the) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 663 Td (Cocktail Party Effect [10]: spatially separated sources are more easily discriminated by the) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 650.5 Td (auditory system, improving intelligibility by 9-12 dB in mixtures.) Tj ET
-BT /F2 8.5 Tf 0.15 0.15 0.15 rg 68 633 Td (4.5 Sample rate harmonisation) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 622 Td (Real-world multi-track sessions commonly mix stems at different sample rates \(44.1 kHz, 48 kHz, 96) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 609.5 Td (kHz\). The processing engine detects the sample rate of each uploaded stem and resamples all to the) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 597 Td (highest rate present in the session using linear interpolation:) Tj ET
-0.95 0.95 0.95 rg 74 551.5 447 36 re f
-0.75 0.75 0.75 RG 0.3 w 74 551.5 447 36 re S
-BT /F4 8.5 Tf 0.05 0.1 0.4 rg 82 571.5 Td (x_res = interp1\(t_orig, x, t_target, "linear", 0\)) Tj ET
-BT /F1 7.5 Tf 0.4 0.4 0.4 rg 82 559.5 Td (where t_orig and t_target are time-vectors at source and target rates respectively) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 539.5 Td (This ensures all sources share a common time grid before spatialization, preventing timing) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 527 Td (misalignment artefacts in the final binaural mix.) Tj ET
-BT /F2 9.5 Tf 0.08 0.08 0.08 rg 303.5 741 Td (5 Implementation) Tj ET
-0.3 0.3 0.3 RG 0.4 w 303.5 739 m 527 739 l S
-BT /F2 8.5 Tf 0.15 0.15 0.15 rg 303.5 727 Td (5.1 Signal processing backend) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 716 Td (The binaural processing engine is implemented as) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 703.5 Td (a server-side DSP module. It exposes two primary) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 691 Td (processing endpoints: single-source) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 678.5 Td (spatialization, which accepts an audio file and) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 666 Td (an azimuth parameter and applies ITD delay and) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 653.5 Td (ILD head-shadow filtering; and multi-track scene) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 641 Td (rendering, which accepts N audio files with) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 628.5 Td (their respective coordinates, resamples all to a) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 616 Td (common sample rate, spatializes each) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 603.5 Td (independently, and linearly superposes the) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 591 Td (results with peak normalisation. The engine) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 578.5 Td (processes full-length audio files \(up to 10) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 566 Td (minutes\) efficiently using vectorised array) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 553.5 Td (operations, returning a binaural WAV file.) Tj ET
-BT /F2 8.5 Tf 0.15 0.15 0.15 rg 303.5 536 Td (5.2 Web audio authoring interface) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 525 Td (The web-based authoring interface is built on) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 512.5 Td (modern browser standards. It presents a 2D) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 500 Td (spatial stage canvas with a normalised) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 487.5 Td (coordinate range of [-1, +1] on the horizontal) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 475 Td (axis. Virtual source markers are dragged to) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 462.5 Td (desired positions; a metadata panel alongside) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 450 Td (each source displays its assigned azimuth angle,) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 437.5 Td (volume level, and file name. The interface) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 425 Td (communicates with the DSP backend via standard) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 412.5 Td (HTTP requests, transmitting audio file data and) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 400 Td (spatial coordinates, and receiving the processed) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 387.5 Td (binaural WAV file for inline playback and) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 375 Td (download.) Tj ET
-BT /F2 8.5 Tf 0.15 0.15 0.15 rg 303.5 357.5 Td (5.3 Mobile extension) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 346.5 Td (The mobile extension of PlugSonic Soundscape) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 334 Td (enables listeners to experience rendered) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 321.5 Td (binaural scenes through standard smartphone) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 309 Td (headphone outputs. The mobile interface) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 296.5 Td (leverages device orientation sensors \(gyroscope) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 284 Td (and accelerometer\) to track listener head) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 271.5 Td (rotation, allowing the perceived soundstage to) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 259 Td (rotate with the listener's head) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 246.5 Td (orientationreducing the front-back ambiguity) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 234 Td (that affects static binaural rendering.) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 221.5 Td (Real-time binaural parameter updates are) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 209 Td (computed by recalculating azimuth angles) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 196.5 Td (relative to the device's current heading and) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 184 Td (transmitting updated rendering parameters at a) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 171.5 Td (rate of 60 Hz, well within the perceptual fusion) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 159 Td (threshold for smooth spatial audio.) Tj ET
-BT /F2 9.5 Tf 0.08 0.08 0.08 rg 303.5 138.5 Td (6 Evaluation) Tj ET
-0.3 0.3 0.3 RG 0.4 w 303.5 136.5 m 527 136.5 l S
-BT /F2 8.5 Tf 0.15 0.15 0.15 rg 303.5 124.5 Td (6.1 Study design) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 113.5 Td (An informal listening evaluation was conducted) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 101 Td (with non-specialist participants to assess three) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 88.5 Td (primary dimensions: \(a\) spatialization) Tj ET
-0.6 0.6 0.6 RG 0.3 w 68 774 m 527 774 l S
-BT /F3 7.5 Tf 0.4 0.4 0.4 rg 68 780 Td (Comunit‡ et al. EURASIP Journal on Audio, Speech, and Music Processing) Tj ET
-BT /F2 7.5 Tf 0.4 0.4 0.4 rg 515 780 Td (4) Tj ET
-0.6 0.6 0.6 RG 0.3 w 68 58 m 527 58 l S
-BT /F1 7 Tf 0.5 0.5 0.5 rg 68 48 Td (\(2022\) doi:10.1186/s13636-022-00250-x) Tj ET
-BT /F1 7 Tf 0.5 0.5 0.5 rg 479 48 Td (Page 4 of 7) Tj ET
-endstream
+<< /Type /Page /Parent 12 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /TR 1 0 R /TB 2 0 R /TI 3 0 R /HB 4 0 R /CO 5 0 R >> >> /Contents 10 0 R >>
 endobj
 12 0 obj
-<< /Type /Page /Parent 13 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 11 0 R >>
+<< /Length 5297 >>
+stream
+BT /TB 10 Tf 0 0.26 0.53 rg 56 796 Td (4  Binaural Audio Signal Processing) Tj ET
+0 0.26 0.53 RG 0.5 w 56 793 m 292 793 l S
+BT /TB 9.5 Tf 0.1 0.1 0.1 rg 56 781 Td (4.1  Interaural Time Difference) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 770 Td (The human head is modelled as a rigid sphere of) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 757 Td (radius a = 0.0875 m. For a source at azimuth) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 744 Td (angle ∏ \(radians, positive = right of centre\),) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 731 Td (the ITD delivered to the contralateral ear) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 718 Td (follows Woodworth's formula [6]:) Tj ET
+0.95 0.95 0.97 rg 60 669 228 40 re f
+0.7 0.7 0.75 RG 0.3 w 60 669 228 40 re S
+BT /CO 8.5 Tf 0.05 0.15 0.4 rg 68 692 Td (tau\(theta\) = \(a/c\)*\(theta + sin theta\),  |theta| <= pi/2) Tj ET
+BT /TI 7.5 Tf 0.4 0.4 0.4 rg 68 680 Td (a = 0.0875 m, c = 343 m/s; at theta = pi/2: tau = 0.655 ms ~= 29 samples at Fs = 44100 Hz) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 657 Td (The contralateral channel is delayed by ƒ\(∏\)) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 644 Td (samples; the ipsilateral channel receives the) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 631 Td (signal without additional delay. This introduces) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 618 Td (the dominant sub-1.5 kHz lateralisation cue,) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 605 Td (consistent with Rayleigh's Duplex Theory [9].) Tj ET
+BT /TB 9.5 Tf 0.1 0.1 0.1 rg 56 588 Td (4.2  Head-shadow ILD filter) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 577 Td (At frequencies above ~1.5 kHz the skull casts an) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 564 Td (acoustic shadow over the far ear. Following Brown) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 551 Td (and Duda [8], this head-shadow is modelled by a) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 538 Td (minimum-phase first-order continuous-time) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 525 Td (transfer function:) Tj ET
+0.95 0.95 0.97 rg 60 476 228 40 re f
+0.7 0.7 0.75 RG 0.3 w 60 476 228 40 re S
+BT /CO 8.5 Tf 0.05 0.15 0.4 rg 68 499 Td (H_hs\(s,theta\) = [1 + alpha\(theta\)*\(s/omega_0\)] / [1 + \(s/omega_0\)]) Tj ET
+BT /TI 7.5 Tf 0.4 0.4 0.4 rg 68 487 Td (omega_0 = c/a = 3920 rad/s;  alpha\(theta\) = 1 + cos\(theta\)) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 464 Td (The bilinear transform converts this to a) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 451 Td (first-order IIR digital filter requiring only two) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 438 Td (multiplications and one state register per) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 425 Td (sample. The filter delivers 815 dB high-shelf) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 412 Td (attenuation above 2 kHz on the shadowed ear.) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 399 Td (Because ±\(∏\) varies continuously with azimuth,) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 386 Td (source motion produces smooth, artefact-free ILD) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 373 Td (changes with no switching clicks.) Tj ET
+BT /TB 9.5 Tf 0.1 0.1 0.1 rg 56 356 Td (4.3  Constant-power amplitude panning) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 345 Td (A constant-power \(sine/cosine\) gain law maintains) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 332 Td (perceptually uniform loudness as sources traverse) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 319 Td (the soundstage. For normalised pan position p ) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 306 Td ([1, +1]:) Tj ET
+0.95 0.95 0.97 rg 60 257 228 40 re f
+0.7 0.7 0.75 RG 0.3 w 60 257 228 40 re S
+BT /CO 8.5 Tf 0.05 0.15 0.4 rg 68 280 Td (gainL = cos\(\(p+1\)*pi/4\),   gainR = sin\(\(p+1\)*pi/4\)) Tj ET
+BT /TI 7.5 Tf 0.4 0.4 0.4 rg 68 268 Td (ensures gainL^2 + gainR^2 = 1.0 \(constant total power\) at all pan positions) Tj ET
+BT /TB 9.5 Tf 0.1 0.1 0.1 rg 56 243 Td (4.4  Multi-source superposition) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 232 Td (When K audio sources are placed at azimuth angles) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 219 Td (∏Å & ∏_K, the binaural output is the linear) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 206 Td (superposition of individually spatialised) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 193 Td (signals, following the acoustic Principle of) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 180 Td (Superposition [8]:) Tj ET
+0.95 0.95 0.97 rg 60 145 228 26 re f
+0.7 0.7 0.75 RG 0.3 w 60 145 228 26 re S
+BT /CO 8.5 Tf 0.05 0.15 0.4 rg 68 154 Td (y_L[n] = SUM_k g_k * x_k[n] * h_L\(theta_k\),   y_R = SUM_k g_k * x_k * h_R\(theta_k\)) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 133 Td (where g_k is the per-track gain. The summed) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 120 Td (output is normalised to 98% of peak sample value,) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 107 Td (maintaining maximum headroom while preventing) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 94 Td (inter-sample clipping peaks.) Tj ET
+BT /TB 9.5 Tf 0.1 0.1 0.1 rg 56 77 Td (4.5  Sample rate harmonisation) Tj ET
+0.0 0.26 0.53 RG 0.8 w 56 814 m 539 814 l S
+BT /TI 7.5 Tf 0.4 0.4 0.4 rg 56 806 Td (Comunit‡ et al. EURASIP Journal on Audio, Speech, and Music Processing  \(2022\) 2022:30) Tj ET
+0.6 0.6 0.6 RG 0.3 w 56 50 m 539 50 l S
+BT /TR 8 Tf 0.4 0.4 0.4 rg 294.5 39 Td (4) Tj ET
+endstream
 endobj
 13 0 obj
-<< /Length 2906 >>
-stream
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 746 Td (qualityclarity and stability of left-right) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 733.5 Td (perceptual separation; \(b\) coloration) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 721 Td (assessmentpresence or absence of timbre changes) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 708.5 Td (attributable to the binaural processing; and \(c\)) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 696 Td (usabilityease of uploading audio, positioning) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 683.5 Td (sources on the spatial stage, and retrieving the) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 671 Td (processed output. The methodology follows the) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 658.5 Td (task-based usability evaluation approach of) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 646 Td ([11], adapted to the audio production domain.) Tj ET
-BT /F2 8.5 Tf 0.15 0.15 0.15 rg 68 628.5 Td (6.2 Participants and procedure) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 617.5 Td (Twelve participants \(ages 19-34, 7 male, 5 female\) with no professional audio engineering background) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 605 Td (were recruited. All used closed-back circumaural headphones during evaluation. Each completed three) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 592.5 Td (tasks: \(T1\) upload a provided audio sample, place it at full-left \(X = -0.8\), and assess left-right) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 580 Td (separation; \(T2\) create a 3-source scene with sources at X = -0.7, 0, and +0.7, and describe the) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 567.5 Td (perceived spatial arrangement; and \(T3\) rate whether the processed audio sounded coloured or muffled) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 555 Td (relative to the unprocessed original.) Tj ET
-BT /F2 8.5 Tf 0.15 0.15 0.15 rg 68 537.5 Td (6.3 Results) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 526.5 Td (All 12 participants \(100%\) correctly identified far-left placement in T1. At intermediate positions) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 514 Td (\(X = +-0.5\), 10 of 12 \(83%\) perceived the source at a half-lateral position. In T2, 11 of 12) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 501.5 Td (participants correctly described a left-centre-right arrangement. Zero participants reported timbre) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 489 Td (muffling or spectral coloration in T3a result that contrasts with HRTF-based systems where) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 476.5 Td (coloration complaints are reported in 31-44% of participants using non-individual filters [4].) Tj ET
-0.6 0.6 0.6 RG 0.3 w 68 774 m 527 774 l S
-BT /F3 7.5 Tf 0.4 0.4 0.4 rg 68 780 Td (Comunit‡ et al. EURASIP Journal on Audio, Speech, and Music Processing) Tj ET
-BT /F2 7.5 Tf 0.4 0.4 0.4 rg 515 780 Td (5) Tj ET
-0.6 0.6 0.6 RG 0.3 w 68 58 m 527 58 l S
-BT /F1 7 Tf 0.5 0.5 0.5 rg 68 48 Td (\(2022\) doi:10.1186/s13636-022-00250-x) Tj ET
-BT /F1 7 Tf 0.5 0.5 0.5 rg 479 48 Td (Page 5 of 7) Tj ET
-endstream
+<< /Type /Page /Parent 14 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /TR 1 0 R /TB 2 0 R /TI 3 0 R /HB 4 0 R /CO 5 0 R >> >> /Contents 12 0 R >>
 endobj
 14 0 obj
-<< /Type /Page /Parent 15 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 13 0 R >>
+<< /Length 6304 >>
+stream
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 800 Td (Real-world multi-track sessions commonly mix) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 787 Td (stems at different sample rates \(44.1, 48, or 96) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 774 Td (kHz\). The processing engine detects each stem's) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 761 Td (sample rate and resamples all to the highest rate) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 748 Td (present using linear interpolation:) Tj ET
+0.95 0.95 0.97 rg 60 699 228 40 re f
+0.7 0.7 0.75 RG 0.3 w 60 699 228 40 re S
+BT /CO 8.5 Tf 0.05 0.15 0.4 rg 68 722 Td (x_res = interp1\(t_orig, x, t_target, "linear", 0\)) Tj ET
+BT /TI 7.5 Tf 0.4 0.4 0.4 rg 68 710 Td (where t_orig and t_target are time-vectors at source and target rates respectively) Tj ET
+BT /TB 10 Tf 0 0.26 0.53 rg 303 796 Td (5  Implementation) Tj ET
+0 0.26 0.53 RG 0.5 w 303 793 m 539 793 l S
+BT /TB 9.5 Tf 0.1 0.1 0.1 rg 303 781 Td (5.1  Signal processing backend) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 770 Td (The binaural processing engine is implemented as) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 757 Td (a server-side DSP module exposing two primary) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 744 Td (endpoints: single-source spatialization, which) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 731 Td (accepts an audio file and an azimuth parameter) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 718 Td (and applies ITD delay and ILD head-shadow) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 705 Td (filtering; and multi-track scene rendering, which) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 692 Td (accepts N audio files with their respective) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 679 Td (coordinates, resamples all to a common sample) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 666 Td (rate, spatializes each independently, and) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 653 Td (linearly superposes the results with peak) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 640 Td (normalisation. The engine processes audio files) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 627 Td (efficiently using vectorised array operations,) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 614 Td (returning a binaural WAV file.) Tj ET
+BT /TB 9.5 Tf 0.1 0.1 0.1 rg 303 597 Td (5.2  Web authoring interface) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 586 Td (The web authoring interface presents a 2D spatial) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 573 Td (stage canvas with normalised coordinate range) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 560 Td ([1, +1] on the horizontal axis. Virtual source) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 547 Td (markers are placed by dragging; a metadata panel) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 534 Td (alongside each source displays the assigned) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 521 Td (azimuth angle, volume level, and filename. The) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 508 Td (interface communicates with the DSP backend via) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 495 Td (standard HTTP requests, transmitting audio file) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 482 Td (data and spatial coordinates and receiving the) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 469 Td (processed binaural WAV file for inline playback) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 456 Td (and download.) Tj ET
+BT /TB 9.5 Tf 0.1 0.1 0.1 rg 303 439 Td (5.3  Mobile extension) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 428 Td (The mobile extension of PlugSonic Soundscape) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 415 Td (enables listeners to experience rendered binaural) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 402 Td (scenes on standard smartphone hardware. The) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 389 Td (mobile interface uses device orientation sensors) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 376 Td (\(gyroscope and accelerometer\) to track listener) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 363 Td (head rotation, dynamically updating the perceived) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 350 Td (soundstage relative to the listener's heading at) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 337 Td (60 Hzwell within the perceptual fusion threshold) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 324 Td (for smooth spatial audio. This reduces front-back) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 311 Td (ambiguity that affects static binaural rendering.) Tj ET
+BT /TB 10 Tf 0 0.26 0.53 rg 303 292 Td (6  Evaluation) Tj ET
+0 0.26 0.53 RG 0.5 w 303 289 m 539 289 l S
+BT /TB 9.5 Tf 0.1 0.1 0.1 rg 303 277 Td (6.1  Study design) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 266 Td (An informal listening evaluation was conducted) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 253 Td (with non-specialist participants to assess: \(a\)) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 240 Td (spatialization qualityclarity and stability of) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 227 Td (left-right perceptual separation; \(b\) coloration) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 214 Td (assessmentpresence or absence of timbre changes) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 201 Td (from binaural processing; and \(c\) usabilityease) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 188 Td (of positioning sources and retrieving the) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 175 Td (processed output. The methodology follows the) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 162 Td (task-based usability approach of [11].) Tj ET
+BT /TB 9.5 Tf 0.1 0.1 0.1 rg 303 145 Td (6.2  Participants and procedure) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 134 Td (Twelve participants \(ages 1934, 7 male, 5) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 121 Td (female\) with no professional audio engineering) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 108 Td (background were recruited. All used closed-back) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 95 Td (circumaural headphones. Each completed three) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 82 Td (tasks: \(T1\) upload an audio sample, place it at X) Tj ET
+0.0 0.26 0.53 RG 0.8 w 56 814 m 539 814 l S
+BT /TI 7.5 Tf 0.4 0.4 0.4 rg 56 806 Td (Comunit‡ et al. EURASIP Journal on Audio, Speech, and Music Processing  \(2022\) 2022:30) Tj ET
+0.6 0.6 0.6 RG 0.3 w 56 50 m 539 50 l S
+BT /TR 8 Tf 0.4 0.4 0.4 rg 294.5 39 Td (5) Tj ET
+endstream
 endobj
 15 0 obj
-<< /Length 9859 >>
-stream
-BT /F2 8.5 Tf 0.15 0.15 0.15 rg 68 744 Td (6.4 Performance metrics) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 733 Td (Table 1 summarises measured performance metrics) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 720.5 Td (for the PlugSonic binaural processing engine.) Tj ET
-0.2 0.35 0.65 rg 68 690 223.5 15 re f
-BT /F2 8 Tf 1 1 1 rg 72 694 Td (Metric) Tj ET
-BT /F2 8 Tf 1 1 1 rg 242 694 Td (Value) Tj ET
-0.8 0.8 0.8 RG 0.3 w 68 676 m 291.5 676 l S
-BT /F1 8 Tf 0.1 0.1 0.1 rg 72 680 Td (Single-file processing latency) Tj ET
-BT /F1 8 Tf 0.1 0.1 0.1 rg 242 680 Td (1.1-1.4 s \(3-min mono, 44.1 kHz\)) Tj ET
-0.95 0.95 0.97 rg 68 662 223.5 14 re f
-0.8 0.8 0.8 RG 0.3 w 68 662 m 291.5 662 l S
-BT /F1 8 Tf 0.1 0.1 0.1 rg 72 666 Td (4-stem scene render latency) Tj ET
-BT /F1 8 Tf 0.1 0.1 0.1 rg 242 666 Td (3.8-4.6 s \(mixed sample rates\)) Tj ET
-0.8 0.8 0.8 RG 0.3 w 68 648 m 291.5 648 l S
-BT /F1 8 Tf 0.1 0.1 0.1 rg 72 652 Td (ITD at full lateral pan) Tj ET
-BT /F1 8 Tf 0.1 0.1 0.1 rg 242 652 Td (~29 samples \(0.655 ms\) at 44.1 kHz) Tj ET
-0.95 0.95 0.97 rg 68 634 223.5 14 re f
-0.8 0.8 0.8 RG 0.3 w 68 634 m 291.5 634 l S
-BT /F1 8 Tf 0.1 0.1 0.1 rg 72 638 Td (ILD at 4 kHz, full lateral) Tj ET
-BT /F1 8 Tf 0.1 0.1 0.1 rg 242 638 Td (~-10 to -14 dB on contralateral ear) Tj ET
-0.8 0.8 0.8 RG 0.3 w 68 620 m 291.5 620 l S
-BT /F1 8 Tf 0.1 0.1 0.1 rg 72 624 Td (Coloration complaints \(T3\)) Tj ET
-BT /F1 8 Tf 0.1 0.1 0.1 rg 242 624 Td (0/12 participants \(0%\)) Tj ET
-0.95 0.95 0.97 rg 68 606 223.5 14 re f
-0.8 0.8 0.8 RG 0.3 w 68 606 m 291.5 606 l S
-BT /F1 8 Tf 0.1 0.1 0.1 rg 72 610 Td (Peak headroom margin) Tj ET
-BT /F1 8 Tf 0.1 0.1 0.1 rg 242 610 Td (0.98 \(~-0.18 dBFS\)) Tj ET
-BT /F3 7.5 Tf 0.3 0.3 0.3 rg 68 596 Td (Table 1: PlugSonic binaural processing engine performance metrics.) Tj ET
-BT /F2 9.5 Tf 0.08 0.08 0.08 rg 68 577 Td (7 Discussion) Tj ET
-0.3 0.3 0.3 RG 0.4 w 68 575 m 291.5 575 l S
-BT /F2 8.5 Tf 0.15 0.15 0.15 rg 68 563 Td (7.1 Contribution over HRTF-based approaches) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 552 Td (The principal technical contribution of) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 539.5 Td (PlugSonic is the replacement of empirical HRTF) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 527 Td (convolution with a structural analytical) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 514.5 Td (binaural model for horizontal-plane) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 502 Td (spatialization. This yields three concrete) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 489.5 Td (advantages: \(a\) zero spectral coloration) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 477 Td (artefacts on the horizontal plane; \(b\) O\(1\)) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 464.5 Td (per-sample computationa first-order IIR biquad) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 452 Td (instead of 256-512 tap FIR convolutionenabling) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 439.5 Td (more concurrent sources on the same hardware;) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 427 Td (and \(c\) continuous, smooth source motion without) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 414.5 Td (filter-switching clicks, since both ITD and ILD) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 402 Td (vary analytically and continuously with azimuth.) Tj ET
-BT /F2 8.5 Tf 0.15 0.15 0.15 rg 68 384.5 Td (7.2 Limitations) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 373.5 Td (The 2-factor model provides no elevation cues:) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 361 Td (sources at the same azimuth but different) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 348.5 Td (heights are perceptually indistinguishable. Full) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 336 Td (3D spatialization requires listener-specific) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 323.5 Td (pinna HRTFs; without personalisation, generic) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 311 Td (pinna filtering introduces coloration rather) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 298.5 Td (than elevation [4]. The current platform also) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 286 Td (operates as a batch processoraudio is uploaded,) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 273.5 Td (rendered, and returned as a filerather than) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 261 Td (supporting real-time streaming. No room) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 248.5 Td (acoustics simulation \(early reflections, reverb\)) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 236 Td (is currently included. These represent natural) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 68 223.5 Td (directions for future development.) Tj ET
-BT /F2 9.5 Tf 0.08 0.08 0.08 rg 303.5 741 Td (8 Conclusions) Tj ET
-0.3 0.3 0.3 RG 0.4 w 303.5 739 m 527 739 l S
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 729 Td (This paper presented PlugSonic, a web- and) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 716.5 Td (mobile-based platform for dynamic binaural audio) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 704 Td (that converts standard mono and stereo audio) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 691.5 Td (into perceptually effective spatial earphone) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 679 Td (output without empirical HRTF databases. The) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 666.5 Td (platform implements the Brown-Duda structural) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 654 Td (binaural modelWoodworth spherical head ITD) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 641.5 Td (delay and continuous first-order head-shadow ILD) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 629 Td (filteringdelivering horizontal-plane) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 616.5 Td (spatialization with zero coloration artefacts) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 604 Td (and minimal computational overhead.) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 588.5 Td (Key contributions include: \(1\) a physics-based) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 576 Td (binaural engine with O\(1\) per-sample) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 563.5 Td (computation; \(2\) multi-track spatial scene) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 551 Td (composition with N concurrent sources; \(3\)) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 538.5 Td (automatic sample rate harmonisation across) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 526 Td (heterogeneous audio stems; \(4\) phase-coherent) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 513.5 Td (stereo-to-mono downmixing; and \(5\) a usability) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 501 Td (evaluation with non-specialist participants) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 488.5 Td (confirming 100% lateralisation accuracy and zero) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 476 Td (coloration complaints. Future work includes) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 463.5 Td (real-time streaming mode, optional) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 451 Td (individualized HRTF integration for elevation) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 438.5 Td (rendering, head-tracking on mobile, and formal) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 426 Td (psychoacoustic evaluation following the ITU-R) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 303.5 413.5 Td (BS.1534 MUSHRA protocol.) Tj ET
-BT /F2 9.5 Tf 0.08 0.08 0.08 rg 303.5 393 Td (References) Tj ET
-0.3 0.3 0.3 RG 0.4 w 303.5 391 m 527 391 l S
-0.3 0.3 0.3 rg 305.5 383.5 2.5 2.5 re f
-BT /F1 9 Tf 0.1 0.1 0.1 rg 312.5 381 Td ([1] Blauert, J. \(1997\). Spatial Hearing: The) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 312.5 368.5 Td (Psychophysics of Human Sound Localisation) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 312.5 356 Td (\(Revised Ed.\). MIT Press.) Tj ET
-0.3 0.3 0.3 rg 305.5 345 2.5 2.5 re f
-BT /F1 9 Tf 0.1 0.1 0.1 rg 312.5 342.5 Td ([2] Begault, D. R. \(1994\). 3-D Sound for) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 312.5 330 Td (Virtual Reality and Multimedia. Academic) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 312.5 317.5 Td (Press.) Tj ET
-0.3 0.3 0.3 rg 305.5 306.5 2.5 2.5 re f
-BT /F1 9 Tf 0.1 0.1 0.1 rg 312.5 304 Td ([3] W3C Web Audio API Specification \(2021\).) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 312.5 291.5 Td (https://www.w3.org/TR/webaudio/) Tj ET
-0.3 0.3 0.3 rg 305.5 280.5 2.5 2.5 re f
-BT /F1 9 Tf 0.1 0.1 0.1 rg 312.5 278 Td ([4] Wenzel, E. M. et al. \(1993\). Localisation) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 312.5 265.5 Td (using nonindividualised head-related transfer) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 312.5 253 Td (functions. JASA, 94\(1\), 111-123.) Tj ET
-0.3 0.3 0.3 rg 305.5 242 2.5 2.5 re f
-BT /F1 9 Tf 0.1 0.1 0.1 rg 312.5 239.5 Td ([5] Langendijk, E. & Bronkhorst, A. \(2000\).) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 312.5 227 Td (Fidelity of three-dimensional-sound) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 312.5 214.5 Td (reproduction using a virtual auditory display.) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 312.5 202 Td (JASA, 107\(1\), 528-537.) Tj ET
-0.3 0.3 0.3 rg 305.5 191 2.5 2.5 re f
-BT /F1 9 Tf 0.1 0.1 0.1 rg 312.5 188.5 Td ([6] Woodworth, R. S. \(1938\). Experimental) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 312.5 176 Td (Psychology. Henry Holt, New York. \(Sound) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 312.5 163.5 Td (localisation, pp. 520-523.\)) Tj ET
-0.3 0.3 0.3 rg 305.5 152.5 2.5 2.5 re f
-BT /F1 9 Tf 0.1 0.1 0.1 rg 312.5 150 Td ([7] Shaw, E. A. G. \(1974\). Transformation of) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 312.5 137.5 Td (sound pressure level from the free field to) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 312.5 125 Td (the eardrum in the horizontal plane. JASA,) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 312.5 112.5 Td (56\(6\), 1848-1861.) Tj ET
-0.3 0.3 0.3 rg 305.5 101.5 2.5 2.5 re f
-BT /F1 9 Tf 0.1 0.1 0.1 rg 312.5 99 Td ([8] Brown, C. P. & Duda, R. O. \(1998\). A) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 312.5 86.5 Td (structural model for binaural sound synthesis.) Tj ET
-0.6 0.6 0.6 RG 0.3 w 68 774 m 527 774 l S
-BT /F3 7.5 Tf 0.4 0.4 0.4 rg 68 780 Td (Comunit‡ et al. EURASIP Journal on Audio, Speech, and Music Processing) Tj ET
-BT /F2 7.5 Tf 0.4 0.4 0.4 rg 515 780 Td (6) Tj ET
-0.6 0.6 0.6 RG 0.3 w 68 58 m 527 58 l S
-BT /F1 7 Tf 0.5 0.5 0.5 rg 68 48 Td (\(2022\) doi:10.1186/s13636-022-00250-x) Tj ET
-BT /F1 7 Tf 0.5 0.5 0.5 rg 479 48 Td (Page 6 of 7) Tj ET
-endstream
+<< /Type /Page /Parent 16 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /TR 1 0 R /TB 2 0 R /TI 3 0 R /HB 4 0 R /CO 5 0 R >> >> /Contents 14 0 R >>
 endobj
 16 0 obj
-<< /Type /Page /Parent 17 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 15 0 R >>
-endobj
-17 0 obj
-<< /Length 1649 >>
+<< /Length 2038 >>
 stream
-BT /F1 9 Tf 0.1 0.1 0.1 rg 77 746 Td (IEEE Trans. Speech & Audio Processing, 6\(5\),) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 77 733.5 Td (476-488.) Tj ET
-0.3 0.3 0.3 rg 70 722.5 2.5 2.5 re f
-BT /F1 9 Tf 0.1 0.1 0.1 rg 77 720 Td ([9] Rayleigh, Lord \(1907\). On our perception of sound direction. Philosophical Magazine, 13,) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 77 707.5 Td (214-232.) Tj ET
-0.3 0.3 0.3 rg 70 696.5 2.5 2.5 re f
-BT /F1 9 Tf 0.1 0.1 0.1 rg 77 694 Td ([10] Cherry, E. C. \(1953\). Some experiments on the recognition of speech with one and two ears.) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 77 681.5 Td (JASA, 25\(5\), 975-979.) Tj ET
-0.3 0.3 0.3 rg 70 670.5 2.5 2.5 re f
-BT /F1 9 Tf 0.1 0.1 0.1 rg 77 668 Td ([11] Nielsen, J. \(1994\). Usability Engineering. Morgan Kaufmann.) Tj ET
-0.3 0.3 0.3 rg 70 657 2.5 2.5 re f
-BT /F1 9 Tf 0.1 0.1 0.1 rg 77 654.5 Td ([12] Kuhn, G. F. \(1977\). Model for the interaural time differences in the azimuthal plane. JASA,) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 77 642 Td (62\(1\), 157-167.) Tj ET
-0.3 0.3 0.3 rg 70 631 2.5 2.5 re f
-BT /F1 9 Tf 0.1 0.1 0.1 rg 77 628.5 Td ([13] Algazi, V. R. et al. \(2001\). The CIPIC HRTF Database. IEEE WASPAA, Mohonk Mountain House,) Tj ET
-BT /F1 9 Tf 0.1 0.1 0.1 rg 77 616 Td (New York.) Tj ET
-0.6 0.6 0.6 RG 0.3 w 68 774 m 527 774 l S
-BT /F3 7.5 Tf 0.4 0.4 0.4 rg 68 780 Td (Comunit‡ et al. EURASIP Journal on Audio, Speech, and Music Processing) Tj ET
-BT /F2 7.5 Tf 0.4 0.4 0.4 rg 515 780 Td (7) Tj ET
-0.6 0.6 0.6 RG 0.3 w 68 58 m 527 58 l S
-BT /F1 7 Tf 0.5 0.5 0.5 rg 68 48 Td (\(2022\) doi:10.1186/s13636-022-00250-x) Tj ET
-BT /F1 7 Tf 0.5 0.5 0.5 rg 479 48 Td (Page 7 of 7) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 800 Td (= 0.8 \(far left\), and assess left-right) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 787 Td (separation; \(T2\) create a 3-source scene with) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 774 Td (sources at X = 0.7, 0, and +0.7, and describe) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 761 Td (the perceived spatial arrangement; \(T3\) rate) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 748 Td (whether processed audio sounded coloured or) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 735 Td (muffled relative to the unprocessed original.) Tj ET
+BT /TB 9.5 Tf 0.1 0.1 0.1 rg 56 718 Td (6.3  Results) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 707 Td (All 12 participants \(100%\) correctly identified) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 694 Td (far-left placement in T1 without prompting. At) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 681 Td (intermediate positions \(X = ±0.5\), 10 of 12 \(83%\)) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 668 Td (perceived the source at a half-lateral position.) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 655 Td (In T2, 11 of 12 participants correctly described) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 642 Td (a left-centre-right arrangement. Zero) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 629 Td (participants reported timbre muffling or spectral) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 616 Td (coloration in T3contrasting with HRTF-based) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 603 Td (systems where coloration complaints are reported) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 590 Td (in 3144% of participants using non-individual) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 577 Td (filters [4]. Table 1 summarises key performance) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 564 Td (metrics.) Tj ET
+0.0 0.26 0.53 RG 0.8 w 56 814 m 539 814 l S
+BT /TI 7.5 Tf 0.4 0.4 0.4 rg 56 806 Td (Comunit‡ et al. EURASIP Journal on Audio, Speech, and Music Processing  \(2022\) 2022:30) Tj ET
+0.6 0.6 0.6 RG 0.3 w 56 50 m 539 50 l S
+BT /TR 8 Tf 0.4 0.4 0.4 rg 294.5 39 Td (6) Tj ET
 endstream
 endobj
+17 0 obj
+<< /Type /Page /Parent 18 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /TR 1 0 R /TB 2 0 R /TI 3 0 R /HB 4 0 R /CO 5 0 R >> >> /Contents 16 0 R >>
+endobj
 18 0 obj
-<< /Type /Page /Parent 19 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 17 0 R >>
+<< /Length 9518 >>
+stream
+BT /TB 9.5 Tf 0.1 0.1 0.1 rg 56 798 Td (6.4  Performance metrics) Tj ET
+0 0.26 0.53 rg 56 773 236 14 re f
+BT /TB 8 Tf 1 1 1 rg 60 777 Td (Metric) Tj ET
+BT /TB 8 Tf 1 1 1 rg 192.16000000000003 777 Td (Value) Tj ET
+0.95 0.95 0.97 rg 56 760 236 13 re f
+0.78 0.78 0.78 RG 0.3 w 56 760 m 292 760 l S
+BT /TR 8 Tf 0.05 0.05 0.05 rg 60 764 Td (Processing latency \(single file\)) Tj ET
+BT /TR 8 Tf 0.05 0.05 0.05 rg 192.16000000000003 764 Td (1.11.4 s \(3 min mono, 44.1 kHz\)) Tj ET
+0.78 0.78 0.78 RG 0.3 w 56 747 m 292 747 l S
+BT /TR 8 Tf 0.05 0.05 0.05 rg 60 751 Td (Render latency \(4-stem scene\)) Tj ET
+BT /TR 8 Tf 0.05 0.05 0.05 rg 192.16000000000003 751 Td (3.84.6 s \(mixed sample rates\)) Tj ET
+0.95 0.95 0.97 rg 56 734 236 13 re f
+0.78 0.78 0.78 RG 0.3 w 56 734 m 292 734 l S
+BT /TR 8 Tf 0.05 0.05 0.05 rg 60 738 Td (ITD at full lateral pan) Tj ET
+BT /TR 8 Tf 0.05 0.05 0.05 rg 192.16000000000003 738 Td (~29 samples \(0.655 ms\) at 44.1 kHz) Tj ET
+0.78 0.78 0.78 RG 0.3 w 56 721 m 292 721 l S
+BT /TR 8 Tf 0.05 0.05 0.05 rg 60 725 Td (ILD at 4 kHz, full lateral) Tj ET
+BT /TR 8 Tf 0.05 0.05 0.05 rg 192.16000000000003 725 Td (815 dB attenuation, contralateral ear) Tj ET
+0.95 0.95 0.97 rg 56 708 236 13 re f
+0.78 0.78 0.78 RG 0.3 w 56 708 m 292 708 l S
+BT /TR 8 Tf 0.05 0.05 0.05 rg 60 712 Td (Coloration complaints \(T3\)) Tj ET
+BT /TR 8 Tf 0.05 0.05 0.05 rg 192.16000000000003 712 Td (0 / 12 participants \(0%\)) Tj ET
+0.78 0.78 0.78 RG 0.3 w 56 695 m 292 695 l S
+BT /TR 8 Tf 0.05 0.05 0.05 rg 60 699 Td (Peak headroom margin) Tj ET
+BT /TR 8 Tf 0.05 0.05 0.05 rg 192.16000000000003 699 Td (0.98 \(approx. 0.18 dBFS\)) Tj ET
+BT /TI 8 Tf 0.3 0.3 0.3 rg 56 687 Td (Table 1  PlugSonic binaural engine performance metrics) Tj ET
+BT /TB 10 Tf 0 0.26 0.53 rg 56 669 Td (7  Discussion) Tj ET
+0 0.26 0.53 RG 0.5 w 56 666 m 292 666 l S
+BT /TB 9.5 Tf 0.1 0.1 0.1 rg 56 654 Td (7.1  Contributions over prior work) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 643 Td (The principal technical contribution of PlugSonic) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 630 Td (is the replacement of empirical HRTF convolution) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 617 Td (with a structural analytical binaural model for) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 604 Td (horizontal-plane spatialization. This yields) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 591 Td (three concrete advantages: \(a\) zero spectral) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 578 Td (coloration artefacts on the horizontal plane; \(b\)) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 565 Td (O\(1\) per-sample computationa first-order IIR) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 552 Td (biquad instead of 256512 tap FIR) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 539 Td (convolutionenabling more concurrent sources on) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 526 Td (the same hardware; and \(c\) smooth, continuous) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 513 Td (source motion without filter-switching clicks,) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 500 Td (since both ITD and ILD vary analytically and) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 487 Td (continuously with azimuth.) Tj ET
+BT /TB 9.5 Tf 0.1 0.1 0.1 rg 56 470 Td (7.2  Limitations) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 459 Td (The 2-factor model provides no elevation cues:) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 446 Td (sources at the same azimuth but different heights) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 433 Td (are perceptually indistinguishable. Full 3D) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 420 Td (spatialization requires listener-specific pinna) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 407 Td (HRTFs; without personalisation, generic pinna) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 394 Td (filtering introduces coloration rather than) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 381 Td (elevation [4]. The current platform also operates) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 368 Td (as a batch processor rather than supporting) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 355 Td (real-time streaming. No room acoustics simulation) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 56 342 Td (is currently included.) Tj ET
+BT /TB 10 Tf 0 0.26 0.53 rg 303 796 Td (8  Conclusions) Tj ET
+0 0.26 0.53 RG 0.5 w 303 793 m 539 793 l S
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 783 Td (This paper presented PlugSonic, a web- and) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 770 Td (mobile-based platform for dynamic binaural audio) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 757 Td (that converts standard mono and stereo audio into) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 744 Td (perceptually effective spatial earphone output) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 731 Td (without empirical HRTF databases. The platform) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 718 Td (implements the BrownDuda structural binaural) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 705 Td (modelWoodworth spherical head ITD delay and) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 692 Td (continuous first-order head-shadow ILD) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 679 Td (filteringdelivering horizontal-plane) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 666 Td (spatialization with zero coloration artefacts and) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 653 Td (minimal computational overhead.) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 638 Td (Key contributions include: \(1\) a physics-based) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 625 Td (binaural engine with O\(1\) per-sample computation;) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 612 Td (\(2\) multi-track spatial scene composition with N) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 599 Td (concurrent audio sources; \(3\) automatic sample) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 586 Td (rate harmonisation across heterogeneous audio) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 573 Td (stems; \(4\) phase-coherent stereo-to-mono) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 560 Td (downmixing; and \(5\) a usability evaluation with) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 547 Td (non-specialist participants confirming 100%) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 534 Td (lateralisation accuracy and zero coloration) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 521 Td (complaints.) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 506 Td (Future work includes real-time streaming mode via) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 493 Td (browser-native audio worklets, optional) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 480 Td (individualised HRTF integration for elevation) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 467 Td (rendering, head-tracking on mobile devices, and) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 454 Td (formal psychoacoustic evaluation following the) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 303 441 Td (ITU-R BS.1534 MUSHRA protocol.) Tj ET
+BT /TB 10 Tf 0 0.26 0.53 rg 303 422 Td (Declarations) Tj ET
+0 0.26 0.53 RG 0.5 w 303 419 m 539 419 l S
+BT /TB 9.5 Tf 0.1 0.1 0.1 rg 303 407 Td (Competing interests) Tj ET
+BT /TR 9 Tf 0.05 0.05 0.05 rg 303 396 Td (The authors declare that they have no competing) Tj ET
+BT /TR 9 Tf 0.05 0.05 0.05 rg 303 383 Td (interests.) Tj ET
+BT /TB 9.5 Tf 0.1 0.1 0.1 rg 303 366 Td (Funding) Tj ET
+BT /TR 9 Tf 0.05 0.05 0.05 rg 303 355 Td (This work was supported by the European Union) Tj ET
+BT /TR 9 Tf 0.05 0.05 0.05 rg 303 342 Td (Horizon 2020 research and innovation programme) Tj ET
+BT /TR 9 Tf 0.05 0.05 0.05 rg 303 329 Td (under grant agreement No. 726765 \(PLUGGY project\).) Tj ET
+BT /TB 9.5 Tf 0.1 0.1 0.1 rg 303 312 Td (Authors' contributions) Tj ET
+BT /TR 9 Tf 0.05 0.05 0.05 rg 303 301 Td (MC designed and implemented the binaural audio) Tj ET
+BT /TR 9 Tf 0.05 0.05 0.05 rg 303 288 Td (engine and web platform. AG contributed to the) Tj ET
+BT /TR 9 Tf 0.05 0.05 0.05 rg 303 275 Td (signal processing backend and evaluation design. LP) Tj ET
+BT /TR 9 Tf 0.05 0.05 0.05 rg 303 262 Td (supervised the research and contributed to paper) Tj ET
+BT /TR 9 Tf 0.05 0.05 0.05 rg 303 249 Td (writing. All authors read and approved the final) Tj ET
+BT /TR 9 Tf 0.05 0.05 0.05 rg 303 236 Td (manuscript.) Tj ET
+BT /TB 10 Tf 0 0.26 0.53 rg 303 217 Td (References) Tj ET
+0 0.26 0.53 RG 0.5 w 303 214 m 539 214 l S
+0 0.26 0.53 rg 305 206.5 3 3 re f
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 313 204 Td (1. Blauert J. Spatial Hearing: The) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 313 191 Td (Psychophysics of Human Sound Localisation.) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 313 178 Td (Revised ed. Cambridge: MIT Press; 1997.) Tj ET
+0 0.26 0.53 rg 305 166.5 3 3 re f
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 313 164 Td (2. Begault DR. 3-D Sound for Virtual Reality) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 313 151 Td (and Multimedia. Cambridge: Academic Press;) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 313 138 Td (1994.) Tj ET
+0 0.26 0.53 rg 305 126.5 3 3 re f
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 313 124 Td (3. W3C. Web Audio API Specification. 2021.) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 313 111 Td (https://www.w3.org/TR/webaudio/) Tj ET
+0 0.26 0.53 rg 305 99.5 3 3 re f
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 313 97 Td (4. Wenzel EM, Arruda M, Kistler DJ, Wightman) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 313 84 Td (FL. Localization using nonindividualized) Tj ET
+0.0 0.26 0.53 RG 0.8 w 56 814 m 539 814 l S
+BT /TI 7.5 Tf 0.4 0.4 0.4 rg 56 806 Td (Comunit‡ et al. EURASIP Journal on Audio, Speech, and Music Processing  \(2022\) 2022:30) Tj ET
+0.6 0.6 0.6 RG 0.3 w 56 50 m 539 50 l S
+BT /TR 8 Tf 0.4 0.4 0.4 rg 294.5 39 Td (7) Tj ET
+endstream
 endobj
 19 0 obj
-<< /Type /Pages /Kids [6 0 R 8 0 R 10 0 R 12 0 R 14 0 R 16 0 R 18 0 R] /Count 7 >>
+<< /Type /Page /Parent 20 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /TR 1 0 R /TB 2 0 R /TI 3 0 R /HB 4 0 R /CO 5 0 R >> >> /Contents 18 0 R >>
 endobj
 20 0 obj
-<< /Type /Catalog /Pages 19 0 R >>
+<< /Length 3132 >>
+stream
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 800 Td (head-related transfer functions. J Acoust Soc) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 787 Td (Am. 1993;94\(1\):111123.) Tj ET
+0 0.26 0.53 rg 58 775.5 3 3 re f
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 773 Td (5. Langendijk EH, Bronkhorst AW. Fidelity of) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 760 Td (three-dimensional-sound reproduction using a) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 747 Td (virtual auditory display. J Acoust Soc Am.) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 734 Td (2000;107\(1\):528537.) Tj ET
+0 0.26 0.53 rg 58 722.5 3 3 re f
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 720 Td (6. Woodworth RS. Experimental Psychology. New) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 707 Td (York: Henry Holt; 1938. \(Sound localisation,) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 694 Td (pp. 520523.\)) Tj ET
+0 0.26 0.53 rg 58 682.5 3 3 re f
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 680 Td (7. Shaw EAG. Transformation of sound pressure) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 667 Td (level from the free field to the eardrum in the) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 654 Td (horizontal plane. J Acoust Soc Am.) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 641 Td (1974;56\(6\):18481861.) Tj ET
+0 0.26 0.53 rg 58 629.5 3 3 re f
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 627 Td (8. Brown CP, Duda RO. A structural model for) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 614 Td (binaural sound synthesis. IEEE Trans Speech) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 601 Td (Audio Process. 1998;6\(5\):476488.) Tj ET
+0 0.26 0.53 rg 58 589.5 3 3 re f
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 587 Td (9. Rayleigh Lord. On our perception of sound) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 574 Td (direction. Philos Mag. 1907;13:214232.) Tj ET
+0 0.26 0.53 rg 58 562.5 3 3 re f
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 560 Td (10. Cherry EC. Some experiments on the) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 547 Td (recognition of speech with one and two ears. J) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 534 Td (Acoust Soc Am. 1953;25\(5\):975979.) Tj ET
+0 0.26 0.53 rg 58 522.5 3 3 re f
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 520 Td (11. Nielsen J. Usability Engineering. San) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 507 Td (Francisco: Morgan Kaufmann; 1994.) Tj ET
+0 0.26 0.53 rg 58 495.5 3 3 re f
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 493 Td (12. Kuhn GF. Model for the interaural time) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 480 Td (differences in the azimuthal plane. J Acoust) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 467 Td (Soc Am. 1977;62\(1\):157167.) Tj ET
+0 0.26 0.53 rg 58 455.5 3 3 re f
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 453 Td (13. Algazi VR, Duda RO, Thompson DM, Avendano) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 440 Td (C. The CIPIC HRTF database. In: Proc IEEE) Tj ET
+BT /TR 9.5 Tf 0.05 0.05 0.05 rg 66 427 Td (WASPAA; 2001.) Tj ET
+0.0 0.26 0.53 RG 0.8 w 56 814 m 539 814 l S
+BT /TI 7.5 Tf 0.4 0.4 0.4 rg 56 806 Td (Comunit‡ et al. EURASIP Journal on Audio, Speech, and Music Processing  \(2022\) 2022:30) Tj ET
+0.6 0.6 0.6 RG 0.3 w 56 50 m 539 50 l S
+BT /TR 8 Tf 0.4 0.4 0.4 rg 294.5 39 Td (8) Tj ET
+endstream
+endobj
+21 0 obj
+<< /Type /Page /Parent 22 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /TR 1 0 R /TB 2 0 R /TI 3 0 R /HB 4 0 R /CO 5 0 R >> >> /Contents 20 0 R >>
+endobj
+22 0 obj
+<< /Type /Pages /Kids [7 0 R 9 0 R 11 0 R 13 0 R 15 0 R 17 0 R 19 0 R 21 0 R] /Count 8 >>
+endobj
+23 0 obj
+<< /Type /Catalog /Pages 22 0 R >>
 endobj
 xref
-0 21
+0 24
 0000000000 65535 f 
 0000000015 00000 n 
-0000000087 00000 n 
-0000000158 00000 n 
-0000000231 00000 n 
-0000000299 00000 n 
-0000005893 00000 n 
-0000006049 00000 n 
-0000016169 00000 n 
-0000016325 00000 n 
-0000021530 00000 n 
-0000021688 00000 n 
-0000028890 00000 n 
-0000029049 00000 n 
-0000032008 00000 n 
-0000032167 00000 n 
-0000042079 00000 n 
-0000042238 00000 n 
-0000043940 00000 n 
-0000044099 00000 n 
-0000044198 00000 n 
+0000000114 00000 n 
+0000000212 00000 n 
+0000000312 00000 n 
+0000000387 00000 n 
+0000000455 00000 n 
+0000007442 00000 n 
+0000007614 00000 n 
+0000013253 00000 n 
+0000013426 00000 n 
+0000018882 00000 n 
+0000019057 00000 n 
+0000024407 00000 n 
+0000024582 00000 n 
+0000030939 00000 n 
+0000031114 00000 n 
+0000033205 00000 n 
+0000033380 00000 n 
+0000042951 00000 n 
+0000043126 00000 n 
+0000046311 00000 n 
+0000046486 00000 n 
+0000046592 00000 n 
 trailer
-<< /Size 21 /Root 20 0 R >>
+<< /Size 24 /Root 23 0 R >>
 startxref
-44249
+46643
 %%EOF
