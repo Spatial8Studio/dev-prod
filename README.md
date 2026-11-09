@@ -21,7 +21,13 @@ Unlike traditional 3-D audio engines that attempt to simulate elevation (above/b
    - [Example 2: Dead-Center In-Phase Source](#example-2-dead-center-in-phase-source-theta--0)
    - [Example 3: Dynamic Animated Sweep (Left to Right)](#example-3-dynamic-animated-sweep-left-to-right)
 6. [System Architecture & Processing Pipeline](#6-system-architecture--processing-pipeline)
-7. [Running Locally](#7-running-locally)
+7. [The Median Plane Problem: How to Add Elevation, Front, and Rear (Future Roadmap)](#7-the-median-plane-problem-how-to-add-elevation-front-and-rear-future-roadmap)
+   - [The Median Plane Paradox & The Cone of Confusion](#the-median-plane-paradox--the-cone-of-confusion)
+   - [Technique 1: Monaural Pinna Spectral Filtering](#technique-1-monaural-pinna-spectral-filtering-directional-notches--shelves)
+   - [Technique 2: Dynamic Head Tracking (Resolving Front/Back via Motion)](#technique-2-dynamic-head-tracking-resolving-frontback-via-motion)
+   - [Technique 3: Binaural Room Impulse Responses (BRIR) & Early Reflections](#technique-3-binaural-room-impulse-responses-brir--early-reflections)
+   - [Technique 4: Personalized HRTF via the SOFA Standard](#technique-4-personalized-hrtf-via-the-sofa-standard)
+8. [Running Locally](#8-running-locally)
 
 ---
 
@@ -263,7 +269,103 @@ When a source is set to animate from Left ($\theta = +80^\circ$) to Right ($\the
 
 ---
 
-## 7. Running Locally
+## 7. The Median Plane Problem: How to Add Elevation, Front, and Rear (Future Roadmap)
+
+### The Median Plane Paradox & The Cone of Confusion
+
+A fundamental principle of acoustics is that **interaural differences (ITD and ILD) can only differentiate lateral positions (Left vs. Right)**.
+
+When a sound source lies on the **median sagittal plane** (directly in front, overhead/elevation, behind, or below):
+- The distance from the source to the Left earphone equals the distance to the Right earphone.
+- Therefore:
+  $$\text{ITD} = 0.00\text{ ms}$$
+  $$\text{ILD} = 0.0\text{ dB}$$
+- **The left earphone and right earphone receive mathematically identical signals!**
+
+This creates the classic psychoacoustic phenomenon known as the **Cone of Confusion**: for any given lateral angle, there is an entire cone of 3D spatial points where the sound arrives at both ears with the exact same time delay and sound level.
+
+```
+                  +Z (Above / Elevation)
+                         ▲
+                         │
+      -X (Behind) ◄──────┼──────► +X (In Front)
+                         │
+                         ▼
+                  -Z (Below / Nadir)
+   (All points on this plane have ITD = 0ms and ILD = 0dB!)
+```
+
+Because stereo earphones cannot rely on Left-Right differences for elevation and front/rear, human hearing distinguishes these directions using **monaural spectral cues**, **head motion**, and **environmental acoustics**. Here is how we can implement these in future iterations:
+
+---
+
+### Technique 1: Monaural Pinna Spectral Filtering (Directional Notches & Shelves)
+
+Even though Left and Right earphone signals are identical in timing and overall gain, the physical outer ear (pinna) and head cast angle-dependent acoustic shadows that filter *both* ears equally:
+
+1. **Elevation (Above: $+30^\circ$ to $+90^\circ$)**:
+   - Sound entering from above bounces off the concha floor and enters the ear canal with a characteristic **pinna elevation notch** between $6.5\text{ kHz}$ and $10\text{ kHz}$.
+   - As elevation rises, the notch shifts upward in frequency:
+     $$f_{\text{notch}}(\phi) \approx 6500 + 45 \cdot \phi^\circ\quad (\text{Hz})$$
+   - Elevated sources also receive a boost in the upper "air" band ($>8\text{ kHz}$) due to direct unhindered line-of-sight to the eardrum.
+   - **How to Implement in DSP**: Apply a symmetric parametric notch filter (biquad) to *both* channels whose center frequency shifts upward with elevation $Z$, paired with a gentle high-shelf boost ($+2\text{ to }+4\text{ dB}$).
+
+2. **Below (Nadir: $-30^\circ$ to $-90^\circ$)**:
+   - Sounds below the head are physically obstructed by the listener's shoulders, chest, and lower jaw.
+   - High frequencies are absorbed, creating a distinct low-pass roll-off starting around $3\text{--}4\text{ kHz}$.
+   - **How to Implement in DSP**: Apply an aggressive dual-ear high-frequency roll-off (shelf $G \approx -6\text{ to } -12\text{ dB}$ above $3\text{ kHz}$).
+
+3. **In Front vs. Behind ($+X$ vs. $-X$)**:
+   - **Front ($+X$)**: Sound enters the open ear canal directly. The acoustic resonance of the human ear canal creates a natural presence peak around $2.5\text{--}4.0\text{ kHz}$.
+   - **Behind ($-X$)**: The rear flap of the ear (helix/antihelix) physically shadows the ear canal. Rear sounds lose high-frequency crispness above $2\text{ kHz}$ and exhibit a spectral dip around $3\text{ kHz}$.
+   - **How to Implement in DSP**: Apply a rear head-shadow low-pass filter to both channels whenever $X < 0$, combined with a mild presence dip at $3\text{ kHz}$.
+
+---
+
+### Technique 2: Dynamic Head Tracking (Resolving Front/Back via Motion)
+
+In the real world, nobody holds their head completely still. When a sound is ambiguous (front vs. back), the listener unconsciously rotates their neck by a fraction of a degree.
+
+- If a sound is **in front** and you turn your head slightly to the left:
+  - The sound shifts towards your **Right** earphone ($\text{ITD}_{\text{right}} < \text{ITD}_{\text{left}}$).
+- If the sound is **behind** and you turn your head slightly to the left:
+  - The sound shifts towards your **Left** earphone ($\text{ITD}_{\text{left}} < \text{ITD}_{\text{right}}$)!
+
+The brain instantly compares the vestibular motion of the neck with the direction of ITD change to resolve front vs. back without ambiguity.
+
+**Future Implementation**:
+- Integrate Web Bluetooth / WebHID API with standard IMU motion-sensing earphones (Apple AirPods Spatial Audio, Sony 360, or a head-mounted Arduino MPU-6050).
+- Dynamically rotate source azimuth $\theta(t)$ and elevation $\phi(t)$ in real time based on head yaw, pitch, and roll:
+  $$\theta_{\text{perceived}} = \theta_{\text{source}} - \psi_{\text{head}}(t)$$
+- This turns an ambiguous static front/back filter into an unmistakably localized 3D source.
+
+---
+
+### Technique 3: Binaural Room Impulse Responses (BRIR) & Early Reflections
+
+In nature, human ears never hear a sound source in an absolute anechoic void. The brain uses early acoustic reflections bouncing off environmental surfaces to decode height and depth:
+
+1. **Ceiling Reflections (Elevation Cue)**: Sound from an elevated source bounces off the ceiling and floor with an early delay of $3\text{--}7\text{ ms}$.
+2. **Rear Boundary Reflections (Depth Cue)**: A source behind the listener creates a reflection off the front wall that arrives $10\text{--}25\text{ ms}$ later.
+3. **How to Implement in DSP**:
+   - Use the **Image-Source Method (ISM)** to compute early reflection delay taps:
+     $$\Delta t_{\text{ceiling}} = \frac{2 \cdot h_{\text{room}} - z_{\text{source}}}{c}$$
+   - Sum these early reflections into both earphone channels with appropriate boundary absorption filters.
+
+---
+
+### Technique 4: Personalized HRTF via the SOFA Standard
+
+Because every human being has a unique ear shape (like a retinal scan), generic pinna notches can sound unnatural or cause nausea for some listeners.
+
+**Future Implementation**:
+- Add support for the **SOFA (Spatially Oriented Format for Acoustics - AES69 standard)** file format.
+- Allow users to import their own personalized measured HRTF dataset (captured via in-ear microphones in an anechoic chamber or estimated via smartphone ear-photogrammetry 3D mesh simulations).
+- Fast spherical-harmonics or barycentric interpolation on the measured 3D grid.
+
+---
+
+## 8. Running Locally
 
 ### Prerequisites
 
