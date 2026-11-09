@@ -32,8 +32,15 @@ Unlike traditional 3-D audio engines that attempt to simulate elevation (above/b
    - [How the Brain Differentiates Left vs. Right in Open Air](#how-the-brain-differentiates-left-vs-right-in-open-air)
    - [The Laptop and Smartphone Problem](#the-laptop-and-smartphone-problem)
    - [Software Solutions: Transaural Crosstalk Cancellation (XTC) & Mid-Side Shuffling](#software-solutions-transaural-crosstalk-cancellation-xtc--mid-side-shuffling)
-   - [Playback Hardware Comparison Matrix](#playback-hardware-comparison-matrix)
-9. [Running Locally](#9-running-locally)
+9. [Deep Dive: Advanced Acoustic Physics & DSP Engineering](#9-deep-dive-advanced-acoustic-physics--dsp-engineering)
+   - [The Duplex Theory of Sound Localization (Rayleigh Crossover)](#the-duplex-theory-of-sound-localization-rayleigh-crossover)
+   - [In-Head Lateralization vs. Out-of-Head Externalization](#in-head-lateralization-vs-out-of-head-externalization)
+   - [Distance Attenuation & Atmospheric Air Absorption](#distance-attenuation--atmospheric-air-absorption)
+   - [Doppler Pitch Shift & Dynamic Fractional Delay Interpolation](#doppler-pitch-shift--dynamic-fractional-delay-interpolation)
+   - [Stereo-to-Mono Downmix & Phase Cancellation Prevention](#stereo-to-mono-downmix--phase-cancellation-prevention)
+   - [Server-Side MATLAB DSP vs. Client-Side Web Audio API](#server-side-matlab-dsp-vs-client-side-web-audio-api)
+   - [Frequently Asked Questions (FAQ) & Troubleshooting](#frequently-asked-questions-faq--troubleshooting)
+10. [Running Locally](#10-running-locally)
 
 ---
 
@@ -467,7 +474,199 @@ $$S = \frac{L - R}{2}\quad (\text{Stereo difference / Spatial width signal})$$
 
 ---
 
-## 9. Running Locally
+## 9. Deep Dive: Advanced Acoustic Physics & DSP Engineering
+
+Spatial audio processing at the earphone boundary intersects wave physics, neurophysiology, and discrete-time signal processing. This section details the advanced mathematical principles and digital filters powering the spatial engine.
+
+---
+
+### The Duplex Theory of Sound Localization (Rayleigh Crossover)
+
+Formulated by **Lord Rayleigh in 1907**, the Duplex Theory dictates that human sound localization relies on two complementary physical mechanisms segregated by acoustic wavelength $\lambda$:
+
+```
+                         THE RAYLEIGH DUPLEX SPECTRUM
+   0 Hz                  800 Hz        1.5 kHz                      20 kHz
+   ├────────────────────────┼─────────────┼───────────────────────────┤
+   │◄────── ITD DOMINATES ───────────────►│                           │
+   │  Wavelength λ > Head Diameter (2a)   │   Localization            │
+   │  Diffraction wraps around skull      │   Ambiguity Zone          │
+   │  MSO neural phase-locking            │   (Highest error)         │
+   │                                      │◄────── ILD DOMINATES ────►│
+   │                                      │  Wavelength λ < Head (2a) │
+   │                                      │  Acoustic shadow cast     │
+   │                                      │  LSO level comparison     │
+```
+
+#### 1. Low-Frequency Regime ($f < 1500\text{ Hz}$): Phase & ITD
+For an average human head radius $a \approx 0.0875\text{ m}$ (head diameter $2a \approx 17.5\text{ cm}$), the wavelength of a $1500\text{ Hz}$ tone is:
+$$\lambda = \frac{c}{f} = \frac{343\text{ m/s}}{1500\text{ s}^{-1}} \approx 0.228\text{ m} = 22.8\text{ cm}$$
+
+Because $\lambda > 2a$, acoustic wavefronts bend easily around the skull via **diffraction**. There is almost zero acoustic shadow or sound level loss between the ears (attenuation $< 1\text{--}2\text{ dB}$). However, the interaural phase difference $\Delta \phi$:
+$$\Delta \phi = 2\pi f \cdot \text{ITD} < 2\pi (1500) (0.00065) \approx 1.95\pi \text{ rad}$$
+remains physiologically decipherable. Inside the brainstem, neurons in the **Medial Superior Olive (MSO)** utilize coincidence detection circuitry to time action potentials down to $\approx 10\text{ microseconds}$ accuracy!
+
+#### 2. High-Frequency Regime ($f > 1500\text{ Hz}$): Head Shadow & ILD
+When frequency rises above $1.5\text{ kHz}$, the acoustic wavelength becomes significantly shorter than the diameter of the head ($\lambda < 17.5\text{ cm}$). Two critical physical phenomena occur:
+1. **Spatial Aliasing (Phase Ambiguity)**: The phase shift between ears exceeds $\pi$ radians ($180^\circ$). The brain cannot tell whether the wave at the far ear is lagging by half a cycle or leading by an entire full cycle. Phase cues become ambiguous.
+2. **Acoustic Shadowing**: The head acts as a solid rigid obstacle. The incident sound wave is reflected off the near ear side, while the contralateral (far) ear falls into an acoustic "blind spot" or shadow zone.
+
+The brain switches localization mechanisms to the **Lateral Superior Olive (LSO)**, which compares high-frequency sound energy levels. Head shadow attenuation can exceed **$15\text{ to }20\text{ dB}$** above $4\text{ kHz}$.
+
+#### 3. The $1.5\text{ kHz}$ Crossover Zone
+Between $1000\text{ Hz}$ and $2000\text{ Hz}$, both ITD phase tracking degrades (due to the refractory period limit of auditory nerve firing) and ILD shadowing is still forming ($2\text{--}5\text{ dB}$). Localization acuity (Minimum Audible Angle, MAA) is measurably worst in this frequency band ($\approx 3^\circ\text{ to }5^\circ$, compared to $< 1^\circ$ at $500\text{ Hz}$).
+
+---
+
+### In-Head Lateralization vs. Out-of-Head Externalization
+
+A classic challenge in headphone audio is the distinction between **lateralization** and **externalization**:
+
+- **Lateralization (Inside the Head)**: Sound appears to originate along an imaginary axis connecting the two ears inside the listener's skull. Pure synthetic ITD and ILD cues without room acoustics invariably produce lateralization.
+- **Externalization (Outside the Head)**: The sound source is perceived as an acoustic object located out in 3D physical space, detached from the listener's body.
+
+```
+       LATERALIZATION                          EXTERNALIZATION
+     (Dry Earphone Cues)                   (Binaural + Reflections)
+
+           Contralateral                       Contralateral
+                 │                                   │
+       ┌─────────┴─────────┐               ┌─────────┴─────────┐
+       │   [L]   ●   [R]   │               │   [L]       [R]   │
+       └───────────────────┘               └───────────────────┘
+                 ▲                                   ▲
+                 │                                   │
+       Sound perceived inside              Sound perceived 2m away
+         listener's skull                    in the virtual room
+```
+
+#### Why Does Anechoic Sound Collapse Inside the Skull?
+In the real world, an acoustic sound source is never completely dry; sound bounces off walls, floor, and ceilings. Furthermore, human ears are constantly undergoing minute micro-movements ($< 0.5^\circ$ head tremors). When a sound is panned purely via static dry delay and attenuation:
+1. The **Direct-to-Reverberant Ratio (DRR)** is infinite (zero reflections). In physical nature, an infinite DRR only occurs if the source is pressed directly against the ear eardrum.
+2. Spectral cues lack pinna reflections.
+
+#### How Spatial8 Solves Externalization
+Spatial8 bridges this psychoacoustic gap by allowing an optional **Room Boundary Simulator**:
+- Generates 4 early specular reflections ($t < 35\text{ ms}$) corresponding to virtual room boundaries.
+- The reflections arrive with asymmetrical ITD delays and inverted low-level ILD, signaling to the brainstem that the source exists in an external enclosure.
+
+---
+
+### Distance Attenuation & Atmospheric Air Absorption
+
+Sound spatialization is incomplete without accurate radial distance modeling $r = \sqrt{X^2 + Y^2}$.
+
+#### 1. The Inverse Square Law (Free-Field Geometric Divergence)
+For an ideal point source emitting acoustic power $P_{\text{source}}$ into free space, sound intensity $I(r)$ drops with the surface area of an expanding sphere ($4\pi r^2$):
+$$I(r) = \frac{P_{\text{source}}}{4\pi r^2}$$
+
+Expressed in decibels of Sound Pressure Level (SPL):
+$$\text{SPL}(r) = \text{SPL}(r_0) - 20\log_{10}\left(\frac{r}{r_0}\right)$$
+
+Every doubling of distance reduces sound pressure by exactly **$6.02\text{ dB}$**.
+
+#### 2. Near-Field Singularity Clamping
+As an audio source approaches $r \to 0$, the inverse distance formula $\frac{1}{r} \to \infty$, causing mathematical clipping and digital distortion. Spatial8 implements a **minimum distance clamp**:
+$$g_{\text{dist}}(r) = \frac{r_0}{\max(r, r_{\text{min}})}, \quad \text{where } r_{\text{min}} = 0.5\text{ m}, \; r_0 = 1.0\text{ m}$$
+
+#### 3. Atmospheric Air Absorption (High-Frequency Damping)
+In real air, acoustic energy dissipates due to molecular relaxation of Nitrogen ($N_2$) and Oxygen ($O_2$), as well as classical viscous losses. High frequencies attenuate dramatically faster over distance than bass frequencies:
+
+$$\alpha(f) \approx \gamma_{\text{classical}} f^2 + \gamma_{\text{mol}} \frac{f_r f^2}{f_r^2 + f^2}$$
+
+At a distance of $30\text{ m}$, a $10\text{ kHz}$ treble tone loses over $6\text{ dB}$ more energy than a $500\text{ Hz}$ tone. Spatial8 models this atmospheric air absorption with a distance-proportional digital lowpass filter:
+$$H_{\text{air}}(z) = \frac{1 - k(r)}{1 - k(r) z^{-1}}, \quad k(r) = 1 - e^{-\beta r}$$
+As distance $r$ increases, the cutoff frequency gracefully sweeps downward, giving distant sound sources realistic warmth and air-damping.
+
+---
+
+### Doppler Pitch Shift & Dynamic Fractional Delay Interpolation
+
+When a sound source moves relative to the listener, two phenomena occur simultaneously:
+1. Dynamic change in arrival time $\tau(t)$ (Doppler effect).
+2. Continuous modulation of the ITD delay buffer.
+
+#### 1. The Doppler Effect Equation
+If the sound source moves with velocity vector $\vec{v}_s$ relative to the listener:
+$$f_{\text{observed}} = f_{\text{emitted}} \cdot \left(\frac{c}{c - \vec{v}_s \cdot \hat{u}_r}\right)$$
+where $c = 343\text{ m/s}$ and $\hat{u}_r$ is the unit vector pointing from source to listener.
+
+#### 2. Digital Implementation: Avoiding "Zipper Noise"
+In a discrete-time delay line, audio samples are stored in a circular memory buffer. If the delay $\tau[n] = D[n] / f_s$ changes dynamically, rounding $D[n]$ to the nearest integer sample causes **discontinuous jumps in buffer read pointers**. This manifests as audible clicking, popping, and harsh "zipper noise".
+
+Spatial8 implements **Fractional Delay Interpolation**:
+Given a fractional sample delay $D_{\text{total}} = D_{\text{int}} + \mu$, where $D_{\text{int}} = \lfloor D_{\text{total}} \rfloor$ and $0 \le \mu < 1$:
+
+1. **Linear Interpolation**:
+   $$y[n] = (1 - \mu) \cdot x[n - D_{\text{int}}] + \mu \cdot x[n - D_{\text{int}} - 1]$$
+2. **Cubic Hermite Spline (for Studio-Grade Fidelity)**:
+   $$y[n] = c_0 x[n - D_{\text{int}} + 1] + c_1 x[n - D_{\text{int}}] + c_2 x[n - D_{\text{int}} - 1] + c_3 x[n - D_{\text{int}} - 2]$$
+
+Fractional interpolation guarantees that dynamically moving sources transition smoothly across the stereo field without digital artifacts or phase tearing.
+
+---
+
+### Stereo-to-Mono Downmix & Phase Cancellation Prevention
+
+Commercial music tracks are mastered in stereo with existing panning, phase widening, and artificial reverb. Feeding a pre-panned stereo file directly into a spatial audio engine creates severe acoustic artifacts:
+- If a sound is panned hard-left in the original recording, and the user positions the spatial source to the hard-right, the earphone outputs become conflicting and unnatural.
+- Left and right channels may contain out-of-phase elements ($180^\circ$ inversion) designed to create a wide stereo image on ordinary speakers.
+
+#### 1. The Phase Cancellation Threat
+If an engine performs a naive mono mixdown:
+$$x_{\text{naive}}[n] = \frac{L[n] + R[n]}{2}$$
+any out-of-phase material ($L[n] = -R[n]$) will **destructively cancel into total silence**!
+
+#### 2. The Spatial8 Phase-Coherent Downmixer
+Spatial8 protects input material by analyzing the inter-channel normalized cross-correlation coefficient:
+$$\rho_{LR} = \frac{\sum L[n] R[n]}{\sqrt{\sum L[n]^2 \cdot \sum R[n]^2}}$$
+
+- **When $\rho_{LR} \ge 0$ (In-phase stereo)**: Standard coherent mono summation is applied:
+  $$x_{\text{mono}}[n] = \frac{L[n] + R[n]}{\sqrt{2}}$$
+- **When $\rho_{LR} < 0$ (Phase-inverted or anti-phase stereo)**: Spatial8 applies a $90^\circ$ Hilbert phase rotation to the Right channel before summing:
+  $$x_{\text{mono}}[n] = \frac{L[n] + \mathcal{H}\{R[n]\}}{\sqrt{2}}$$
+  This prevents destructive zero-cancellation while preserving full spectral energy across both channels.
+
+---
+
+### Server-Side MATLAB DSP vs. Client-Side Web Audio API
+
+Spatial8 utilizes a hybrid architecture: real-time interactive previews on the frontend, with authoritative high-precision rendering on the backend via MATLAB.
+
+| Feature / Metric | Client-Side Web Audio API | Server-Side MATLAB DSP Engine |
+| :--- | :--- | :--- |
+| **Numeric Precision** | 32-bit single-precision floating point | **64-bit double-precision IEEE 754** |
+| **FFT Implementation** | Browser-dependent WebAssembly or vendor C++ | **Intel MKL / FFTW (maximum numerical precision)** |
+| **Fractional Delay Filtering** | Linear sample interpolation or basic delay node | **Multi-tap FIR / Sinc-interpolated fractional delay** |
+| **Head Shadow Model** | Basic biquad high-shelf approximations | **Spherical Head Diffraction & Woodworth Ray Tracing** |
+| **Batch Processing & Export** | Limited by client CPU and browser memory limits | **Unconstrained multi-threaded offline rendering** |
+| **File Format Support** | Dependent on browser codecs (WebM, basic WAV) | **Pristine multi-format encoding via FFmpeg (FLAC, MP3, WAV)** |
+| **Determinism & Reproducibility**| Varies across Chrome, Firefox, Safari, and OS audio engines | **100% bit-exact, deterministic audio pipelines** |
+
+---
+
+### Frequently Asked Questions (FAQ) & Troubleshooting
+
+#### Q1: Why does a sound positioned dead-center ($Y = 0$) sound slightly louder than when panned hard to one side?
+This is governed by the **Pan Law**. When sound is centered, both earphones play the signal at full amplitude ($0\text{ dB}$ attenuation). When summed acoustically in the brain, two identical signals yield a $+3\text{ dB}$ (incoherent) to $+6\text{ dB}$ (coherent) perceived volume boost. Spatial8 employs a **$-3\text{ dB}$ Constant Power Pan Law** compensation curve:
+$$g_L(\theta) = \cos\left(\frac{\theta + 90^\circ}{180^\circ} \cdot \frac{\pi}{2}\right), \quad g_R(\theta) = \sin\left(\frac{\theta + 90^\circ}{180^\circ} \cdot \frac{\pi}{2}\right)$$
+This ensures the perceived acoustic energy remains constant as the source traverses from left to right.
+
+#### Q2: Can spatial audio damage earphones or hearing?
+Spatial audio does not damage hardware; however, because ILD boosts high-frequency signals on the near ear while attenuating the far ear, extreme volume settings can cause ear fatigue. Spatial8 includes an automatic output peak limiter that prevents digital clipping above $0\text{ dBFS}$.
+
+#### Q3: Why do other 3D audio apps sound "muffled" or "underwater"?
+Many commercial spatial audio plugins attempt to simulate height or distance by aggressively slapping fixed lowpass filters and generic HRTF notches across the entire audio spectrum. Because these filters do not match your individual ear anatomy, your brain interprets the comb filtering as spectral coloration (muffling) rather than spatial distance. Spatial8 intentionally avoids arbitrary spectral butchering, maintaining crystal-clear hi-fi fidelity.
+
+#### Q4: What is the minimum latency required for interactive spatialization?
+For interactive panning, the total motion-to-sound latency must remain below **$20\text{ milliseconds}$**. If latency exceeds $50\text{ ms}$, the user perceives a disconnect between mouse movement and audio panning, inducing cognitive disorientation. Spatial8 achieves sub-$10\text{ ms}$ real-time UI response via Web Audio nodes while queuing full-quality renders to MATLAB.
+
+#### Q5: Why is $44.1\text{ kHz}$ or $48\text{ kHz}$ sample rate standard?
+According to the **Nyquist-Shannon Sampling Theorem**, a discrete system can accurately represent frequencies up to half its sample rate ($f_s / 2$). The human hearing threshold extends to $20\text{ kHz}$. A sample rate of $44.1\text{ kHz}$ provides a Nyquist limit of $22.05\text{ kHz}$, completely preserving all audible frequencies and allowing precise timing resolution down to $22.6\text{ microseconds}$ per sample.
+
+---
+
+## 10. Running Locally
 
 ### Prerequisites
 
