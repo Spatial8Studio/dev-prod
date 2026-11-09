@@ -1,0 +1,500 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+2 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier-Bold >>
+endobj
+5 0 obj
+<< /Length 5403 >>
+stream
+BT /F2 8 Tf 0.2 0.35 0.65 rg 54 718 Td (Spatial8 Studio - Research Paper | 2025) Tj ET
+BT /F2 17 Tf 0.08 0.08 0.08 rg 54 700 Td (Spatial8 Studio: Converting Normal Audio into) Tj ET
+BT /F2 17 Tf 0.08 0.08 0.08 rg 54 679 Td (Left-Right Biased Earphone Audio via Structural) Tj ET
+BT /F2 17 Tf 0.08 0.08 0.08 rg 54 658 Td (Binaural Synthesis) Tj ET
+BT /F2 11 Tf 0.15 0.15 0.15 rg 54 633 Td (Avulla Utej) Tj ET
+BT /F1 9 Tf 0.4 0.4 0.4 rg 54 619 Td (Independent Research | Spatial8 Studio Project | 2025) Tj ET
+BT /F1 9 Tf 0.35 0.35 0.35 rg 54 606 Td (Keywords: binaural audio, spatial sound, ITD, ILD, earphone spatialization, MATLAB DSP, web audio, multi-track mixing) Tj ET
+0.2 0.35 0.65 RG 1.5 w 54 590 m 558 590 l S
+0.96 0.97 0.99 rg 54 422 504 152 re f
+0.2 0.35 0.65 RG 1.2 w 54 422 504 152 re S
+BT /F2 10 Tf 0.15 0.3 0.6 rg 66 558 Td (ABSTRACT) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 66 544 Td (This paper presents Spatial8 Studio, a web-based system that converts ordinary mono or stereo audio) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 66 532 Td (into perceptually convincing left-right biased earphone audio using a physics-grounded binaural) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 66 520 Td (synthesis model. Building upon the structural framework of Brown and Duda \(1998\), we implement a) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 66 508 Td (2-factor modelInteraural Time Difference \(ITD\) via Woodworth spherical head delay and Interaural) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 66 496 Td (Level Difference \(ILD\) via a continuous first-order head-shadow filterto spatially position sound) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 66 484 Td (sources along the horizontal axis without requiring empirical Head-Related Transfer Function \(HRTF\)) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 66 472 Td (databases. The system further extends the original model with multi-track scene mixing at) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 66 460 Td (heterogeneous sample rates, constant-power panning, phase-coherent stereo downmixing, and a) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 66 448 Td (React-based real-time interface. Informal listening tests confirm clear and stable left-right) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 66 436 Td (perceptual separation with no spectral coloration artifacts.) Tj ET
+BT /F2 13 Tf 0.12 0.12 0.12 rg 54 398 Td (I. INTRODUCTION) Tj ET
+0.85 0.85 0.85 RG 0.75 w 54 394 m 558 394 l S
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 380 Td (Earphones are the primary audio delivery medium for the overwhelming majority of digital media) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 367 Td (consumers. Music streaming, gaming, video conferencing, and virtual reality all deliver audio) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 354 Td (binaurally through headphones or in-ear monitors. Despite this, nearly all audio content is produced) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 341 Td (and delivered as standard stereo \(two independent channels: Left and Right\) or even mono. Standard) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 328 Td (stereo playback on earphones confines the perceived soundstage entirely inside the listener's heada) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 315 Td (phenomenon called "in-head localization"where all audio appears to originate from a narrow imaginary) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 302 Td (line between the two ears.) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 285 Td (Spatial8 Studio addresses this fundamental limitation. It is a production-grade web application that) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 272 Td (accepts any mono or stereo audio file and produces a binaural earphone output in which the original) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 259 Td (signal is perceptually repositioned to a user-specified location along the horizontal soundstage.) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 246 Td (Sound placed at pan coordinate X = -1.0 appears at the far left of the acoustic scene; at X = +1.0 it) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 233 Td (appears at the far right; at X = 0 it is centered perfectly between the ears. This paper documents the) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 220 Td (acoustic physics, digital signal processing algorithms, software architecture, and engineering) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 207 Td (decisions that realize Spatial8 Studio.) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 190 Td (The core acoustic mechanism is the two-factor structural model introduced by Brown and Duda [1], which) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 177 Td (decomposes the binaural transfer function into \(1\) an Interaural Time Difference \(ITD\) due to the) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 164 Td (spherical geometry of the human skull, and \(2\) an Interaural Level Difference \(ILD\) due to acoustic) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 151 Td (head shadowing at high frequencies. We implement these factors analytically in MATLAB as a DSP) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 138 Td (backend, eliminating the need for large empirical HRTF filter tables and enabling efficient real-time) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 125 Td (processing in a web service context.) Tj ET
+0.8 0.8 0.8 RG 0.5 w 54 46 m 558 46 l S
+BT /F1 8 Tf 0.4 0.4 0.4 rg 54 34 Td (Spatial8 Studio - Binaural Audio Spatialization | Academic Research Paper, 2025) Tj ET
+BT /F2 8 Tf 0.4 0.4 0.4 rg 498 34 Td (Page 1 of 7) Tj ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 7 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 5 0 R >>
+endobj
+7 0 obj
+<< /Length 6186 >>
+stream
+BT /F2 13 Tf 0.12 0.12 0.12 rg 54 712 Td (II. PROBLEM STATEMENT: FROM FLAT STEREO TO SPATIAL EARPHONE AUDIO) Tj ET
+0.85 0.85 0.85 RG 0.75 w 54 708 m 558 708 l S
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 694 Td (Standard stereo audio is designed for loudspeaker playback. When a recording engineer pans an) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 681 Td (instrument to the left by 50%, they expect loudspeaker listeners to hear sound coming from the left) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 668 Td (side of the room because the left speaker is physically located to the left of the listener. When the) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 655 Td (same content is played through earphones, the left channel drives only the left ear transducerthere) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 642 Td (is no acoustic propagation, no room acoustics, no head shadowing. The result is that panned content is) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 629 Td (perceived as being located inside the head, not outside it.) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 612 Td (Three physical cues that the human auditory system uses for real-world spatial hearing are absent from) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 599 Td (standard earphone playback:) Tj ET
+0.2 0.35 0.65 rg 58 585 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 582 Td (Interaural Time Difference \(ITD\): In the real world, a sound from the left arrives at the left ear) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 569 Td (approximately 0.6 ms before it reaches the right ear. Standard earphone playback injects) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 556 Td (identical-time signals into both ears.) Tj ET
+0.2 0.35 0.65 rg 58 544 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 541 Td (Interaural Level Difference \(ILD\): The head casts an acoustic shadow at high frequencies, so the) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 528 Td (far ear receives 10-15 dB less energy above 2 kHz. Standard playback imposes no such) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 515 Td (frequency-dependent attenuation.) Tj ET
+0.2 0.35 0.65 rg 58 503 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 500 Td (Pinna Spectral Shaping: The ridges and folds of the outer ear impose direction-specific spectral) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 487 Td (notches that cue elevation. Earphone transducers bypass the pinna entirely.) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 472 Td (Spatial8 Studio synthesizes the first two cues computationally. The third \(pinna\) is intentionally) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 459 Td (omitted, as generic pinna HRTFs cause timbre distortion rather than elevation perception when applied) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 446 Td (to listeners whose ear geometry differs from the measurement subject [1]. This restriction to) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 433 Td (horizontal \(left-right\) spatialization is both acoustically honest and perceptually effective.) Tj ET
+BT /F2 13 Tf 0.12 0.12 0.12 rg 54 410 Td (III. ACOUSTIC PHYSICS OF HORIZONTAL SPATIALIZATION) Tj ET
+0.85 0.85 0.85 RG 0.75 w 54 406 m 558 406 l S
+BT /F2 10.5 Tf 0.2 0.35 0.6 rg 54 388 Td (A. The Spherical Head Model and Woodworth ITD) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 374 Td (The human head is geometrically approximated as a rigid sphere of radius a = 0.0875 m \(the average) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 361 Td (adult human head radius\). When a sound source is positioned at azimuth angle theta \(measured from the) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 348 Td (frontal midline, positive = right\), the acoustic path to the contralateral \(far\) ear is longer than to) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 335 Td (the ipsilateral \(near\) ear. Following Woodworth's classical ray-tracing derivation [2], the ITD delay) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 322 Td (tau\(theta\) is:) Tj ET
+0.96 0.96 0.96 rg 72 271 468 42 re f
+0.85 0.85 0.85 RG 0.5 w 72 271 468 42 re S
+BT /F4 10 Tf 0.05 0.2 0.4 rg 86 293 Td (tau\(theta\) = \(a/c\) * \(theta + sin theta\)   for |theta| <= pi/2) Tj ET
+BT /F1 8.5 Tf 0.45 0.45 0.45 rg 86 279 Td (a = 0.0875 m \(head radius\), c = 343 m/s, theta in radians; maximum tau = 0.655 ms at theta = pi/2) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 255 Td (At full lateral pan \(theta = 90 degrees\), tau evaluates to approximately 29 samples at 44.1 kHz. This) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 242 Td (is the pure time delay inserted into the contralateral ear channel by Spatial8's MATLAB DSP engine.) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 229 Td (The ipsilateral ear receives the signal with zero additional delay.) Tj ET
+BT /F2 10.5 Tf 0.2 0.35 0.6 rg 54 208 Td (B. The Continuous Head-Shadow Filter \(ILD\)) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 194 Td (At frequencies above approximately 1.5 kHzwhere the acoustic wavelength is shorter than the head) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 181 Td (diameter \(lambda < 2a = 17.5 cm\)the rigid skull casts an acoustic shadow over the far ear. Brown and) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 168 Td (Duda [1] derived an elegant first-order continuous-time minimum-phase filter that approximates this) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 155 Td (head-shadow diffraction:) Tj ET
+0.96 0.96 0.96 rg 72 104 468 42 re f
+0.85 0.85 0.85 RG 0.5 w 72 104 468 42 re S
+BT /F4 10 Tf 0.05 0.2 0.4 rg 86 126 Td (H_hs\(s, theta\) = [1 + alpha\(theta\) * \(s/omega_0\)] / [1 + \(s/omega_0\)]) Tj ET
+BT /F1 8.5 Tf 0.45 0.45 0.45 rg 86 112 Td (omega_0 = c/a = 343/0.0875 = 3920 rad/s \(~624 Hz characteristic frequency\)) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 88 Td (The angle-dependent gain parameter alpha\(theta\) controls the depth of high-frequency shelving) Tj ET
+BT /F1 8 Tf 0.4 0.4 0.4 rg 54 750 Td (SPATIAL8 STUDIO: CONVERTING NORMAL AUDIO INTO LEFT-RIGHT BIASED EARPHONE AUDIO) Tj ET
+BT /F2 8 Tf 0.4 0.4 0.4 rg 538 750 Td (2) Tj ET
+0.8 0.8 0.8 RG 0.5 w 54 744 m 558 744 l S
+0.8 0.8 0.8 RG 0.5 w 54 46 m 558 46 l S
+BT /F1 8 Tf 0.4 0.4 0.4 rg 54 34 Td (Spatial8 Studio - Binaural Audio Spatialization | Academic Research Paper, 2025) Tj ET
+BT /F2 8 Tf 0.4 0.4 0.4 rg 498 34 Td (Page 2 of 7) Tj ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 9 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 7 0 R >>
+endobj
+9 0 obj
+<< /Length 5741 >>
+stream
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 718 Td (attenuation on the far ear:) Tj ET
+0.96 0.96 0.96 rg 72 679 468 30 re f
+0.85 0.85 0.85 RG 0.5 w 72 679 468 30 re S
+BT /F4 10 Tf 0.05 0.2 0.4 rg 86 689 Td (alpha\(theta\) = 1 + cos\(theta\)   \(smoothly 2.0 at near ear, 1.0 at 90 deg, 0.0 at far ear\)) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 663 Td (Applying the bilinear transform to convert to a digital IIR filter yields a compact biquad stage) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 650 Td (requiring only two multiplications and one state register per sample per earsuitable for real-time) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 637 Td (processing. The resulting filter produces a natural high-shelf attenuation of 8 to 15 dB at 4 kHz on) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 624 Td (the shadowed ear, matching physical acoustic measurements without any empirical FIR table lookup.) Tj ET
+BT /F2 13 Tf 0.12 0.12 0.12 rg 54 601 Td (IV. SPATIAL8 STUDIO SYSTEM ARCHITECTURE) Tj ET
+0.85 0.85 0.85 RG 0.75 w 54 597 m 558 597 l S
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 583 Td (Spatial8 Studio is a full-stack web application. The architecture is decomposed into three tiers: a) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 570 Td (React-based frontend for user interaction, a Spring Boot REST backend for audio ingestion and job) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 557 Td (orchestration, and a MATLAB DSP engine for binaural processing. Figure 1 \(textual representation\)) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 544 Td (shows the signal flow:) Tj ET
+0.96 0.97 0.99 rg 54 459 504 68 re f
+0.2 0.35 0.65 RG 1.2 w 54 459 504 68 re S
+BT /F2 10 Tf 0.15 0.3 0.6 rg 66 511 Td (Signal Flow Diagram \(Figure 1\)) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 66 497 Td (USER UPLOAD \(MP3/WAV/FLAC\) --> Spring Boot REST API --> MATLAB spatializeAudio.m \(ITD delay + ILD) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 66 485 Td (head-shadow biquad\) --> renderScene.m \(multi-track linear superposition + 0.98 peak-normalized mix\)) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 66 473 Td (--> MATLAB writes binaural WAV --> Spring Boot streams processed WAV back --> React Audio Player) Tj ET
+BT /F2 10.5 Tf 0.2 0.35 0.6 rg 54 441 Td (A. Frontend \(React + Web Audio API\)) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 427 Td (The frontend is built with React 18 and styled with custom CSS. It provides a spatial stage canvas) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 414 Td (that visually maps the X-Y coordinate plane \(-1 to +1 on both axes\). Users drag audio source markers) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 401 Td (to desired positions on the stage. The X-axis maps to azimuth angle theta via theta = X * \(pi/2\). The) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 388 Td (frontend transmits the audio file and spatial coordinate to the backend via multipart/form-data HTTP) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 375 Td (POST.) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 358 Td (For multi-track mixing sessions, the frontend maintains a "Multi-Audio Spatial Roster"a table listing) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 345 Td (each uploaded stem with its assigned \(X, Y\) coordinate and individual volume. Five preset arrangement) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 332 Td (macros are available: Stereo Pair \(instruments at +/-0.6\), Spread \(four sources evenly distributed\),) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 319 Td (Center \(all sources at X = 0\), Cross Sweep \(sources sweeping from left to right\), and Custom \(manual) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 306 Td (placement\).) Tj ET
+BT /F2 10.5 Tf 0.2 0.35 0.6 rg 54 285 Td (B. Backend \(Spring Boot REST API\)) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 271 Td (The backend is implemented in Java 17 with Spring Boot 3.x. It exposes two primary REST endpoints:) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 258 Td (POST /api/audio/spatialize for single-file spatialization and POST /api/audio/render-scene for) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 245 Td (multi-track mixing. The backend saves uploaded files to a temporary staging directory, invokes the) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 232 Td (MATLAB engine via ProcessBuilder, and streams the resulting WAV file back to the browser as a) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 219 Td (downloadable response.) Tj ET
+BT /F2 10.5 Tf 0.2 0.35 0.6 rg 54 198 Td (C. MATLAB DSP Engine) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 184 Td (The core DSP is implemented in two MATLAB scripts: spatializeAudio.m for single-source processing and) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 171 Td (renderScene.m for multi-source scene mixing. spatializeAudio.m accepts a mono or stereo audio file) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 158 Td (path and an azimuth parameter and applies the ITD delay to the contralateral channel and the ILD) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 145 Td (head-shadow biquad to both channels \(with opposite alpha values\). renderScene.m accepts multiple audio) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 132 Td (files with their respective coordinates, resamples all stems to a common sample rate using linear) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 119 Td (interpolation, spatializes each independently, and linearly superposes the resulting binaural signals.) Tj ET
+BT /F1 8 Tf 0.4 0.4 0.4 rg 54 750 Td (SPATIAL8 STUDIO: CONVERTING NORMAL AUDIO INTO LEFT-RIGHT BIASED EARPHONE AUDIO) Tj ET
+BT /F2 8 Tf 0.4 0.4 0.4 rg 538 750 Td (3) Tj ET
+0.8 0.8 0.8 RG 0.5 w 54 744 m 558 744 l S
+0.8 0.8 0.8 RG 0.5 w 54 46 m 558 46 l S
+BT /F1 8 Tf 0.4 0.4 0.4 rg 54 34 Td (Spatial8 Studio - Binaural Audio Spatialization | Academic Research Paper, 2025) Tj ET
+BT /F2 8 Tf 0.4 0.4 0.4 rg 498 34 Td (Page 3 of 7) Tj ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 11 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 9 0 R >>
+endobj
+11 0 obj
+<< /Length 4453 >>
+stream
+BT /F2 13 Tf 0.12 0.12 0.12 rg 54 712 Td (V. DSP IMPLEMENTATION: FROM STEREO TO BINAURAL) Tj ET
+0.85 0.85 0.85 RG 0.75 w 54 708 m 558 708 l S
+BT /F2 10.5 Tf 0.2 0.35 0.6 rg 54 690 Td (A. Stereo-to-Mono Downmix with Phase Coherence) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 676 Td (Many input audio files are stereo \(two-channel\). Naive L+R averaging can cause comb filtering due to) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 663 Td (phase cancellations in out-of-phase stereo content. Spatial8 computes the cross-channel phase) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 650 Td (correlation before mixing: if the left and right channels exhibit a sample-normalized) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 637 Td (cross-correlation above a threshold of 0.7, they are averaged \(mono sum\); otherwise, the mid signal \(M) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 624 Td (= \(L+R\)/2\) is extracted, discarding the side signal to prevent phase anomalies. This ensures the input) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 611 Td (to the binaural spatializer is a clean, phase-coherent mono signal.) Tj ET
+BT /F2 10.5 Tf 0.2 0.35 0.6 rg 54 590 Td (B. Constant-Power Panning Law) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 576 Td (In addition to the acoustic ITD and ILD, Spatial8 applies constant-power \(sine/cosine\) amplitude) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 563 Td (panning to maintain consistent perceived loudness as a source traverses the soundstage. For a source) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 550 Td (panned at normalized position p in [-1, +1]:) Tj ET
+0.96 0.96 0.96 rg 72 499 468 42 re f
+0.85 0.85 0.85 RG 0.5 w 72 499 468 42 re S
+BT /F4 10 Tf 0.05 0.2 0.4 rg 86 521 Td (gainL = cos\(\(p + 1\) * pi/4\),   gainR = sin\(\(p + 1\) * pi/4\)) Tj ET
+BT /F1 8.5 Tf 0.45 0.45 0.45 rg 86 507 Td (ensures gainL^2 + gainR^2 = 1.0 \(constant power\) at all pan positions) Tj ET
+BT /F2 10.5 Tf 0.2 0.35 0.6 rg 54 479 Td (C. Sample Rate Harmonization) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 465 Td (Real-world multi-track sessions mix stems recorded at different sample rates \(44.1 kHz from consumer) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 452 Td (recorders, 48 kHz from professional DAWs, 96 kHz from audiophile interfaces\). The original Brown and) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 439 Td (Duda model assumes a fixed sample rate. Spatial8 extends this by resampling all stems to the highest) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 426 Td (sample rate present in the session using MATLAB's interp1 linear interpolation:) Tj ET
+0.96 0.96 0.96 rg 72 375 468 42 re f
+0.85 0.85 0.85 RG 0.5 w 72 375 468 42 re S
+BT /F4 10 Tf 0.05 0.2 0.4 rg 86 397 Td (x_resampled = interp1\(t_orig, x, t_target, "linear", 0\)) Tj ET
+BT /F1 8.5 Tf 0.45 0.45 0.45 rg 86 383 Td (where t_orig and t_target are time vectors at source and target sample rates respectively) Tj ET
+BT /F2 10.5 Tf 0.2 0.35 0.6 rg 54 355 Td (D. Multi-Source Linear Superposition) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 341 Td (When multiple audio sources are placed at different spatial coordinates in the scene, the final) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 328 Td (binaural output is the linear sum of individually spatialized signals, following the acoustic) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 315 Td (Principle of Superposition. For K sources, each placed at azimuth theta_k:) Tj ET
+0.96 0.96 0.96 rg 72 276 468 30 re f
+0.85 0.85 0.85 RG 0.5 w 72 276 468 30 re S
+BT /F4 10 Tf 0.05 0.2 0.4 rg 86 286 Td (y_L[n] = SUM_{k=1}^{K} x_k[n] * h_L\(theta_k\),   y_R[n] = SUM_{k=1}^{K} x_k[n] * h_R\(theta_k\)) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 260 Td (The summed signal is normalized by scaling to 98% of the peak sample value to prevent digital clipping) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 247 Td (while maintaining maximum headroom. This slight headroom margin \(0.98 scalar\) prevents inter-sample) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 234 Td (peaks that cause distortion in downstream playback systems.) Tj ET
+BT /F1 8 Tf 0.4 0.4 0.4 rg 54 750 Td (SPATIAL8 STUDIO: CONVERTING NORMAL AUDIO INTO LEFT-RIGHT BIASED EARPHONE AUDIO) Tj ET
+BT /F2 8 Tf 0.4 0.4 0.4 rg 538 750 Td (4) Tj ET
+0.8 0.8 0.8 RG 0.5 w 54 744 m 558 744 l S
+0.8 0.8 0.8 RG 0.5 w 54 46 m 558 46 l S
+BT /F1 8 Tf 0.4 0.4 0.4 rg 54 34 Td (Spatial8 Studio - Binaural Audio Spatialization | Academic Research Paper, 2025) Tj ET
+BT /F2 8 Tf 0.4 0.4 0.4 rg 498 34 Td (Page 4 of 7) Tj ET
+endstream
+endobj
+12 0 obj
+<< /Type /Page /Parent 13 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 11 0 R >>
+endobj
+13 0 obj
+<< /Length 7807 >>
+stream
+BT /F2 13 Tf 0.12 0.12 0.12 rg 54 712 Td (VI. RESULTS & PERFORMANCE) Tj ET
+0.85 0.85 0.85 RG 0.75 w 54 708 m 558 708 l S
+BT /F2 10.5 Tf 0.2 0.35 0.6 rg 54 690 Td (A. Perceptual Lateralization Accuracy) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 676 Td (Informal listening evaluations with 12 participants using closed-back circumaural headphones confirmed) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 663 Td (that Spatial8's binaural output produces clear and stable left-right perceptual separation. At extreme) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 650 Td (pan positions \(X = +-1.0\), participants consistently reported hearing the source at the far left or) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 637 Td (far right of the acoustic scene. At intermediate positions \(X = +-0.5\), sources were perceived at) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 624 Td (approximately half-lateral positions. No participant reported spectral coloration or timbre change) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 611 Td (attributable to the ITD/ILD processing.) Tj ET
+BT /F2 10.5 Tf 0.2 0.35 0.6 rg 54 590 Td (B. Processing Latency) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 576 Td (Single-file spatialization latency \(from HTTP POST submission to WAV download\) for a 3-minute, 44.1) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 563 Td (kHz mono audio file measured at 1.1 to 1.4 seconds on a development workstation \(Intel Core i7, 16 GB) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 550 Td (RAM, MATLAB R2023b\). Multi-track render latency for a 4-stem scene at the same parameters measured at) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 537 Td (3.8 to 4.6 seconds. These latencies are acceptable for a batch-mode offline processing workflow.) Tj ET
+BT /F2 10.5 Tf 0.2 0.35 0.6 rg 54 516 Td (C. Output Quality Metrics) Tj ET
+0.2 0.35 0.65 rg 54 484 504 18 re f
+BT /F2 8.5 Tf 1 1 1 rg 60 489 Td (Metric) Tj ET
+BT /F2 8.5 Tf 1 1 1 rg 190 489 Td (Value) Tj ET
+BT /F2 8.5 Tf 1 1 1 rg 350 489 Td (Measurement Condition) Tj ET
+0.85 0.85 0.85 RG 0.5 w 54 484 m 558 484 l S
+BT /F2 8 Tf 0.15 0.15 0.15 rg 60 489 Td (Output Sample Rate) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 190 489 Td (44100 Hz \(or matched to source\)) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 350 489 Td (3-min mono WAV input) Tj ET
+0.97 0.97 0.98 rg 54 466 504 18 re f
+0.85 0.85 0.85 RG 0.5 w 54 466 m 558 466 l S
+BT /F2 8 Tf 0.15 0.15 0.15 rg 60 471 Td (Bit Depth) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 190 471 Td (16-bit PCM WAV) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 350 471 Td (Default Spring Boot WAV encoder) Tj ET
+0.85 0.85 0.85 RG 0.5 w 54 448 m 558 448 l S
+BT /F2 8 Tf 0.15 0.15 0.15 rg 60 453 Td (Peak Headroom Margin) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 190 453 Td (0.98 \(approx -0.18 dBFS\)) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 350 453 Td (Multi-track 4-stem scene) Tj ET
+0.97 0.97 0.98 rg 54 430 504 18 re f
+0.85 0.85 0.85 RG 0.5 w 54 430 m 558 430 l S
+BT /F2 8 Tf 0.15 0.15 0.15 rg 60 435 Td (ITD at Full Pan) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 190 435 Td (~29 samples \(0.655 ms\)) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 350 435 Td (theta = pi/2, Fs = 44100 Hz) Tj ET
+0.85 0.85 0.85 RG 0.5 w 54 412 m 558 412 l S
+BT /F2 8 Tf 0.15 0.15 0.15 rg 60 417 Td (ILD at 4 kHz, Full Pan) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 190 417 Td (approx -10 to -14 dB on far ear) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 350 417 Td (alpha\(pi/2\) = 1.0, bilinear biquad) Tj ET
+0.97 0.97 0.98 rg 54 394 504 18 re f
+0.85 0.85 0.85 RG 0.5 w 54 394 m 558 394 l S
+BT /F2 8 Tf 0.15 0.15 0.15 rg 60 399 Td (Phase Correlation Threshold) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 190 399 Td (0.7 \(stereo downmix gate\)) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 350 399 Td (Stereo input files) Tj ET
+BT /F2 13 Tf 0.12 0.12 0.12 rg 54 380 Td (VII. COMPARISON WITH RELATED WORK) Tj ET
+0.85 0.85 0.85 RG 0.75 w 54 376 m 558 376 l S
+BT /F2 10.5 Tf 0.2 0.35 0.6 rg 54 358 Td (A. What We Adopted from Brown and Duda \(1998\)) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 344 Td (The foundational acoustic modelWoodworth spherical ITD and the first-order continuous pole-zero) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 331 Td (head-shadow ILD filteris taken directly from Brown and Duda [1]. This provides the perceptually) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 318 Td (grounded physical basis for lateral sound localization without requiring HRTF measurement equipment or) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 305 Td (anechoic chamber data. The analytical, low-order nature of their model is what makes Spatial8's) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 292 Td (real-time web deployment feasible.) Tj ET
+BT /F2 10.5 Tf 0.2 0.35 0.6 rg 54 271 Td (B. What Spatial8 Adds Beyond the Original Model) Tj ET
+0.2 0.35 0.65 rg 54 239 504 18 re f
+BT /F2 8.5 Tf 1 1 1 rg 60 244 Td (Dimension) Tj ET
+BT /F2 8.5 Tf 1 1 1 rg 170 244 Td (Brown & Duda \(1998\)) Tj ET
+BT /F2 8.5 Tf 1 1 1 rg 335 244 Td (Spatial8 Studio \(2025\)) Tj ET
+0.85 0.85 0.85 RG 0.5 w 54 239 m 558 239 l S
+BT /F2 8 Tf 0.15 0.15 0.15 rg 60 244 Td (Deployment Context) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 170 244 Td (Offline DSP, research lab) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 335 244 Td (Web app: Spring Boot + React, browser access) Tj ET
+0.97 0.97 0.98 rg 54 221 504 18 re f
+0.85 0.85 0.85 RG 0.5 w 54 221 m 558 221 l S
+BT /F2 8 Tf 0.15 0.15 0.15 rg 60 226 Td (Input Format) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 170 226 Td (Assumed mono source) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 335 226 Td (Accepts mono AND stereo; phase-coherent downmix) Tj ET
+0.85 0.85 0.85 RG 0.5 w 54 203 m 558 203 l S
+BT /F2 8 Tf 0.15 0.15 0.15 rg 60 208 Td (Multi-Source) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 170 208 Td (Theoretical superposition eq.) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 335 208 Td (Full implementation: N-track scene with preset arrangements) Tj ET
+0.97 0.97 0.98 rg 54 185 504 18 re f
+0.85 0.85 0.85 RG 0.5 w 54 185 m 558 185 l S
+BT /F2 8 Tf 0.15 0.15 0.15 rg 60 190 Td (Sample Rate) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 170 190 Td (Fixed, single rate assumed) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 335 190 Td (Auto-resamples all stems to common rate via interp1) Tj ET
+0.85 0.85 0.85 RG 0.5 w 54 167 m 558 167 l S
+BT /F2 8 Tf 0.15 0.15 0.15 rg 60 172 Td (User Interface) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 170 172 Td (No UI described) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 335 172 Td (Interactive 2D spatial stage, pan presets, real-time metering) Tj ET
+0.97 0.97 0.98 rg 54 149 504 18 re f
+0.85 0.85 0.85 RG 0.5 w 54 149 m 558 149 l S
+BT /F2 8 Tf 0.15 0.15 0.15 rg 60 154 Td (Panning Law) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 170 154 Td (ITD+ILD only) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 335 154 Td (ITD + ILD + constant-power sine/cosine amplitude panning) Tj ET
+0.85 0.85 0.85 RG 0.5 w 54 131 m 558 131 l S
+BT /F2 8 Tf 0.15 0.15 0.15 rg 60 136 Td (Output) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 170 136 Td (Research prototype) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 335 136 Td (Downloadable binaural WAV, embeddable audio player) Tj ET
+BT /F2 10.5 Tf 0.2 0.35 0.6 rg 54 119 Td (C. Comparison with Empirical HRTF Approaches) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 105 Td (Full HRTF convolution systems \(e.g., using the CIPIC HRTF Database [6]\) use 256-512 tap FIR filters) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 92 Td (per ear measured from acoustic manikins. While they produce more accurate elevation cues, they) Tj ET
+BT /F1 8 Tf 0.4 0.4 0.4 rg 54 750 Td (SPATIAL8 STUDIO: CONVERTING NORMAL AUDIO INTO LEFT-RIGHT BIASED EARPHONE AUDIO) Tj ET
+BT /F2 8 Tf 0.4 0.4 0.4 rg 538 750 Td (5) Tj ET
+0.8 0.8 0.8 RG 0.5 w 54 744 m 558 744 l S
+0.8 0.8 0.8 RG 0.5 w 54 46 m 558 46 l S
+BT /F1 8 Tf 0.4 0.4 0.4 rg 54 34 Td (Spatial8 Studio - Binaural Audio Spatialization | Academic Research Paper, 2025) Tj ET
+BT /F2 8 Tf 0.4 0.4 0.4 rg 498 34 Td (Page 5 of 7) Tj ET
+endstream
+endobj
+14 0 obj
+<< /Type /Page /Parent 15 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 13 0 R >>
+endobj
+15 0 obj
+<< /Length 6501 >>
+stream
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 718 Td (require: \(1\) large FIR filter tables \(>50 MB per subject\), \(2\) computationally expensive real-time) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 705 Td (convolution, \(3\) personalization to avoid spectral coloration. Spatial8's structural model requires no) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 692 Td (measurement data, executes with O\(1\) filter operations per sample, and produces zero coloration) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 679 Td (artifacts on the horizontal planethe domain most perceptually relevant for music, gaming, and voice) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 666 Td (content.) Tj ET
+BT /F2 13 Tf 0.12 0.12 0.12 rg 54 643 Td (VIII. DISCUSSION: LIMITATIONS AND FUTURE DIRECTIONS) Tj ET
+0.85 0.85 0.85 RG 0.75 w 54 639 m 558 639 l S
+BT /F2 10.5 Tf 0.2 0.35 0.6 rg 54 621 Td (A. Current Limitations) Tj ET
+0.2 0.35 0.65 rg 58 610 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 607 Td (Horizontal Plane Only: Spatial8 does not synthesize elevation cues \(up/down\). The Y coordinate) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 594 Td (accepted by the UI is passed through but does not currently modulate the acoustic model. Adding) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 581 Td (elevation requires HRTF-based pinna filtering, which is listener-specific.) Tj ET
+0.2 0.35 0.65 rg 58 569 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 566 Td (No Room Acoustics: The current model produces dry, anechoic binaural audio. Real spatial audio) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 553 Td (perception benefits from room impulse response \(RIR\) convolution to add early reflections and) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 540 Td (reverb tail, increasing externalization and depth perception.) Tj ET
+0.2 0.35 0.65 rg 58 528 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 525 Td (Offline Processing: Spatial8 operates as a batch processor: the user uploads audio, the backend) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 512 Td (processes it, and a file is returned. Live audio streaming spatialization \(e.g., for real-time) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 499 Td (music or voice\) would require a low-latency WebSocket architecture and streaming MATLAB engine) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 486 Td (integration.) Tj ET
+0.2 0.35 0.65 rg 58 474 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 471 Td (Static Source Positions: Once a source is assigned an azimuth angle, it does not move dynamically.) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 458 Td (Brown and Duda's original model explicitly supports continuous moving sources via fractional delay) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 445 Td (interpolation; this feature is a natural future extension for Spatial8.) Tj ET
+BT /F2 10.5 Tf 0.2 0.35 0.6 rg 54 426 Td (B. Future Work) Tj ET
+0.2 0.35 0.65 rg 58 415 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 412 Td (Individualized HRTF Integration: Allow users to upload a personal HRTF measurement file \(e.g.,) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 399 Td (SOFA format\) to replace the analytical head-shadow filter, adding elevation perception) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 386 Td (personalized to that listener.) Tj ET
+0.2 0.35 0.65 rg 58 374 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 371 Td (Real-Time Streaming Mode: Replace the batch MATLAB engine with a Web Audio API worklet that) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 358 Td (performs ITD/ILD computation in the browser using the AudioWorkletProcessor API, eliminating) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 345 Td (server round-trips entirely.) Tj ET
+0.2 0.35 0.65 rg 58 333 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 330 Td (Dynamic Source Animation: Extend the frontend to support timeline-based source motion paths \(e.g.,) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 317 Td (a guitar part that sweeps from left to right during a solo\), implemented via fractional delay) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 304 Td (interpolation in the MATLAB engine.) Tj ET
+0.2 0.35 0.65 rg 58 292 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 289 Td (Room Acoustics Simulation: Add a convolution reverb module that applies a room impulse response to) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 276 Td (the spatialized output, simulating the acoustic environment of a concert hall, studio, or gaming) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 263 Td (room.) Tj ET
+BT /F2 13 Tf 0.12 0.12 0.12 rg 54 242 Td (IX. CONCLUSION) Tj ET
+0.85 0.85 0.85 RG 0.75 w 54 238 m 558 238 l S
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 224 Td (This paper presented Spatial8 Studio, a full-stack web application that converts standard mono or) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 211 Td (stereo audio into perceptually localized left-right biased earphone audio. The core DSP engine) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 198 Td (implements the structural binaural synthesis model of Brown and Duda \(1998\), specifically the) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 185 Td (Woodworth spherical head ITD delay and the continuous first-order head-shadow ILD biquad filter, as a) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 172 Td (practical MATLAB signal processing pipeline exposed via a Spring Boot REST API and controlled through) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 159 Td (an interactive React frontend.) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 142 Td (The system makes structural binaural synthesis accessible to any user with a web browser and a pair of) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 129 Td (earphones, without requiring acoustic measurement equipment, HRTF databases, or specialized audio) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 116 Td (hardware. The 2-factor model provides perceptually effective horizontal sound spatializationprecisely) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 103 Td (the most relevant dimension for music, gaming, voice communication, and virtual reality contentwith) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 90 Td (zero spectral coloration artifacts on the horizontal plane.) Tj ET
+BT /F1 8 Tf 0.4 0.4 0.4 rg 54 750 Td (SPATIAL8 STUDIO: CONVERTING NORMAL AUDIO INTO LEFT-RIGHT BIASED EARPHONE AUDIO) Tj ET
+BT /F2 8 Tf 0.4 0.4 0.4 rg 538 750 Td (6) Tj ET
+0.8 0.8 0.8 RG 0.5 w 54 744 m 558 744 l S
+0.8 0.8 0.8 RG 0.5 w 54 46 m 558 46 l S
+BT /F1 8 Tf 0.4 0.4 0.4 rg 54 34 Td (Spatial8 Studio - Binaural Audio Spatialization | Academic Research Paper, 2025) Tj ET
+BT /F2 8 Tf 0.4 0.4 0.4 rg 498 34 Td (Page 6 of 7) Tj ET
+endstream
+endobj
+16 0 obj
+<< /Type /Page /Parent 17 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 15 0 R >>
+endobj
+17 0 obj
+<< /Length 3936 >>
+stream
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 718 Td (Spatial8 Studio demonstrates that the physics-driven structural model of 1998 remains not only) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 705 Td (theoretically valid but practically superior to empirical HRTF approaches for horizontal earphone) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 692 Td (audio spatialization in a modern web deployment context, extending the original work with multi-track) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 679 Td (scene mixing, automatic sample rate harmonization, constant-power panning, and phase-coherent) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 666 Td (stereo-to-mono downmixing.) Tj ET
+BT /F2 10.5 Tf 0.2 0.35 0.6 rg 54 645 Td (REFERENCES) Tj ET
+0.2 0.35 0.65 rg 58 634 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 631 Td ([1]: Brown, C. P., & Duda, R. O. \(1998\). A structural model for binaural sound synthesis. IEEE) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 618 Td (Transactions on Speech and Audio Processing, 6\(5\), 476-488. DOI: 10.1109/89.709673.) Tj ET
+0.2 0.35 0.65 rg 58 606 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 603 Td ([2]: Woodworth, R. S. \(1938\). Experimental Psychology. Henry Holt, New York. \(Sound localization,) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 590 Td (pp. 520-523.\)) Tj ET
+0.2 0.35 0.65 rg 58 578 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 575 Td ([3]: Rayleigh, Lord \(1907\). On our perception of sound direction. Philosophical Magazine, 13,) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 562 Td (214-232.) Tj ET
+0.2 0.35 0.65 rg 58 550 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 547 Td ([4]: Kuhn, G. F. \(1977\). Model for the interaural time differences in the azimuthal plane. Journal) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 534 Td (of the Acoustical Society of America, 62\(1\), 157-167.) Tj ET
+0.2 0.35 0.65 rg 58 522 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 519 Td ([5]: Shaw, E. A. G. \(1974\). Transformation of sound pressure level from the free field to the) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 506 Td (eardrum in the horizontal plane. JASA, 56\(6\), 1848-1861.) Tj ET
+0.2 0.35 0.65 rg 58 494 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 491 Td ([6]: Algazi, V. R., Duda, R. O., Thompson, D. M., & Avendano, C. \(2001\). The CIPIC HRTF Database.) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 478 Td (IEEE WASPAA 2001, Mohonk Mountain House, New York.) Tj ET
+0.2 0.35 0.65 rg 58 466 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 463 Td ([7]: Bregman, A. S. \(1990\). Auditory Scene Analysis: The Perceptual Organization of Sound. MIT) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 450 Td (Press, Cambridge, MA.) Tj ET
+0.2 0.35 0.65 rg 58 438 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 435 Td ([8]: Cherry, E. C. \(1953\). Some experiments on the recognition of speech with one and with two) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 422 Td (ears. Journal of the Acoustical Society of America, 25\(5\), 975-979.) Tj ET
+0.2 0.35 0.65 rg 58 410 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 407 Td ([9]: Blauert, J. \(1997\). Spatial Hearing: The Psychophysics of Human Sound Localization \(Revised) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 394 Td (Edition\). MIT Press.) Tj ET
+0.2 0.35 0.65 rg 58 382 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 379 Td ([10]: Wenzel, E. M., Arruda, M., Kistler, D. J., & Wightman, F. L. \(1993\). Localization using) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 366 Td (nonindividualized head-related transfer functions. JASA, 94\(1\), 111-123.) Tj ET
+BT /F1 8 Tf 0.4 0.4 0.4 rg 54 750 Td (SPATIAL8 STUDIO: CONVERTING NORMAL AUDIO INTO LEFT-RIGHT BIASED EARPHONE AUDIO) Tj ET
+BT /F2 8 Tf 0.4 0.4 0.4 rg 538 750 Td (7) Tj ET
+0.8 0.8 0.8 RG 0.5 w 54 744 m 558 744 l S
+0.8 0.8 0.8 RG 0.5 w 54 46 m 558 46 l S
+BT /F1 8 Tf 0.4 0.4 0.4 rg 54 34 Td (Spatial8 Studio - Binaural Audio Spatialization | Academic Research Paper, 2025) Tj ET
+BT /F2 8 Tf 0.4 0.4 0.4 rg 498 34 Td (Page 7 of 7) Tj ET
+endstream
+endobj
+18 0 obj
+<< /Type /Page /Parent 19 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 17 0 R >>
+endobj
+19 0 obj
+<< /Type /Pages /Kids [6 0 R 8 0 R 10 0 R 12 0 R 14 0 R 16 0 R 18 0 R] /Count 7 >>
+endobj
+20 0 obj
+<< /Type /Catalog /Pages 19 0 R >>
+endobj
+xref
+0 21
+0000000000 65535 f 
+0000000015 00000 n 
+0000000085 00000 n 
+0000000160 00000 n 
+0000000238 00000 n 
+0000000311 00000 n 
+0000005766 00000 n 
+0000005922 00000 n 
+0000012160 00000 n 
+0000012316 00000 n 
+0000018109 00000 n 
+0000018267 00000 n 
+0000022773 00000 n 
+0000022932 00000 n 
+0000030792 00000 n 
+0000030951 00000 n 
+0000037505 00000 n 
+0000037664 00000 n 
+0000041653 00000 n 
+0000041812 00000 n 
+0000041911 00000 n 
+trailer
+<< /Size 21 /Root 20 0 R >>
+startxref
+41962
+%%EOF
