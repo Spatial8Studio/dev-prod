@@ -1,7 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import * as THREE from 'three';
 import './styles.css';
+
+// ---------------------------------------------------------------------------
+// API Helpers
+// ---------------------------------------------------------------------------
 
 const api = async (path, options = {}) => {
   const token = localStorage.getItem('spatia-token');
@@ -30,290 +33,246 @@ const download = async (path, filename) => {
   setTimeout(() => URL.revokeObjectURL(url), 0);
 };
 
-const newSource = upload => ({
+// ---------------------------------------------------------------------------
+// Psychoacoustic Calculations (2-Factor Earphone Model)
+// ---------------------------------------------------------------------------
+
+// pan is in [-1.0 (Full Right), +1.0 (Full Left)]
+// Center is 0.0 (Equal balance in both earphones)
+const calculateBinauralFactors = (pan) => {
+  const clampedPan = Math.max(-1, Math.min(1, pan));
+  const absPan = Math.abs(clampedPan);
+  const thetaRad = absPan * (Math.PI / 2); // 0 to pi/2
+
+  // Factor 1: ITD via Woodworth spherical head model (r=8.75cm, c=343m/s)
+  // tau = (r / c) * (theta + sin(theta))
+  const itdMs = (0.0875 / 343) * (thetaRad + Math.sin(thetaRad)) * 1000;
+
+  // Factor 2: ILD in dB (up to ~8.5 dB attenuation on far ear)
+  const ildDb = Math.min(9.0, absPan * 8.5);
+
+  return {
+    pan: clampedPan,
+    absPan,
+    itdMs: Number(itdMs.toFixed(2)),
+    ildDb: Number(ildDb.toFixed(1)),
+    isLeftDominant: clampedPan > 0.02,
+    isRightDominant: clampedPan < -0.02,
+    isCenter: Math.abs(clampedPan) <= 0.02
+  };
+};
+
+const formatPanDescription = (pan) => {
+  if (Math.abs(pan) <= 0.02) return 'Center · Equal in Both Earphones';
+  const percent = Math.round(Math.abs(pan) * 100);
+  return pan > 0 ? `${percent}% Left Earphone` : `${percent}% Right Earphone`;
+};
+
+const newSource = (upload) => ({
   id: crypto.randomUUID(),
   upload,
-  start: [2, 1, 0.5],
-  destination: [-2, -1, 1],
-  travelTime: 10
+  pan: 0.6,             // Start: 60% Left Earphone
+  destinationPan: -0.6, // Destination: 60% Right Earphone
+  travelTime: 8.0
 });
 
-const displayPosition = (source, mode, time) => {
-  if (!source) return null;
-  if (mode === 'fixed') return source.start;
+const currentPanAtTime = (source, mode, time) => {
+  if (!source) return 0;
+  if (mode === 'fixed') return source.pan;
   const duration = Math.max(0.1, Number(source.travelTime) || 1);
   const cycleTime = Math.min(duration * 2, Math.max(0, time));
   const amount = cycleTime <= duration ? cycleTime / duration : 1 - ((cycleTime - duration) / duration);
-  return source.start.map((value, index) => value * (1 - amount) + source.destination[index] * amount);
+  return source.pan * (1 - amount) + source.destinationPan * amount;
 };
 
-// Keep the screen's visual left/right intuitive: source +Y is left, so it is
-// rendered toward world -Z from this camera. MATLAB still receives +Y=left.
-const worldPoint = position => new THREE.Vector3(position[0], position[2], -position[1]);
+// ---------------------------------------------------------------------------
+// Component: Interactive Earphone Soundstage
+// ---------------------------------------------------------------------------
 
-const spatialDescription = position => {
-  if (!position) return 'Select a source to read its position relative to the listener.';
-  const [x, y, z] = position;
-  const parts = [];
-  if (Math.abs(x) > 0.05) parts.push(`${Math.abs(x).toFixed(1)}m ${x >= 0 ? 'front' : 'behind'}`);
-  if (Math.abs(y) > 0.05) parts.push(`${Math.abs(y).toFixed(1)}m ${y >= 0 ? 'left' : 'right'}`);
-  if (Math.abs(z) > 0.05) parts.push(`${Math.abs(z).toFixed(1)}m ${z >= 0 ? 'above' : 'below'}`);
-  return parts.length ? parts.join(' · ') : 'At the listener';
-};
+function EarphoneSoundstage({ sources, selectedId, setSelectedId, updateSource, mode, timelineTime }) {
+  const stageRef = useRef(null);
+  const selected = sources.find(s => s.id === selectedId);
+  const activePan = selected ? currentPanAtTime(selected, mode, timelineTime) : 0;
+  const factors = calculateBinauralFactors(activePan);
 
-function Scene({ sources, selectedId, setSelectedId, updateSource, mode, timelineTime }) {
-  const mount = useRef(null);
-  const state = useRef({ sources, selectedId, mode, timelineTime });
+  // Dragging support along the soundstage line
+  const handleStageClickOrDrag = (e) => {
+    if (!selected || !stageRef.current) return;
+    const rect = stageRef.current.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const trackWidth = rect.width;
+    // Map clickX (0 to trackWidth) to pan (+1.0 Left to -1.0 Right)
+    // Left side (clickX = 0) is +1.0, Right side (clickX = trackWidth) is -1.0
+    const ratio = Math.max(0, Math.min(1, clickX / trackWidth));
+    const newPan = Number((1 - 2 * ratio).toFixed(2));
+    updateSource(selected.id, { pan: newPan });
+  };
 
-  useEffect(() => {
-    state.current = { sources, selectedId, mode, timelineTime };
-  }, [sources, selectedId, mode, timelineTime]);
+  const handlePointerDown = (e, sourceId) => {
+    e.stopPropagation();
+    setSelectedId(sourceId);
+  };
 
-  useEffect(() => {
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color('#0d111c');
-    scene.fog = new THREE.Fog('#0d111c', 12, 28);
-    const camera = new THREE.PerspectiveCamera(48, 1, 0.1, 100);
-    camera.position.set(7, 5.2, 7);
-    camera.lookAt(0, 0, 0);
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-    renderer.shadowMap.enabled = true;
-    mount.current.appendChild(renderer.domElement);
+  return (
+    <div className="soundstage-container">
+      <div className="soundstage-header">
+        <div>
+          <span className="eyebrow">STEREO ACOUSTIC FIELD</span>
+          <h2>Earphone Soundstage</h2>
+        </div>
+        <div className="stamp-badge red">
+          {mode === 'animated' ? '◌ ANIMATED SWEEP PREVIEW' : '● FIXED POSITION'}
+        </div>
+      </div>
 
-    const grid = new THREE.GridHelper(12, 12, '#475271', '#222b43');
-    scene.add(grid);
-    scene.add(new THREE.AxesHelper(3));
-    const listener = new THREE.Mesh(
-      new THREE.SphereGeometry(0.18, 24, 24),
-      new THREE.MeshStandardMaterial({ color: '#f4f5f7', emissive: '#6d789a', emissiveIntensity: 0.45 })
-    );
-    listener.position.y = 0.16;
-    listener.castShadow = true;
-    scene.add(listener);
-    const ring = new THREE.Mesh(
-      new THREE.RingGeometry(0.28, 0.31, 40),
-      new THREE.MeshBasicMaterial({ color: '#f4f5f7', transparent: true, opacity: 0.35, side: THREE.DoubleSide })
-    );
-    ring.rotation.x = -Math.PI / 2;
-    ring.position.y = 0.02;
-    scene.add(ring);
-    const facingArrow = new THREE.ArrowHelper(
-      new THREE.Vector3(1, 0, 0),
-      new THREE.Vector3(0, 0.18, 0),
-      0.95,
-      '#f4f5f7',
-      0.18,
-      0.1
-    );
-    scene.add(facingArrow);
-    scene.add(new THREE.HemisphereLight('#c6d0ff', '#111624', 2.2));
-    const key = new THREE.DirectionalLight('#f3a49a', 2.2);
-    key.position.set(5, 8, 4);
-    key.castShadow = true;
-    scene.add(key);
+      {/* Visual Stereo Soundstage Area */}
+      <div
+        className="soundstage-canvas-area"
+        ref={stageRef}
+        onClick={handleStageClickOrDrag}
+        title="Click or drag anywhere on the stereo axis to place audio"
+      >
+        {/* Left Earphone Pod */}
+        <div className="earphone-pod left-earphone">
+          <div className="earphone-speaker">
+            <span className="earphone-pod-badge">[L]</span>
+          </div>
+          <span className="stamp-badge">LEFT EAR</span>
+        </div>
 
-    // The listener faces +X. Source +Y is rendered toward world -Z so visual
-    // left/right agrees with the coordinate convention used by MATLAB.
-    const axisOrigin = new THREE.Vector3(0, 0.04, 0);
-    scene.add(new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), axisOrigin, 2.2, '#ef746a', 0.24, 0.12));
-    scene.add(new THREE.ArrowHelper(new THREE.Vector3(0, 0, -1), axisOrigin, 2.2, '#78bc87', 0.24, 0.12));
-    scene.add(new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), axisOrigin, 2.2, '#7196e5', 0.24, 0.12));
+        {/* Right Earphone Pod */}
+        <div className="earphone-pod right-earphone">
+          <div className="earphone-speaker">
+            <span className="earphone-pod-badge">[R]</span>
+          </div>
+          <span className="stamp-badge">RIGHT EAR</span>
+        </div>
 
-    const objects = new Map();
-    const paths = new Map();
-    const ray = new THREE.Raycaster();
-    const pointer = new THREE.Vector2();
-    let dragging = false;
-    let dragId = null;
+        {/* Center Listener Avatar */}
+        <div className="listener-avatar">
+          <div className="headphone-band" />
+          <div className="listener-head">
+            <div className="listener-nose" />
+          </div>
+          <span className="listener-label">YOU (0.0 Center)</span>
+        </div>
 
-    const redraw = () => {
-      for (const [id, mesh] of objects) {
-        if (!state.current.sources.some(source => source.id === id)) {
-          scene.remove(mesh);
-          mesh.geometry.dispose();
-          mesh.material.dispose();
-          objects.delete(id);
-        }
-      }
-      for (const [id, line] of paths) {
-        if (!state.current.sources.some(source => source.id === id) || state.current.mode !== 'animated') {
-          scene.remove(line);
-          line.geometry.dispose();
-          line.material.dispose();
-          paths.delete(id);
-        }
-      }
-      state.current.sources.forEach(source => {
-        let mesh = objects.get(source.id);
-        if (!mesh) {
-          mesh = new THREE.Mesh(
-            new THREE.SphereGeometry(0.3, 24, 24),
-            new THREE.MeshStandardMaterial({ color: '#f26a5b', emissive: '#7d241d', emissiveIntensity: 0.55 })
+        {/* Soundstage Axis Line */}
+        <div className="stage-axis-track" />
+
+        {/* Render Source Transit Line in Animated Mode */}
+        {selected && mode === 'animated' && (
+          <div
+            className="token-line-transit"
+            style={{
+              left: `${((1 - Math.max(selected.pan, selected.destinationPan)) / 2) * 100}%`,
+              width: `${(Math.abs(selected.pan - selected.destinationPan) / 2) * 100}%`
+            }}
+          />
+        )}
+
+        {/* Audio Source Tokens */}
+        {sources.map((source, index) => {
+          const isSelected = source.id === selectedId;
+          const pan = currentPanAtTime(source, mode, timelineTime);
+          // pan +1 (left) maps to 0% offset from left (plus padding), pan -1 maps to 100%
+          const leftPercent = ((1 - pan) / 2) * 80 + 10; // keep inside stage margins
+
+          return (
+            <div
+              key={source.id}
+              className="audio-source-token"
+              style={{ left: `${leftPercent}%` }}
+              onPointerDown={(e) => handlePointerDown(e, source.id)}
+            >
+              <div className={`token-pin ${isSelected ? 'active-token' : ''}`}>
+                <span>#{String(index + 1).padStart(2, '0')}</span>
+                <small>{formatPanDescription(pan)}</small>
+              </div>
+            </div>
           );
-          mesh.castShadow = true;
-          objects.set(source.id, mesh);
-          scene.add(mesh);
-        }
-        const active = source.id === state.current.selectedId;
-        const position = displayPosition(source, state.current.mode, state.current.timelineTime);
-        mesh.material.color.set(active ? '#ff806f' : '#d46f69');
-        mesh.scale.setScalar(active ? 1.2 : 1);
-        mesh.position.copy(worldPoint(position));
+        })}
+      </div>
 
-        if (state.current.mode === 'animated') {
-          let line = paths.get(source.id);
-          if (!line) {
-            line = new THREE.Line(
-              new THREE.BufferGeometry(),
-              new THREE.LineBasicMaterial({ color: '#f26a5b', transparent: true, opacity: active ? 0.85 : 0.34 })
-            );
-            paths.set(source.id, line);
-            scene.add(line);
-          }
-          line.material.opacity = active ? 0.85 : 0.34;
-          line.geometry.setFromPoints([worldPoint(source.start), worldPoint(source.destination)]);
-        }
-      });
-    };
+      {/* Two Factors Telemetry HUD */}
+      <div className="two-factors-hud">
+        {/* Factor 1: ITD Card */}
+        <div className="factor-card">
+          <div className="factor-title-row">
+            <strong>Factor 1: Arrival Time (ITD)</strong>
+            <span className="stamp-badge blue">WOODWORTH MODEL</span>
+          </div>
+          <div className="factor-metric-grid">
+            <div className="metric-cell">
+              <span className="ear-tag">[L] LEFT EARPHONE</span>
+              <strong className="metric-val">
+                {factors.isRightDominant ? `+${factors.itdMs} ms` : '0.00 ms'}
+              </strong>
+              <small className="metric-detail">
+                {factors.isRightDominant ? 'Delayed (Far Ear)' : 'Direct Wavefront'}
+              </small>
+            </div>
+            <div className="metric-cell">
+              <span className="ear-tag">[R] RIGHT EARPHONE</span>
+              <strong className="metric-val">
+                {factors.isLeftDominant ? `+${factors.itdMs} ms` : '0.00 ms'}
+              </strong>
+              <small className="metric-detail">
+                {factors.isLeftDominant ? 'Delayed (Far Ear)' : 'Direct Wavefront'}
+              </small>
+            </div>
+          </div>
+        </div>
 
-    const resize = () => {
-      const { width, height } = mount.current.getBoundingClientRect();
-      renderer.setSize(width, height);
-      camera.aspect = width / Math.max(1, height);
-      camera.updateProjectionMatrix();
-    };
-    const point = event => {
-      const rect = renderer.domElement.getBoundingClientRect();
-      pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-      pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-    };
-    const down = event => {
-      point(event);
-      ray.setFromCamera(pointer, camera);
-      const hit = ray.intersectObjects([...objects.values()])[0];
-      if (!hit) return;
-      dragId = [...objects.entries()].find(([, mesh]) => mesh === hit.object)?.[0];
-      setSelectedId(dragId);
-      dragging = true;
-      renderer.domElement.setPointerCapture(event.pointerId);
-    };
-    const move = event => {
-      if (!dragging || !dragId) return;
-      point(event);
-      ray.setFromCamera(pointer, camera);
-      const hit = ray.intersectObject(grid)[0];
-      const source = state.current.sources.find(item => item.id === dragId);
-      if (!hit || !source) return;
-      updateSource(dragId, {
-        start: [Number(hit.point.x.toFixed(1)), Number((-hit.point.z).toFixed(1)), source.start[2]]
-      });
-    };
-    const up = event => {
-      dragging = false;
-      dragId = null;
-      renderer.domElement.releasePointerCapture?.(event.pointerId);
-    };
-    const wheel = event => {
-      const source = state.current.sources.find(item => item.id === state.current.selectedId);
-      if (!source) return;
-      event.preventDefault();
-      updateSource(source.id, {
-        start: [source.start[0], source.start[1], Number(Math.max(-4, Math.min(4, source.start[2] - event.deltaY * 0.01)).toFixed(1))]
-      });
-    };
-
-    resize();
-    addEventListener('resize', resize);
-    renderer.domElement.addEventListener('pointerdown', down);
-    renderer.domElement.addEventListener('pointermove', move);
-    renderer.domElement.addEventListener('pointerup', up);
-    renderer.domElement.addEventListener('wheel', wheel, { passive: false });
-    let frame;
-    const animate = () => { frame = requestAnimationFrame(animate); redraw(); renderer.render(scene, camera); };
-    animate();
-
-    return () => {
-      cancelAnimationFrame(frame);
-      removeEventListener('resize', resize);
-      renderer.domElement.removeEventListener('pointerdown', down);
-      renderer.domElement.removeEventListener('pointermove', move);
-      renderer.domElement.removeEventListener('pointerup', up);
-      renderer.domElement.removeEventListener('wheel', wheel);
-      renderer.dispose();
-      mount.current?.removeChild(renderer.domElement);
-    };
-  }, []);
-
-  return <div className="scene" ref={mount}>
-    <div className="scene-help">White point = your head · arrow = facing direction · drag to place</div>
-    <div className="scene-badge">{mode === 'animated' ? 'PATH PREVIEW' : 'FIXED POINT'}</div>
-    <div className="listener-direction"><span className="direction-arrow">→</span><div><strong>You face +X</strong><small>front is ahead · back is behind</small></div></div>
-    <div className="hearing-point-hud">
-      <span className="eyebrow">HEARING POINT</span>
-      <strong>Listener / origin</strong>
-      <small>[0, 0, 0] · facing +X</small>
-      <div className="hearing-description">{spatialDescription(displayPosition(sources.find(source => source.id === selectedId), mode, timelineTime))}</div>
+        {/* Factor 2: ILD Card */}
+        <div className="factor-card">
+          <div className="factor-title-row">
+            <strong>Factor 2: Level & Head Shadow (ILD)</strong>
+            <span className="stamp-badge blue">ACOUSTIC SHADOW</span>
+          </div>
+          <div className="factor-metric-grid">
+            <div className="metric-cell">
+              <span className="ear-tag">[L] LEFT EARPHONE</span>
+              <strong className="metric-val">
+                {factors.isRightDominant ? `-${factors.ildDb} dB` : '0.0 dB'}
+              </strong>
+              <small className="metric-detail">
+                {factors.isRightDominant ? 'Acoustic Shadow (>1.5kHz cut)' : 'Full Direct Level'}
+              </small>
+            </div>
+            <div className="metric-cell">
+              <span className="ear-tag">[R] RIGHT EARPHONE</span>
+              <strong className="metric-val">
+                {factors.isLeftDominant ? `-${factors.ildDb} dB` : '0.0 dB'}
+              </strong>
+              <small className="metric-detail">
+                {factors.isLeftDominant ? 'Acoustic Shadow (>1.5kHz cut)' : 'Full Direct Level'}
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div className="axis-hud">
-      <span><i className="axis-swatch axis-x" /> <b>+X</b> front <em>−X behind</em></span>
-      <span><i className="axis-swatch axis-y" /> <b>+Y</b> left <em>−Y right</em></span>
-      <span><i className="axis-swatch axis-z" /> <b>+Z</b> above <em>−Z below</em></span>
-    </div>
-  </div>;
+  );
 }
 
-function Auth({ onAuth }) {
-  const [signup, setSignup] = useState(false);
-  const [form, setForm] = useState({ name: '', email: 'demo@gmail.com', password: 'demo@123' });
-  const [error, setError] = useState('');
-  const submit = async event => {
-    event.preventDefault();
-    setError('');
-    try {
-      const data = await api(`/api/auth/${signup ? 'signup' : 'login'}`, { method: 'POST', body: JSON.stringify(form) });
-      localStorage.setItem('spatia-token', data.token);
-      onAuth(data.user);
-    } catch (err) { setError(err.message); }
-  };
-  const useDemo = () => {
-    setSignup(false);
-    setForm({ name: '', email: 'demo@gmail.com', password: 'demo@123' });
-    setError('');
-  };
+// ---------------------------------------------------------------------------
+// Component: Tape Deck Timeline Transport
+// ---------------------------------------------------------------------------
 
-  return <main className="auth-shell">
-    <div className="auth-orbit"><div className="brand-mark">S</div><span /></div>
-    <p className="eyebrow">SPATIA STUDIO / AUDIO SPATIALIZER</p>
-    <h1>Shape sound<br /><em>in three dimensions.</em></h1>
-    <p className="muted">Compose fixed soundscapes, animate moving sources, and publish immersive sketches for other artists to explore.</p>
-    <form onSubmit={submit}>
-      {signup && <input placeholder="Your name" value={form.name} onChange={event => setForm({ ...form, name: event.target.value })} required />}
-      <input type="email" placeholder="Email address" value={form.email} onChange={event => setForm({ ...form, email: event.target.value })} required />
-      <input type="password" placeholder="Password (8+ characters)" value={form.password} onChange={event => setForm({ ...form, password: event.target.value })} required />
-      {error && <div className="error">{error}</div>}
-      <button className="primary">{signup ? 'Create studio account' : 'Enter your studio'} <span>→</span></button>
-    </form>
-    {!signup && <button className="demo-login" onClick={useDemo}>Use local demo account <span>demo@gmail.com</span></button>}
-    <button className="text-button" onClick={() => { setSignup(!signup); setError(''); }}>
-      {signup ? 'Already have an account? Sign in' : 'New here? Create an account'}
-    </button>
-  </main>;
-}
-
-function Timeline({ sources, mode, time, setTime }) {
-  const duration = Math.max(1, ...sources.map(source => Number(source.travelTime) || 1));
+function TapeDeckTimeline({ sources, mode, time, setTime }) {
+  const duration = Math.max(1, ...sources.map(s => Number(s.travelTime) || 1));
   const [playing, setPlaying] = useState(false);
 
   useEffect(() => {
     if (!playing || mode === 'fixed') return undefined;
     let frame;
     let last = performance.now();
-    const tick = now => {
+    const tick = (now) => {
       const delta = (now - last) / 1000;
       last = now;
-      setTime(value => {
-        const next = value + delta;
+      setTime((prev) => {
+        const next = prev + delta;
         if (next >= duration) {
           setPlaying(false);
           return duration;
@@ -326,34 +285,92 @@ function Timeline({ sources, mode, time, setTime }) {
     return () => cancelAnimationFrame(frame);
   }, [playing, mode, duration, setTime]);
 
-  return <section className={`timeline-panel ${mode === 'fixed' ? 'timeline-fixed' : ''}`}>
-    <div className="timeline-heading">
-      <div><span className="eyebrow">TIMELINE PREVIEW</span><strong>{mode === 'fixed' ? 'Static listening point' : 'Move through the scene'}</strong></div>
-      <span className="time-readout">{time.toFixed(1)}s / {duration.toFixed(1)}s</span>
+  return (
+    <div className="timeline-deck">
+      <div className="deck-transport">
+        <button
+          className="primary"
+          disabled={mode === 'fixed' || !sources.length}
+          onClick={() => {
+            if (time >= duration) setTime(0);
+            setPlaying(!playing);
+          }}
+        >
+          {playing ? '⏸ PAUSE TAPE' : '▶ PLAY TAPE'}
+        </button>
+        <button
+          disabled={mode === 'fixed' || !sources.length}
+          onClick={() => {
+            setPlaying(false);
+            setTime(0);
+          }}
+        >
+          ■ RESET
+        </button>
+      </div>
+
+      <div className="deck-scrubber">
+        <input
+          type="range"
+          min="0"
+          max={duration}
+          step="0.05"
+          value={Math.min(time, duration)}
+          disabled={!sources.length || mode === 'fixed'}
+          onChange={(e) => {
+            setPlaying(false);
+            setTime(Number(e.target.value));
+          }}
+        />
+        <span className="tape-counter">
+          {time.toFixed(1)}s / {duration.toFixed(1)}s
+        </span>
+      </div>
     </div>
-    <div className="timeline-controls">
-      <button className="play-button" disabled={mode === 'fixed' || !sources.length} onClick={() => { if (time >= duration) setTime(0); setPlaying(!playing); }}>
-        {playing ? 'Pause' : 'Play'}
-      </button>
-      <input type="range" min="0" max={duration} step="0.1" value={Math.min(time, duration)} disabled={!sources.length} onChange={event => { setPlaying(false); setTime(Number(event.target.value)); }} />
-      <span className="timeline-markers"><i /> start <i /> destination</span>
-    </div>
-  </section>;
+  );
 }
 
-function ProjectCard({ project, onLoad, onPublish, onAudio }) {
-  return <article className="project-card">
-    <div className="project-card-top"><span className={`mode-pill ${project.mode}`}>{project.mode === 'animated' ? 'Animated path' : 'Fixed point'}</span><span className={project.published ? 'public-label' : 'private-label'}>{project.published ? 'Published' : 'Private'}</span></div>
-    <h3>{project.title}</h3>
-    <p>{project.description || 'A spatial audio sketch with no description yet.'}</p>
-    <div className="project-meta"><span>by {project.owner?.name || 'Unknown artist'}</span><span>{new Date(project.updatedAt).toLocaleDateString()}</span></div>
-    <div className="card-actions">
-      <button className="small-button" onClick={() => onLoad(project)}>Open in studio</button>
-      {onPublish && <button className="small-button subtle" onClick={() => onPublish(project)}>{project.published ? 'Unpublish' : 'Publish'}</button>}
-      {project.published && project.renderId && <button className="small-button audio" onClick={() => onAudio(project)}>Download audio ↓</button>}
-    </div>
-  </article>;
+// ---------------------------------------------------------------------------
+// Component: Project Card (Archival Card Catalog Style)
+// ---------------------------------------------------------------------------
+
+function CatalogCard({ project, onLoad, onPublish, onAudio }) {
+  return (
+    <article className="catalog-card">
+      <div className="catalog-card-header">
+        <span className={`stamp-badge ${project.mode === 'animated' ? 'blue' : 'red'}`}>
+          {project.mode === 'animated' ? 'ANIMATED SWEEP' : 'FIXED POINT'}
+        </span>
+        <span className={`stamp-badge ${project.published ? 'green' : ''}`}>
+          {project.published ? 'PUBLISHED' : 'PRIVATE'}
+        </span>
+      </div>
+      <h3>{project.title}</h3>
+      <p>{project.description || 'A handcrafted binaural earphone sketch with no description.'}</p>
+      <div className="catalog-card-meta">
+        <span>ARTIST: {project.owner?.name || 'Unknown'}</span>
+        <span>DATE: {new Date(project.updatedAt).toLocaleDateString()}</span>
+      </div>
+      <div className="catalog-card-actions">
+        <button onClick={() => onLoad(project)}>Open in Studio</button>
+        {onPublish && (
+          <button onClick={() => onPublish(project)}>
+            {project.published ? 'Retract' : 'Publish'}
+          </button>
+        )}
+        {project.published && project.renderId && (
+          <button className="primary" onClick={() => onAudio(project)}>
+            Download MP3 ↓
+          </button>
+        )}
+      </div>
+    </article>
+  );
 }
+
+// ---------------------------------------------------------------------------
+// Component: Studio
+// ---------------------------------------------------------------------------
 
 function Studio({ user, logout }) {
   const [view, setView] = useState('studio');
@@ -370,24 +387,31 @@ function Studio({ user, logout }) {
   const [projectSearch, setProjectSearch] = useState('');
   const [artistSearch, setArtistSearch] = useState('');
   const [projectModal, setProjectModal] = useState(false);
-  const [projectForm, setProjectForm] = useState({ title: 'Untitled spatial sketch', description: '', published: false });
-  const selected = sources.find(source => source.id === selectedId);
+  const [projectForm, setProjectForm] = useState({ title: 'Earphone Binaural Sketch', description: '', published: false });
+
+  const selected = sources.find(s => s.id === selectedId);
   const isRendering = render && ['queued', 'processing'].includes(render.status);
-  const duration = useMemo(() => Math.max(1, ...sources.map(source => Number(source.travelTime) || 1)), [sources]);
 
-  const updateSource = (id, patch) => setSources(items => items.map(item => {
-    if (item.id !== id) return item;
-    const updated = { ...item, ...patch };
-    if (mode === 'fixed' && patch.start) updated.destination = [...patch.start];
-    return updated;
-  }));
-
-  const selectMode = nextMode => {
-    setMode(nextMode);
-    setTimelineTime(0);
-    if (nextMode === 'fixed') setSources(items => items.map(item => ({ ...item, destination: [...item.start] })));
+  const updateSource = (id, patch) => {
+    setSources(items => items.map(item => {
+      if (item.id !== id) return item;
+      const updated = { ...item, ...patch };
+      if (mode === 'fixed' && patch.pan !== undefined) {
+        updated.destinationPan = patch.pan;
+      }
+      return updated;
+    }));
   };
 
+  const selectMode = (nextMode) => {
+    setMode(nextMode);
+    setTimelineTime(0);
+    if (nextMode === 'fixed') {
+      setSources(items => items.map(item => ({ ...item, destinationPan: item.pan })));
+    }
+  };
+
+  // Poll render status
   useEffect(() => {
     if (!isRendering) return undefined;
     let active = true;
@@ -395,13 +419,16 @@ function Studio({ user, logout }) {
       try {
         const next = await api(`/api/audio/renders/${render.id}`);
         if (active) setRender(next);
-      } catch (err) { if (active) setError(err.message); }
+      } catch (err) {
+        if (active) setError(err.message);
+      }
     };
     poll();
     const timer = setInterval(poll, 1200);
     return () => { active = false; clearInterval(timer); };
   }, [render?.id, render?.status]);
 
+  // Load projects & community
   useEffect(() => {
     let active = true;
     const query = encodeURIComponent(projectSearch);
@@ -419,47 +446,56 @@ function Studio({ user, logout }) {
     return () => { active = false; };
   }, [projectSearch, artistSearch]);
 
-  const choose = async event => {
+  const chooseFiles = async (event) => {
     for (const file of [...event.target.files]) {
       try {
         const body = new FormData();
         body.append('file', file);
         const upload = await api('/api/audio/uploads', { method: 'POST', body });
         const source = newSource(upload);
-        if (mode === 'fixed') source.destination = [...source.start];
+        if (mode === 'fixed') source.destinationPan = source.pan;
         setSources(items => [...items, source]);
         setSelectedId(source.id);
         setView('studio');
-      } catch (err) { setError(err.message); }
+      } catch (err) {
+        setError(err.message);
+      }
     }
     event.target.value = '';
   };
 
+  // Convert pan [-1, +1] to backend coordinates (X=1.0, Y=pan*2.0, Z=0.0)
   const payloadSources = sources.map(source => ({
     uploadId: source.upload.id,
-    startX: source.start[0], startY: source.start[1], startZ: source.start[2],
-    destinationX: mode === 'fixed' ? source.start[0] : source.destination[0],
-    destinationY: mode === 'fixed' ? source.start[1] : source.destination[1],
-    destinationZ: mode === 'fixed' ? source.start[2] : source.destination[2],
-    travelTimeSeconds: mode === 'fixed' ? 1 : source.travelTime
+    startX: 1.0,
+    startY: Number((source.pan * 2.0).toFixed(2)),
+    startZ: 0.0,
+    destinationX: 1.0,
+    destinationY: Number(((mode === 'fixed' ? source.pan : source.destinationPan) * 2.0).toFixed(2)),
+    destinationZ: 0.0,
+    travelTimeSeconds: mode === 'fixed' ? 1.0 : source.travelTime
   }));
 
   const renderAudio = async () => {
-    if (!sources.length) return setError('Upload at least one MP3 or WAV first.');
+    if (!sources.length) return setError('Upload at least one MP3 or WAV audio tape first.');
     setBusy(true);
     setError('');
     try {
-      setRender(await api('/api/audio/renders', {
+      const result = await api('/api/audio/renders', {
         method: 'POST',
         body: JSON.stringify({ sources: payloadSources, outputName: 'spatia-scene.mp3' })
-      }));
-    } catch (err) { setError(err.message); }
-    finally { setBusy(false); }
+      });
+      setRender(result);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
   };
 
-  const saveProject = async event => {
-    event.preventDefault();
-    if (!sources.length) return setError('Upload at least one audio source before saving.');
+  const saveProject = async (e) => {
+    e.preventDefault();
+    if (!sources.length) return setError('Upload at least one audio track before saving.');
     try {
       const project = await api('/api/projects', {
         method: 'POST',
@@ -469,7 +505,7 @@ function Studio({ user, logout }) {
           published: projectForm.published,
           mode,
           scene: { sources: payloadSources, outputName: 'spatia-scene.mp3' },
-          assetNames: Object.fromEntries(sources.map(source => [source.upload.id, source.upload.filename])),
+          assetNames: Object.fromEntries(sources.map(s => [s.upload.id, s.upload.filename])),
           renderId: render?.status === 'complete' ? render.id : ''
         })
       });
@@ -478,17 +514,24 @@ function Studio({ user, logout }) {
       setProjectModal(false);
       setView('library');
       setError('');
-    } catch (err) { setError(err.message); }
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
-  const loadProject = project => {
-    const loaded = (project.scene?.sources || []).map((source, index) => ({
-      id: crypto.randomUUID(),
-      upload: { id: source.uploadId, filename: project.assetNames?.[source.uploadId] || `Source ${index + 1}` },
-      start: [source.startX, source.startY, source.startZ],
-      destination: [source.destinationX, source.destinationY, source.destinationZ],
-      travelTime: source.travelTimeSeconds
-    }));
+  const loadProject = (project) => {
+    const loaded = (project.scene?.sources || []).map((source, index) => {
+      // Decode Y coordinate back to normalized pan [-1, +1]
+      const pan = Math.max(-1, Math.min(1, (source.startY || 0) / 2.0));
+      const destPan = Math.max(-1, Math.min(1, (source.destinationY || 0) / 2.0));
+      return {
+        id: crypto.randomUUID(),
+        upload: { id: source.uploadId, filename: project.assetNames?.[source.uploadId] || `Track ${index + 1}` },
+        pan: Number(pan.toFixed(2)),
+        destinationPan: Number(destPan.toFixed(2)),
+        travelTime: source.travelTimeSeconds || 8.0
+      };
+    });
     setSources(loaded);
     setSelectedId(loaded[0]?.id || null);
     setMode(project.mode || 'fixed');
@@ -498,123 +541,596 @@ function Studio({ user, logout }) {
     setError('');
   };
 
-  const togglePublish = async project => {
+  const togglePublish = async (project) => {
     try {
-      const updated = await api(`/api/projects/${project.id}/publish`, { method: 'POST', body: JSON.stringify({ published: !project.published }) });
-      setProjects(items => items.map(item => item.id === updated.id ? updated : item));
-      setDiscoverProjects(items => updated.published ? [updated, ...items.filter(item => item.id !== updated.id)] : items.filter(item => item.id !== updated.id));
-    } catch (err) { setError(err.message); }
+      const updated = await api(`/api/projects/${project.id}/publish`, {
+        method: 'POST',
+        body: JSON.stringify({ published: !project.published })
+      });
+      setProjects(items => items.map(p => p.id === updated.id ? updated : p));
+      setDiscoverProjects(items => updated.published
+        ? [updated, ...items.filter(p => p.id !== updated.id)]
+        : items.filter(p => p.id !== updated.id)
+      );
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
-  const follow = async artist => {
+  const followArtist = async (artist) => {
     try {
-      const updated = await api(`/api/artists/${artist.id}/follow`, { method: artist.followed ? 'DELETE' : 'POST' });
-      setArtists(items => items.map(item => item.id === updated.id ? updated : item));
-    } catch (err) { setError(err.message); }
+      const updated = await api(`/api/artists/${artist.id}/follow`, {
+        method: artist.followed ? 'DELETE' : 'POST'
+      });
+      setArtists(items => items.map(a => a.id === updated.id ? updated : a));
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   const downloadRender = async () => {
-    try { await download(render.downloadUrl, render.filename); }
-    catch (err) { setError(err.message); }
+    try {
+      await download(render.downloadUrl, render.filename);
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
-  const renderTitle = render?.status === 'complete' ? 'Scene render complete'
-    : render?.status === 'failed' ? 'Render failed'
-      : render?.status === 'processing' ? 'Rendering spatial scene' : 'Render queued';
+  // Studio View JSX
+  const studioView = (
+    <div className="workspace-shell">
+      {/* Sidebar Controls */}
+      <aside className="studio-sidebar">
+        <div className="sidebar-section">
+          <span className="eyebrow">EARPHONE WORKBENCH</span>
+          <div className="sidebar-section-title">
+            <span>COMPOSITION MODE</span>
+            <span className="stamp-badge">L/R EARPHONES</span>
+          </div>
+          <div className="mode-toggle-group">
+            <button
+              className={mode === 'fixed' ? 'active' : ''}
+              onClick={() => selectMode('fixed')}
+            >
+              <strong>● Fixed Position</strong>
+              <small>Stationary L/R Balance</small>
+            </button>
+            <button
+              className={mode === 'animated' ? 'active' : ''}
+              onClick={() => selectMode('animated')}
+            >
+              <strong>◌ Animated Sweep</strong>
+              <small>Travel Across Ears</small>
+            </button>
+          </div>
+        </div>
 
-  const studioView = <div className="workspace">
-    <aside className="control-panel">
-      <div className="panel-kicker"><span className="live-dot" /> WORKSPACE / SCENE BUILDER</div>
-      <h2>Compose your scene</h2>
-      <p className="muted small">Choose whether a source stays anchored to one point or travels through a path over time.</p>
-      <div className="mode-picker">
-        <button className={mode === 'fixed' ? 'active' : ''} onClick={() => selectMode('fixed')}><span className="mode-icon">●</span><strong>Fixed point</strong><small>One coordinate</small></button>
-        <button className={mode === 'animated' ? 'active' : ''} onClick={() => selectMode('animated')}><span className="mode-icon path-icon">◌</span><strong>Animated path</strong><small>Move over timeline</small></button>
-      </div>
-      <label className="upload-card">
-        <input type="file" multiple accept=".mp3,.wav,audio/mpeg,audio/wav" onChange={choose} />
-        <span className="upload-icon">↑</span>
-        <strong>{sources.length ? 'Add more audio' : 'Drop audio into the scene'}</strong>
-        <small>MP3 or WAV · up to 16 sources</small>
-      </label>
-      <div className="source-list">
-        {sources.map((source, index) => <button className={`source-row ${source.id === selectedId ? 'selected' : ''}`} key={source.id} onClick={() => setSelectedId(source.id)}>
-          <span className="source-number">{String(index + 1).padStart(2, '0')}</span>
-          <span><b>{source.upload.filename}</b><small>{mode === 'animated' ? `${source.travelTime}s movement` : 'Anchored source'}</small></span>
-          <span className="remove" onClick={event => { event.stopPropagation(); setSources(items => items.filter(item => item.id !== source.id)); }}>×</span>
-        </button>)}
-      </div>
-      {selected && <div className="coordinates">
-        <div className="label-row"><span>{mode === 'animated' ? 'START POSITION' : 'SOURCE POSITION'}</span><span>METRES</span></div>
-        {['X', 'Y', 'Z'].map((axis, index) => <label className="coord" key={axis}>
-          <span className={`axis axis-${axis.toLowerCase()}`}>{axis}</span>
-          <input type="number" step="0.1" value={selected.start[index]} onChange={event => {
-            const next = [...selected.start]; next[index] = Number(event.target.value); updateSource(selected.id, { start: next });
-          }} />
-        </label>)}
-        {mode === 'animated' && <>
-          <div className="transition-title">PATH DESTINATION</div>
-          {['X', 'Y', 'Z'].map((axis, index) => <label className="coord" key={`destination-${axis}`}>
-            <span className={`axis axis-${axis.toLowerCase()}`}>{axis}</span>
-            <input type="number" step="0.1" value={selected.destination[index]} onChange={event => {
-              const next = [...selected.destination]; next[index] = Number(event.target.value); updateSource(selected.id, { destination: next });
-            }} />
-          </label>)}
-          <label className="transition-time">Travel time <span><input type="number" min="0.1" step="0.1" value={selected.travelTime} onChange={event => updateSource(selected.id, { travelTime: Number(event.target.value) })} /> sec</span></label>
-        </>}
-      </div>}
-      <div className="action-stack">
-        <button className="primary render-button" onClick={renderAudio} disabled={busy || isRendering}>{busy ? 'Queueing render…' : isRendering ? 'Rendering spatial scene…' : `Render ${mode === 'animated' ? 'animated' : 'fixed'} scene  →`}</button>
-        <button className="secondary-button" onClick={() => setProjectModal(true)} disabled={!sources.length}>Save project <span>＋</span></button>
-      </div>
-      {error && <div className="error">{error}</div>}
-      {render && <div className={`render-status ${render.status}`}>
-        <strong>{renderTitle}</strong>
-        <span>{render.message}</span>
-        {render.status === 'complete' && <button className="download-button" onClick={downloadRender}>Download {render.filename} ↓</button>}
-      </div>}
-    </aside>
-    <section className="viewport">
-      <Scene sources={sources} selectedId={selectedId} setSelectedId={setSelectedId} updateSource={updateSource} mode={mode} timelineTime={timelineTime} />
-      <div className="viewport-topline"><span className="coordinate-note">LISTENER AT ORIGIN / HEADPHONES RECOMMENDED</span><span className="source-count">{sources.length} {sources.length === 1 ? 'SOURCE' : 'SOURCES'}</span></div>
-      <div className="legend"><span><i className="dot listener" /> Listener</span><span><i className="dot source" /> Audio source</span>{mode === 'animated' && <span><i className="line-dot" /> Path</span>}</div>
-      <Timeline sources={sources} mode={mode} time={timelineTime} setTime={setTimelineTime} />
-    </section>
-  </div>;
+        {/* Upload Audio Tape Box */}
+        <div className="sidebar-section">
+          <label className="upload-tape-box">
+            <input type="file" multiple accept=".mp3,.wav,audio/mpeg,audio/wav" onChange={chooseFiles} />
+            <span className="tape-icon">📼</span>
+            <strong>{sources.length ? 'Insert Another Track' : 'Load Audio Tape'}</strong>
+            <small>MP3 or WAV Linear PCM · Up to 16 tracks</small>
+          </label>
+        </div>
 
-  const libraryView = <main className="page-shell">
-    <div className="page-heading"><div><span className="eyebrow">YOUR LIBRARY</span><h1>Projects that are<br /><em>ready to revisit.</em></h1></div><button className="primary heading-action" onClick={() => { setView('studio'); setSources([]); setRender(null); }}>＋ New project</button></div>
-    <div className="library-strip"><div><strong>{projects.length}</strong><span>saved projects</span></div><div><strong>{projects.filter(project => project.published).length}</strong><span>published sketches</span></div><div><strong>{sources.length}</strong><span>loaded sources</span></div></div>
-    <div className="section-heading"><span>ALL PROJECTS</span><small>Saved in this studio</small></div>
-    <div className="project-grid">{projects.length ? projects.map(project => <ProjectCard key={project.id} project={project} onLoad={loadProject} onPublish={togglePublish} onAudio={project => download(`/api/projects/${project.id}/audio`, `${project.title}.mp3`).catch(err => setError(err.message))} />) : <div className="empty-state"><span>✦</span><strong>Your library is quiet.</strong><p>Build a fixed or animated scene, then save it here for later.</p><button className="secondary-button" onClick={() => setView('studio')}>Start composing →</button></div>}</div>
-  </main>;
+        {/* Source Track List */}
+        {sources.length > 0 && (
+          <div className="sidebar-section">
+            <div className="sidebar-section-title">
+              <span>LOADED TRACKS ({sources.length})</span>
+              <small>Click to Inspect</small>
+            </div>
+            <div className="source-track-list">
+              {sources.map((s, index) => (
+                <div
+                  key={s.id}
+                  className={`track-cassette-item ${s.id === selectedId ? 'selected' : ''}`}
+                  onClick={() => setSelectedId(s.id)}
+                >
+                  <div className="track-info">
+                    <span className="track-num-stamp">{String(index + 1).padStart(2, '0')}</span>
+                    <div className="track-labels">
+                      <span className="track-name">{s.upload.filename}</span>
+                      <span className="track-sub">
+                        {mode === 'animated'
+                          ? `Sweep (${formatPanDescription(s.pan)} → ${formatPanDescription(s.destinationPan)})`
+                          : formatPanDescription(s.pan)}
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    className="track-remove-btn"
+                    title="Remove Track"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSources(items => items.filter(item => item.id !== s.id));
+                    }}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
-  const communityView = <main className="page-shell community-page">
-    <div className="page-heading"><div><span className="eyebrow">THE COMMUNITY</span><h1>Find your next<br /><em>listening reference.</em></h1></div><div className="community-stat"><span className="live-dot" /> EARLY CREATOR NETWORK<br /><b>Discover · follow · remix</b></div></div>
-    <div className="community-layout">
-      <section className="discover-column"><div className="search-row"><span>⌕</span><input placeholder="Search published projects or artists" value={projectSearch} onChange={event => setProjectSearch(event.target.value)} /></div><div className="section-heading"><span>DISCOVER PROJECTS</span><small>{discoverProjects.length} public sketches</small></div><div className="project-grid">{discoverProjects.length ? discoverProjects.map(project => <ProjectCard key={project.id} project={project} onLoad={loadProject} onAudio={project => download(`/api/projects/${project.id}/audio`, `${project.title}.mp3`).catch(err => setError(err.message))} />) : <div className="empty-state compact"><span>⌁</span><strong>No published sketches yet.</strong><p>Publish a project from your library and it will appear here.</p></div>}</div></section>
-      <aside className="artist-column"><div className="section-heading"><span>ARTISTS</span><small>Find collaborators</small></div><div className="search-row small-search"><span>⌕</span><input placeholder="Search artists" value={artistSearch} onChange={event => setArtistSearch(event.target.value)} /></div><div className="artist-list">{artists.length ? artists.map(artist => <div className="artist-row" key={artist.id}><div className="avatar">{artist.name.slice(0, 1).toUpperCase()}</div><div className="artist-copy"><strong>{artist.name}</strong><small>{artist.followers} followers</small></div><button className={artist.followed ? 'follow-button following' : 'follow-button'} onClick={() => follow(artist)}>{artist.followed ? 'Following' : 'Follow'}</button></div>) : <p className="muted small">No other artists yet. Invite a collaborator by sharing the studio.</p>}</div><div className="future-card"><span>✦</span><strong>Personalized discovery is next.</strong><p>Spatia will learn from listening history, spatial gestures, and saved projects to suggest references that fit your practice.</p></div></aside>
+        {/* Selected Track Parameter Card */}
+        {selected && (
+          <div className="sidebar-section">
+            <div className="source-position-card">
+              <div className="card-heading-row">
+                <strong>{mode === 'animated' ? 'SWEEP START POSITION' : 'EARPHONE POSITION'}</strong>
+                <span className="stamp-badge red">STEREO PAN</span>
+              </div>
+
+              <div className="earphone-pan-slider-group">
+                <div className="pan-scale-labels">
+                  <span>◀ 100% LEFT</span>
+                  <span>CENTER (0.0)</span>
+                  <span>100% RIGHT ▶</span>
+                </div>
+                <input
+                  type="range"
+                  min="-1.0"
+                  max="1.0"
+                  step="0.05"
+                  value={selected.pan}
+                  onChange={(e) => updateSource(selected.id, { pan: Number(e.target.value) })}
+                />
+                <div className="pan-readout-pill">
+                  {formatPanDescription(selected.pan)}
+                </div>
+                <div className="preset-button-row">
+                  <button onClick={() => updateSource(selected.id, { pan: 1.0 })}>Max L</button>
+                  <button onClick={() => updateSource(selected.id, { pan: 0.5 })}>Mid L</button>
+                  <button onClick={() => updateSource(selected.id, { pan: 0.0 })}>Center</button>
+                  <button onClick={() => updateSource(selected.id, { pan: -0.5 })}>Mid R</button>
+                  <button onClick={() => updateSource(selected.id, { pan: -1.0 })}>Max R</button>
+                </div>
+              </div>
+
+              {mode === 'animated' && (
+                <>
+                  <div className="card-heading-row" style={{ marginTop: '8px' }}>
+                    <strong>SWEEP DESTINATION POSITION</strong>
+                    <span className="stamp-badge blue">END POINT</span>
+                  </div>
+                  <div className="earphone-pan-slider-group">
+                    <input
+                      type="range"
+                      min="-1.0"
+                      max="1.0"
+                      step="0.05"
+                      value={selected.destinationPan}
+                      onChange={(e) => updateSource(selected.id, { destinationPan: Number(e.target.value) })}
+                    />
+                    <div className="pan-readout-pill">
+                      {formatPanDescription(selected.destinationPan)}
+                    </div>
+                  </div>
+                  <div className="time-input-row">
+                    <span>Travel Duration:</span>
+                    <span>
+                      <input
+                        type="number"
+                        min="0.5"
+                        step="0.5"
+                        value={selected.travelTime}
+                        onChange={(e) => updateSource(selected.id, { travelTime: Number(e.target.value) })}
+                      /> sec
+                    </span>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Action Buttons */}
+        <div className="sidebar-section" style={{ marginTop: 'auto' }}>
+          <button
+            className="primary"
+            style={{ width: '100%', padding: '12px', fontSize: '13px' }}
+            onClick={renderAudio}
+            disabled={busy || isRendering}
+          >
+            {busy ? 'Preparing DSP Core…' : isRendering ? 'Processing Linear PCM…' : 'Render Binaural Audio →'}
+          </button>
+          <button
+            className="secondary-button"
+            style={{ width: '100%', marginTop: '6px' }}
+            onClick={() => setProjectModal(true)}
+            disabled={!sources.length}
+          >
+            Save Sketch to Library ＋
+          </button>
+        </div>
+
+        {error && <div className="render-telegram-slip failed">ERROR: {error}</div>}
+
+        {/* Render Telegram Slip */}
+        {render && (
+          <div className={`render-telegram-slip ${render.status === 'complete' ? 'complete' : ''}`}>
+            <strong>STATUS: {render.status.toUpperCase()}</strong>
+            <span>{render.message}</span>
+            {render.status === 'complete' && (
+              <button className="download-master-btn" onClick={downloadRender}>
+                Download Master MP3 ({render.filename}) ↓
+              </button>
+            )}
+          </div>
+        )}
+      </aside>
+
+      {/* Main Soundstage & Timeline */}
+      <main className="studio-main-stage">
+        <EarphoneSoundstage
+          sources={sources}
+          selectedId={selectedId}
+          setSelectedId={setSelectedId}
+          updateSource={updateSource}
+          mode={mode}
+          timelineTime={timelineTime}
+        />
+        <TapeDeckTimeline
+          sources={sources}
+          mode={mode}
+          time={timelineTime}
+          setTime={setTimelineTime}
+        />
+      </main>
     </div>
-  </main>;
+  );
 
-  return <div className="app">
-    <header>
-      <button className="logo" onClick={() => setView('studio')}><span>S</span> SPATIA</button>
-      <nav className="main-nav"><button className={view === 'studio' ? 'active' : ''} onClick={() => setView('studio')}>Studio</button><button className={view === 'library' ? 'active' : ''} onClick={() => setView('library')}>Library <small>{projects.length}</small></button><button className={view === 'community' ? 'active' : ''} onClick={() => setView('community')}>Community</button></nav>
-      <div className="header-right"><div className="user-chip"><span>{user.name.slice(0, 1).toUpperCase()}</span>{user.name}</div><button className="ghost" onClick={logout}>Sign out</button></div>
-    </header>
-    {view === 'studio' ? studioView : view === 'library' ? libraryView : communityView}
-    {projectModal && <div className="modal-backdrop" onMouseDown={event => { if (event.target === event.currentTarget) setProjectModal(false); }}><form className="project-modal" onSubmit={saveProject}><button type="button" className="modal-close" onClick={() => setProjectModal(false)}>×</button><span className="eyebrow">SAVE TO LIBRARY</span><h2>Give this scene a home.</h2><p className="muted small">Your {mode} setup will be saved with its source coordinates. Publish it when you are ready for other artists to discover it.</p><label>Project title<input value={projectForm.title} onChange={event => setProjectForm({ ...projectForm, title: event.target.value })} required /></label><label>Description <span className="optional">optional</span><textarea value={projectForm.description} onChange={event => setProjectForm({ ...projectForm, description: event.target.value })} placeholder="What should someone notice when they listen?" /></label><label className="publish-toggle"><input type="checkbox" checked={projectForm.published} onChange={event => setProjectForm({ ...projectForm, published: event.target.checked })} /><span><strong>Publish to Community</strong><small>Make this project searchable by other artists.</small></span></label><div className="modal-actions"><button type="button" className="secondary-button" onClick={() => setProjectModal(false)}>Cancel</button><button className="primary">Save project →</button></div></form></div>}
-  </div>;
+  // Library View JSX
+  const libraryView = (
+    <div className="page-container">
+      <div className="page-header-row">
+        <div>
+          <span className="eyebrow">ARCHIVAL STORAGE</span>
+          <h1>Your Binaural Library</h1>
+          <p>Handcrafted earphone sketches stored in local memory.</p>
+        </div>
+        <button className="primary" onClick={() => { setView('studio'); setSources([]); setRender(null); }}>
+          ＋ New Sketch
+        </button>
+      </div>
+
+      <div className="stat-strip-catalog">
+        <div className="stat-cell">
+          <strong>{projects.length}</strong>
+          <span>SAVED SKETCHES</span>
+        </div>
+        <div className="stat-cell">
+          <strong>{projects.filter(p => p.published).length}</strong>
+          <span>PUBLISHED</span>
+        </div>
+        <div className="stat-cell">
+          <strong>{sources.length}</strong>
+          <span>ACTIVE TRACKS</span>
+        </div>
+      </div>
+
+      <div className="card-catalog-grid">
+        {projects.length ? (
+          projects.map(p => (
+            <CatalogCard
+              key={p.id}
+              project={p}
+              onLoad={loadProject}
+              onPublish={togglePublish}
+              onAudio={(proj) => download(`/api/projects/${proj.id}/audio`, `${proj.title}.mp3`).catch(err => setError(err.message))}
+            />
+          ))
+        ) : (
+          <div className="render-telegram-slip" style={{ gridColumn: '1 / -1', padding: '32px', textAlign: 'center' }}>
+            <strong>NO SAVED SKETCHES YET</strong>
+            <p>Compose an audio scene in the studio and save it here to keep your collection.</p>
+            <button className="primary" style={{ justifySelf: 'center', marginTop: '10px' }} onClick={() => setView('studio')}>
+              Enter Studio →
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  // Community View JSX
+  const communityView = (
+    <div className="page-container">
+      <div className="page-header-row">
+        <div>
+          <span className="eyebrow">PUBLIC DISCOVERY</span>
+          <h1>Audio Artist Community</h1>
+          <p>Listen to published binaural sketches and connect with other sound designers.</p>
+        </div>
+        <div className="stamp-badge green">EARLY CREATOR NETWORK</div>
+      </div>
+
+      <div className="community-columns">
+        <section>
+          <div className="search-box-row">
+            <span>⌕</span>
+            <input
+              placeholder="Search published sketches or artists..."
+              value={projectSearch}
+              onChange={(e) => setProjectSearch(e.target.value)}
+            />
+          </div>
+          <div className="card-catalog-grid">
+            {discoverProjects.length ? (
+              discoverProjects.map(p => (
+                <CatalogCard
+                  key={p.id}
+                  project={p}
+                  onLoad={loadProject}
+                  onAudio={(proj) => download(`/api/projects/${proj.id}/audio`, `${proj.title}.mp3`).catch(err => setError(err.message))}
+                />
+              ))
+            ) : (
+              <div className="render-telegram-slip" style={{ gridColumn: '1 / -1', padding: '24px' }}>
+                No published sketches found matching your search.
+              </div>
+            )}
+          </div>
+        </section>
+
+        <aside>
+          <div className="sidebar-section-title" style={{ marginBottom: '14px' }}>
+            <span>ARTIST DIRECTORY</span>
+          </div>
+          <div className="search-box-row" style={{ marginBottom: '14px' }}>
+            <span>⌕</span>
+            <input
+              placeholder="Filter artists..."
+              value={artistSearch}
+              onChange={(e) => setArtistSearch(e.target.value)}
+            />
+          </div>
+          <div className="artist-ledger-list">
+            {artists.length ? (
+              artists.map(artist => (
+                <div className="artist-ledger-row" key={artist.id}>
+                  <div className="artist-meta-left">
+                    <div className="artist-avatar-stamp">
+                      {artist.name.slice(0, 1).toUpperCase()}
+                    </div>
+                    <div>
+                      <strong>{artist.name}</strong>
+                      <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                        {artist.followers} followers
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    className={artist.followed ? 'primary' : ''}
+                    onClick={() => followArtist(artist)}
+                  >
+                    {artist.followed ? 'Following ✓' : 'Follow ＋'}
+                  </button>
+                </div>
+              ))
+            ) : (
+              <p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>No artists found.</p>
+            )}
+          </div>
+        </aside>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="app">
+      <header className="studio-header">
+        <button className="logo-stamp" onClick={() => setView('studio')}>
+          <div className="logo-seal">S8</div>
+          <div className="logo-meta">
+            <span className="logo-title">SPATIAL8</span>
+            <span className="logo-subtitle">Earphone Audio Lab</span>
+          </div>
+        </button>
+
+        <nav className="main-nav">
+          <button className={view === 'studio' ? 'active' : ''} onClick={() => setView('studio')}>
+            [1. Studio Workbench]
+          </button>
+          <button className={view === 'library' ? 'active' : ''} onClick={() => setView('library')}>
+            [2. Archival Library <small>({projects.length})</small>]
+          </button>
+          <button className={view === 'community' ? 'active' : ''} onClick={() => setView('community')}>
+            [3. Community Archive]
+          </button>
+        </nav>
+
+        <div className="header-user-panel">
+          <div className="user-identity">
+            <span className="user-badge-initial">{user.name.slice(0, 1).toUpperCase()}</span>
+            <span>{user.name}</span>
+          </div>
+          <button className="signout-button" onClick={logout}>Sign Out</button>
+        </div>
+      </header>
+
+      {view === 'studio' ? studioView : view === 'library' ? libraryView : communityView}
+
+      {/* Save Project Modal */}
+      {projectModal && (
+        <div
+          className="modal-backdrop"
+          onMouseDown={(e) => { if (e.target === e.currentTarget) setProjectModal(false); }}
+        >
+          <form className="modal-dialog" onSubmit={saveProject}>
+            <button type="button" className="modal-close-btn" onClick={() => setProjectModal(false)}>×</button>
+            <span className="eyebrow">ARCHIVE ENTRY</span>
+            <h2>Save Earphone Sketch</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '13px' }}>
+              Your {mode === 'animated' ? 'animated sweep' : 'fixed position'} setup will be filed into your personal library.
+            </p>
+            <label style={{ display: 'grid', gap: '4px', fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase' }}>
+              Sketch Title
+              <input
+                value={projectForm.title}
+                onChange={(e) => setProjectForm({ ...projectForm, title: e.target.value })}
+                required
+              />
+            </label>
+            <label style={{ display: 'grid', gap: '4px', fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase' }}>
+              Description
+              <textarea
+                value={projectForm.description}
+                onChange={(e) => setProjectForm({ ...projectForm, description: e.target.value })}
+                placeholder="Notes on the audio source, stereo balance, or performance intent..."
+              />
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+              <input
+                type="checkbox"
+                checked={projectForm.published}
+                onChange={(e) => setProjectForm({ ...projectForm, published: e.target.checked })}
+              />
+              <span style={{ fontSize: '13px' }}>Publish to the community discovery catalog</span>
+            </label>
+            <div className="modal-actions">
+              <button type="button" onClick={() => setProjectModal(false)}>Cancel</button>
+              <button type="submit" className="primary">File into Library →</button>
+            </div>
+          </form>
+        </div>
+      )}
+    </div>
+  );
 }
+
+// ---------------------------------------------------------------------------
+// Component: Auth Screen (Logbook Entrance)
+// ---------------------------------------------------------------------------
+
+function Auth({ onAuth }) {
+  const [signup, setSignup] = useState(false);
+  const [form, setForm] = useState({ name: '', email: 'demo@gmail.com', password: 'demo@123' });
+  const [error, setError] = useState('');
+
+  const submit = async (e) => {
+    e.preventDefault();
+    setError('');
+    try {
+      const data = await api(`/api/auth/${signup ? 'signup' : 'login'}`, {
+        method: 'POST',
+        body: JSON.stringify(form)
+      });
+      localStorage.setItem('spatia-token', data.token);
+      onAuth(data.user);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const useDemo = () => {
+    setSignup(false);
+    setForm({ name: '', email: 'demo@gmail.com', password: 'demo@123' });
+    setError('');
+  };
+
+  return (
+    <main className="auth-wrapper">
+      <div className="auth-seal">
+        <span className="stamp-badge red">SPATIAL8 AUDIO LAB</span>
+        <span className="stamp-badge">EST. 2026</span>
+      </div>
+
+      <span className="eyebrow">LOGBOOK ENTRY</span>
+      <h1>Binaural Audio<br /><em>for Stereo Earphones.</em></h1>
+      <p className="desc">
+        A handcrafted acoustic studio focusing purely on the two fundamental binaural factors:
+        Interaural Time Difference (ITD) and Interaural Level Difference (ILD).
+      </p>
+
+      <form className="auth-form" onSubmit={submit}>
+        {signup && (
+          <label>
+            Your Name / Artist Handle
+            <input
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              required
+            />
+          </label>
+        )}
+        <label>
+          Email Address
+          <input
+            type="email"
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            required
+          />
+        </label>
+        <label>
+          Security Password
+          <input
+            type="password"
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+            required
+          />
+        </label>
+
+        {error && <div className="render-telegram-slip failed">{error}</div>}
+
+        <button type="submit" className="primary" style={{ marginTop: '10px', padding: '12px' }}>
+          {signup ? 'Create Lab Account →' : 'Sign In to Workbench →'}
+        </button>
+      </form>
+
+      {!signup && (
+        <div className="demo-fill-card">
+          <div>
+            <strong>Local Demonstration Account</strong>
+            <small>demo@gmail.com / demo@123</small>
+          </div>
+          <button type="button" onClick={useDemo}>
+            Fill Credentials
+          </button>
+        </div>
+      )}
+
+      <div style={{ textAlign: 'center', marginTop: '16px' }}>
+        <button
+          className="text-button"
+          onClick={() => { setSignup(!signup); setError(''); }}
+        >
+          {signup ? 'Already registered? Sign in to logbook' : 'New sound designer? Register an account'}
+        </button>
+      </div>
+    </main>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Root App
+// ---------------------------------------------------------------------------
 
 function App() {
   const [user, setUser] = useState(null);
+
   useEffect(() => {
-    if (localStorage.getItem('spatia-token')) api('/api/auth/me').then(setUser).catch(() => localStorage.removeItem('spatia-token'));
+    if (localStorage.getItem('spatia-token')) {
+      api('/api/auth/me').then(setUser).catch(() => localStorage.removeItem('spatia-token'));
+    }
   }, []);
+
   if (!user) return <Auth onAuth={setUser} />;
-  return <Studio user={user} logout={() => { localStorage.removeItem('spatia-token'); setUser(null); }} />;
+  return (
+    <Studio
+      user={user}
+      logout={() => {
+        localStorage.removeItem('spatia-token');
+        setUser(null);
+      }}
+    />
+  );
 }
 
 createRoot(document.getElementById('root')).render(<App />);

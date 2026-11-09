@@ -5,14 +5,15 @@ clc;
 inputFile = "input.mp3";
 outputFile = "spatial_output.mp3";
 
-% Source coordinates [x y z]
-% +X = forward
-% +Y = left
-% +Z = upward
-sourcePosition = [0 0 4];
+% Earphone coordinates [x y z]
+% +Y = Left Earphone
+% -Y = Right Earphone
+%  0 = Center (Both Earphones Balanced)
+% +X = Forward baseline distance (1.0m)
+%  Z = Elevation (0, bypassed for 2-earphone rendering)
+sourcePosition = [1.0 1.5 0.0]; % 1.5m toward Left Earphone
 
-% Process audio using the synthetic test HRIR
-% This does not require a measured HRTF database.
+% Process audio using the two-factor Left/Right earphone model (ITD + ILD)
 metadata = spatializeAudio( ...
     inputFile, ...
     outputFile, ...
@@ -21,5 +22,5 @@ metadata = spatializeAudio( ...
     'FfmpegPath', "ffmpeg", ...
     'Mp3Bitrate', "320k");
 
-disp("Spatial audio processing completed.");
+disp("Left/Right earphone spatial audio processing completed.");
 disp(metadata);

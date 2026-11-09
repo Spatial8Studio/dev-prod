@@ -179,7 +179,7 @@ public class AudioService {
             Process process = new ProcessBuilder(
                 matlabCommand,
                 "-batch",
-                "run('" + script.toString().replace("'", "''") + "')"
+                "run('" + script.toAbsolutePath().toString().replace("\\", "/").replace("'", "''") + "')"
             ).redirectErrorStream(true).redirectOutput(matlabLog.toFile()).start();
             log.info("[{}] MATLAB process started: pid={}", job.id(), process.pid());
 
@@ -199,7 +199,7 @@ public class AudioService {
                 throw new IOException("MATLAB completed without an output file");
             }
             log.info("[{}] MATLAB exited successfully; output size={} bytes", job.id(), Files.size(job.file()));
-            job.complete(job.file(), job.filename(), "Rendered " + request.sources().size() + " moving source(s) into one binaural MP3");
+            job.complete(job.file(), job.filename(), "Rendered " + request.sources().size() + " source(s) with two-factor Left/Right earphone binaural processing");
             log.info("[{}] Render complete: {}", job.id(), job.file());
         } finally {
             if (Files.exists(matlabLog)) {
@@ -250,29 +250,34 @@ public class AudioService {
         if (!Double.isFinite(x) || !Double.isFinite(y) || !Double.isFinite(z)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Source coordinates must be valid numbers");
         }
-        if (Math.sqrt(x * x + y * y + z * z) < 0.01) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A source cannot be placed at the listener origin");
-        }
     }
 
     private String matlabScript(SceneRequest request, List<StoredUpload> sourceUploads, Path output) {
         StringBuilder script = new StringBuilder("addpath('")
-            .append(matlabDirectory.toString().replace("'", "''")).append("');\n")
+            .append(matlabDirectory.toAbsolutePath().toString().replace("\\", "/").replace("'", "''")).append("');\n")
             .append("sources = struct('inputFile',{},'startPosition',{},'destinationPosition',{},'travelTime',{});\n");
         for (int index = 0; index < request.sources().size(); index++) {
             SourceRequest source = request.sources().get(index);
             StoredUpload upload = sourceUploads.get(index);
-            script.append("sources(").append(index + 1).append(").inputFile='").append(upload.path().toString().replace("'", "''")).append("';\n")
-                .append("sources(").append(index + 1).append(").startPosition=[").append(source.startX()).append(" ").append(source.startY()).append(" ").append(source.startZ()).append("];\n")
-                .append("sources(").append(index + 1).append(").destinationPosition=[").append(source.destinationX()).append(" ").append(source.destinationY()).append(" ").append(source.destinationZ()).append("];\n")
+            // In pure Left/Right earphone model, Y represents lateral positioning (+Y = left, -Y = right),
+            // while elevation Z is 0 and forward distance X defaults to 1.0.
+            double startX = Math.abs(source.startX()) < 0.001 && Math.abs(source.startZ()) < 0.001 ? 1.0 : source.startX();
+            double startY = source.startY();
+            double startZ = 0.0;
+            double destX = Math.abs(source.destinationX()) < 0.001 && Math.abs(source.destinationZ()) < 0.001 ? 1.0 : source.destinationX();
+            double destY = source.destinationY();
+            double destZ = 0.0;
+            script.append("sources(").append(index + 1).append(").inputFile='").append(upload.path().toAbsolutePath().toString().replace("\\", "/").replace("'", "''")).append("';\n")
+                .append("sources(").append(index + 1).append(").startPosition=[").append(startX).append(" ").append(startY).append(" ").append(startZ).append("];\n")
+                .append("sources(").append(index + 1).append(").destinationPosition=[").append(destX).append(" ").append(destY).append(" ").append(destZ).append("];\n")
                 .append("sources(").append(index + 1).append(").travelTime=").append(source.travelTimeSeconds()).append(";\n");
         }
-        script.append("renderScene(sources,'").append(output.toString().replace("'", "''"))
+        script.append("renderScene(sources,'").append(output.toAbsolutePath().toString().replace("\\", "/").replace("'", "''"))
             .append("','FfmpegPath','ffmpeg'");
         if (hrirFile == null || hrirFile.isBlank()) {
             script.append(",'AllowSynthetic',true");
         } else {
-            script.append(",'HrirFile','").append(hrirFile.replace("'", "''"))
+            script.append(",'HrirFile','").append(hrirFile.replace("\\", "/").replace("'", "''"))
                 .append("','AllowSynthetic',false");
         }
         return script.append(");\n").toString();

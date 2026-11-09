@@ -33,9 +33,8 @@ speedOfSound = 343;
 applyExtraITD = false;
 highPassHz = 28;
 noiseGateDb = -72;
-% Height cues are deliberately exaggerated for the demo. Set to zero for
-% the unmodified measured HRIR response.
-elevationCueStrength = 1.8;
+% Elevation is disabled for pure Left/Right earphone rendering.
+elevationCueStrength = 0;
 
 %% Read name-value options
 
@@ -212,18 +211,16 @@ while sampleStart <= numberOfSamples
         (1 - amount) * startPosition + ...
         amount * endPosition;
 
-    distance = norm(currentPosition);
+    % Pure Left/Right earphone model:
+    lateralY = currentPosition(2);
+    referenceFrontX = max(0.5, abs(currentPosition(1)));
+    azimuth = atan2d(lateralY, referenceFrontX);
+    elevation = 0;
+    distance = hypot(referenceFrontX, lateralY);
 
     if distance == 0
         distance = eps;
     end
-
-    azimuth = atan2d( ...
-        currentPosition(2), ...
-        currentPosition(1));
-
-    elevation = asind( ...
-        currentPosition(3) / distance);
 
     % Distance attenuation.
     gain = min(1, 1 / max(distance, 1));
@@ -384,9 +381,9 @@ metadata.outputFormat = "MP3";
 metadata.mp3Bitrate = mp3Bitrate;
 metadata.highPassHz = highPassHz;
 metadata.noiseGateDb = noiseGateDb;
-metadata.elevationCueStrength = elevationCueStrength;
+metadata.elevationCueStrength = 0;
 metadata.directionalCueDescription = ...
-    "Measured lateral HRTF + explicit front/rear and height cues";
+    "Two-factor Left/Right earphone binaural rendering (ITD + ILD)";
 
 end
 
@@ -634,14 +631,8 @@ end
 function [left, right] = addDirectionalDemoCue( ...
     left, right, sampleRate, azimuth, elevation, strength)
 
-% ADDDIRECTIONALDEMO CUE keeps measured HRTF left/right localization, then
-% adds intentionally obvious depth and height signatures. Natural front/back
-% and elevation differences can be only a few dB and disappear on ordinary
-% headphones, so this demo layer is stronger than a research-pure HRTF.
-
-if strength <= 0
-    return;
-end
+% Elevation and front/rear demo cues are disabled for pure Left/Right earphones rendering.
+return;
 
 % Front/back is not represented by ITD when the source is centered. Use a
 % measured-HRTF-compatible head-shadow/pinna profile instead: rear sources are
@@ -779,114 +770,53 @@ function [left, right] = syntheticHrir( ...
     sampleRate, azimuth, elevation, speedOfSound, headRadius, ...
     elevationCueStrength)
 
-% Testing-only synthetic HRIR with lateral, elevation and front/back cues.
-% Use a measured HRTF database for final project results. This model makes
-% the fallback less ambiguous, but it does not replace measured HRIRs.
+% Pure 2-factor Left & Right earphone binaural model:
+% Factor 1: ITD (Interaural Time Difference) via Woodworth spherical head model
+% Factor 2: ILD (Interaural Level Difference) & Acoustic Head Shadow low-pass
 
-itdSeconds = headRadius / speedOfSound * ...
-    (deg2rad(azimuth) + sind(azimuth));
+% Clamp azimuth to [-90, 90] degrees where +90 = Left earphone, -90 = Right earphone.
+theta = max(-90, min(90, azimuth));
 
-itdSamples = abs(itdSeconds * sampleRate);
+% Factor 1: ITD (Woodworth formula)
+% tau = (r / c) * (theta_rad + sin(theta_rad))
+thetaRad = deg2rad(abs(theta));
+itdSeconds = (headRadius / speedOfSound) * (thetaRad + sin(thetaRad));
+itdSamples = itdSeconds * sampleRate;
 
-% cos(azimuth) is 1 directly in front and -1 directly behind. A rear
-% source receives a high-frequency roll-off that approximates head and pinna
-% shadowing. Elevation is intentionally more pronounced in the synthetic
-% fallback: an overhead source receives a bright spectral shelf, a shifted
-% pinna notch and a stronger early reflection. This is not a replacement for
-% a measured HRTF, but it makes front/above/below positions distinguishable
-% when no HRIR file is configured.
-frontness = cosd(azimuth);
-rearAmount = (1 - frontness) / 2;
-elevationAmount = max(-1, min(1, sind(elevation)));
+% Factor 2: ILD (Level difference in dB, up to ~8.5 dB at full 90 degrees)
+ildDb = min(9.0, (abs(theta) / 90) * 8.5);
+attenuationLinear = 10^(-ildDb / 20);
 
-% Elevation is perceptually difficult to hear at small angles. A square-root
-% curve plus a demo strength makes a 20-30 degree source receive a useful cue
-% while preserving the sign (above versus below). The same strength is also
-% used by the measured-HRIR enhancement below.
-perceptualElevation = sign(elevationAmount) * min(1, ...
-    sqrt(abs(elevationAmount)) * max(0, elevationCueStrength));
-aboveAmount = max(perceptualElevation, 0);
-belowAmount = max(-perceptualElevation, 0);
+% Base direct impulse (unit impulse with minimal length)
+baseImpulse = [1; zeros(2, 1)];
 
-% The two-tap shelf preserves DC level but changes treble by several dB. This
-% is intentionally stronger than a subtle HRTF cue because the fallback has to
-% remain audible on ordinary headphones and laptop speakers.
-verticalShelf = 0.52 * perceptualElevation;
+% Head shadow filter for the shadowed ear:
+% The human head acts as an acoustic baffle for frequencies > 1.5 kHz.
+% For the ear further away, apply high-frequency acoustic shadowing.
+if abs(theta) > 0.1
+    % Acoustic shadowing shelf: low frequencies pass, highs attenuated
+    shadowHighGain = max(0.20, 1.0 - 0.75 * (abs(theta) / 90));
+    shadowFilter = applySpectralShelf(baseImpulse, sampleRate, shadowHighGain, 1500);
+else
+    shadowFilter = baseImpulse;
+end
 
-% Real pinnae create more than one elevation-dependent spectral notch. Two
-% notches plus two short reflections are much easier to distinguish from a
-% straight-ahead source than a single shallow comb filter.
-notchFrequencyOne = 5600 - 1400 * perceptualElevation + 700 * rearAmount;
-notchFrequencyTwo = 9300 - 1200 * perceptualElevation + 900 * rearAmount;
-notchDelayOne = max(2, round(sampleRate / (2 * notchFrequencyOne)));
-notchDelayTwo = max(notchDelayOne + 1, ...
-    round(sampleRate / (2 * notchFrequencyTwo)));
-notchDepthOne = 0.04 + 0.48 * abs(perceptualElevation) + ...
-    0.12 * rearAmount;
-notchDepthTwo = 0.02 + 0.28 * abs(perceptualElevation) + ...
-    0.05 * rearAmount;
-
-reflectionDelayOne = max(notchDelayTwo + 1, round(sampleRate * ...
-    (0.00022 + 0.00450 * aboveAmount + ...
-     0.00350 * belowAmount + 0.00030 * rearAmount)));
-reflectionDelayTwo = reflectionDelayOne + max(1, round(sampleRate * ...
-    (0.00180 + 0.00200 * aboveAmount + ...
-     0.00150 * belowAmount + 0.00025 * rearAmount)));
-reflectionGainOne = 0.02 + 0.68 * aboveAmount + ...
-    0.44 * belowAmount + 0.10 * rearAmount;
-reflectionGainTwo = 0.01 + 0.36 * aboveAmount + ...
-    0.20 * belowAmount + 0.05 * rearAmount;
-
-filterLength = reflectionDelayTwo + 1;
-directionalFilter = zeros(filterLength, 1);
-% Keep the low-frequency/DC gain near one while carving the two pinna notches.
-directionalFilter(1) = 1 + notchDepthOne + notchDepthTwo;
-directionalFilter(1 + notchDelayOne) = -notchDepthOne;
-directionalFilter(1 + notchDelayTwo) = ...
-    directionalFilter(1 + notchDelayTwo) - notchDepthTwo;
-directionalFilter(1 + reflectionDelayOne) = reflectionGainOne;
-directionalFilter(1 + reflectionDelayTwo) = reflectionGainTwo;
-
-% The rear low-pass section creates a stable front/back spectral contrast.
-% Its coefficients sum to one so it does not introduce a level jump while
-% a source moves across the listener.
-rearFilter = [1 - 0.75 * rearAmount; 0.55 * rearAmount; ...
-    0.20 * rearAmount];
-baseImpulse = conv(directionalFilter, rearFilter);
-
-% Apply the explicit front/rear profile to the synthetic fallback too. The
-% measured path uses the same helper after HRIR selection.
-baseImpulse = applyRearCue( ...
-    baseImpulse, sampleRate, rearAmount, elevationCueStrength);
-
-% Apply the signed vertical shelf after the pinna response. For an elevated
-% source [1+g, -g] keeps the low end intact while lifting the high end; for a
-% source below the listener the same operation becomes a gentle low-pass.
-baseImpulse = conv(baseImpulse, [1 + verticalShelf; -verticalShelf]);
-
-% Use the same broad, signed height shelf as measured HRIR playback so the
-% no-dataset fallback remains unmistakable on normal headphones.
-baseImpulse = applyHeightShelf( ...
-    baseImpulse, sampleRate, perceptualElevation);
-
-left = baseImpulse;
-right = baseImpulse;
-
-% Simple ILD approximation.
-levelDifference = ...
-    10^(min(6, abs(azimuth) / 90 * 6) / 20);
-
-if itdSeconds > 0
-
-    % Source is on the left.
-    right = fractionalDelay(right, itdSamples);
-    left = left * levelDifference;
-
-elseif itdSeconds < 0
-
-    % Source is on the right.
-    left = fractionalDelay(left, itdSamples);
-    right = right * levelDifference;
+if theta > 0
+    % Source is closer to LEFT earphone:
+    % Left ear gets direct sound at full level
+    left = baseImpulse;
+    % Right ear gets delayed sound (ITD) and attenuated/shadowed sound (ILD)
+    right = fractionalDelay(shadowFilter * attenuationLinear, itdSamples);
+elseif theta < 0
+    % Source is closer to RIGHT earphone:
+    % Right ear gets direct sound at full level
+    right = baseImpulse;
+    % Left ear gets delayed sound (ITD) and attenuated/shadowed sound (ILD)
+    left = fractionalDelay(shadowFilter * attenuationLinear, itdSamples);
+else
+    % Center: identical signals at both earphones (zero delay, zero level difference)
+    left = baseImpulse;
+    right = baseImpulse;
 end
 
 end

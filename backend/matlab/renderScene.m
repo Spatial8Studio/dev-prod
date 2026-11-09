@@ -23,8 +23,8 @@ for k = 1:numel(sources)
         "AllowSynthetic", allowSynthetic, "HrirFile", hrirFile, ...
         "FfmpegPath", ffmpegPath);
     if k == 1
-        disp("SPATIA_DIRECTIONAL_CUES=measured-lateral-hrtf+front-rear-height-enhancement");
-        disp("SPATIA_ELEVATION_CUE_STRENGTH=" + string(sourceMetadata.elevationCueStrength));
+        disp("SPATIA_DIRECTIONAL_CUES=left-right-earphones-itd-ild");
+        disp("SPATIA_ELEVATION_CUE_STRENGTH=0");
     end
     [audio, rate] = audioread(sourceOutput);
     if isempty(sampleRate), sampleRate = rate; end
