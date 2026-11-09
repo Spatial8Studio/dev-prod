@@ -68,13 +68,21 @@ const formatPanDescription = (pan) => {
   return pan > 0 ? `${percent}% Left Earphone` : `${percent}% Right Earphone`;
 };
 
-const newSource = (upload) => ({
-  id: crypto.randomUUID(),
-  upload,
-  pan: 0.6,             // Start: 60% Left Earphone
-  destinationPan: -0.6, // Destination: 60% Right Earphone
-  travelTime: 8.0
-});
+// Natural alternating coordinate distribution for multi-audio combining
+const DEFAULT_COORDINATE_PANS = [0.70, -0.70, 0.00, 0.85, -0.85, 0.40, -0.40, 0.95, -0.95, 0.20, -0.20];
+
+const newSource = (upload, existingCount = 0) => {
+  const panIndex = existingCount % DEFAULT_COORDINATE_PANS.length;
+  const initialPan = DEFAULT_COORDINATE_PANS[panIndex];
+  const destPan = initialPan === 0 ? 0.6 : -initialPan;
+  return {
+    id: crypto.randomUUID(),
+    upload,
+    pan: initialPan,
+    destinationPan: destPan,
+    travelTime: 8.0
+  };
+};
 
 const currentPanAtTime = (source, mode, time) => {
   if (!source) return 0;
@@ -89,7 +97,20 @@ const currentPanAtTime = (source, mode, time) => {
 // Component: Interactive Earphone Soundstage
 // ---------------------------------------------------------------------------
 
-function EarphoneSoundstage({ sources, selectedId, setSelectedId, updateSource, mode, timelineTime }) {
+function EarphoneSoundstage({
+  sources,
+  selectedId,
+  setSelectedId,
+  updateSource,
+  mode,
+  timelineTime,
+  duplicateSource,
+  arrangeSpread,
+  arrangeStereoPair,
+  arrangeCrossSweep,
+  arrangeCenter,
+  setSources
+}) {
   const stageRef = useRef(null);
   const selected = sources.find(s => s.id === selectedId);
   const activePan = selected ? currentPanAtTime(selected, mode, timelineTime) : 0;
@@ -124,6 +145,47 @@ function EarphoneSoundstage({ sources, selectedId, setSelectedId, updateSource, 
           {mode === 'animated' ? '◌ ANIMATED SWEEP PREVIEW' : '● FIXED POSITION'}
         </div>
       </div>
+
+      {/* Multi-Track Arrangement Toolbar */}
+      {sources.length > 1 && (
+        <div className="stage-arrangement-presets">
+          <span className="preset-label">STAGE PRESETS:</span>
+          <button
+            type="button"
+            className="preset-btn"
+            onClick={arrangeSpread}
+            title="Distribute all loaded audios evenly between Left and Right"
+          >
+            ↔ Spread Evenly
+          </button>
+          <button
+            type="button"
+            className="preset-btn"
+            onClick={arrangeStereoPair}
+            title="Alternate audios Left & Right"
+          >
+            ⇄ Stereo Pair
+          </button>
+          {mode === 'animated' && (
+            <button
+              type="button"
+              className="preset-btn"
+              onClick={arrangeCrossSweep}
+              title="Counterpoint sweeps (some Left→Right, others Right→Left)"
+            >
+              ↻ Cross-Sweeps
+            </button>
+          )}
+          <button
+            type="button"
+            className="preset-btn"
+            onClick={arrangeCenter}
+            title="Reset all audios to center"
+          >
+            ⊙ Center All
+          </button>
+        </div>
+      )}
 
       {/* Visual Stereo Soundstage Area */}
       <div
@@ -252,6 +314,100 @@ function EarphoneSoundstage({ sources, selectedId, setSelectedId, updateSource, 
           </div>
         </div>
       </div>
+
+      {/* Multi-Audio Spatial Roster */}
+      {sources.length > 1 && (
+        <div className="multi-audio-roster-card">
+          <div className="card-heading-row">
+            <div>
+              <span className="eyebrow">MULTI-SOURCE SPATIAL MIXER</span>
+              <strong style={{ fontSize: '13px' }}>Combined Audio Coordinates ({sources.length} Tracks)</strong>
+            </div>
+            <span className="stamp-badge">SUPERPOSITION ACTIVE</span>
+          </div>
+          <div className="roster-table-wrapper">
+            <table className="roster-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>AUDIO TAPE</th>
+                  <th>EARPHONE POSITION</th>
+                  <th>WOODWORTH ITD</th>
+                  <th>HEAD SHADOW ILD</th>
+                  <th>ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sources.map((src, idx) => {
+                  const isCurSelected = src.id === selectedId;
+                  const curPan = currentPanAtTime(src, mode, timelineTime);
+                  const srcFactors = calculateBinauralFactors(curPan);
+                  return (
+                    <tr
+                      key={src.id}
+                      className={isCurSelected ? 'row-selected' : ''}
+                      onClick={() => setSelectedId(src.id)}
+                    >
+                      <td>
+                        <span className="track-num-stamp">#{String(idx + 1).padStart(2, '0')}</span>
+                      </td>
+                      <td className="track-name-cell">
+                        <strong>{src.upload.filename}</strong>
+                        <small>{mode === 'animated' ? `${src.travelTime}s sweep` : 'Static Position'}</small>
+                      </td>
+                      <td>
+                        <span className="roster-pan-tag">
+                          {formatPanDescription(curPan)}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="roster-metric-tag blue">
+                          {srcFactors.itdMs > 0
+                            ? `Δt = ${srcFactors.itdMs} ms (${srcFactors.isLeftDominant ? 'R lags' : 'L lags'})`
+                            : '0.00 ms (In-Phase)'}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="roster-metric-tag red">
+                          {srcFactors.ildDb > 0
+                            ? `-${srcFactors.ildDb} dB (${srcFactors.isLeftDominant ? 'R shadow' : 'L shadow'})`
+                            : '0.0 dB (Direct)'}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="roster-actions">
+                          <button
+                            type="button"
+                            className="roster-btn clone"
+                            title="Clone track to opposite ear coordinate"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              duplicateSource(src.id);
+                            }}
+                          >
+                            ⧉ Clone
+                          </button>
+                          <button
+                            type="button"
+                            className="roster-btn delete"
+                            title="Remove track"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSources(items => items.filter(item => item.id !== src.id));
+                            }}
+                          >
+                            ×
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -447,21 +603,82 @@ function Studio({ user, logout }) {
   }, [projectSearch, artistSearch]);
 
   const chooseFiles = async (event) => {
-    for (const file of [...event.target.files]) {
+    const files = [...event.target.files];
+    let currentSources = [...sources];
+    for (const file of files) {
       try {
         const body = new FormData();
         body.append('file', file);
         const upload = await api('/api/audio/uploads', { method: 'POST', body });
-        const source = newSource(upload);
+        const source = newSource(upload, currentSources.length);
         if (mode === 'fixed') source.destinationPan = source.pan;
-        setSources(items => [...items, source]);
+        currentSources = [...currentSources, source];
         setSelectedId(source.id);
         setView('studio');
       } catch (err) {
         setError(err.message);
       }
     }
+    setSources(currentSources);
     event.target.value = '';
+  };
+
+  const duplicateSource = (sourceId) => {
+    const orig = sources.find(s => s.id === sourceId);
+    if (!orig) return;
+    const cloned = {
+      ...orig,
+      id: crypto.randomUUID(),
+      pan: Number((-orig.pan).toFixed(2)),
+      destinationPan: Number((-orig.destinationPan).toFixed(2))
+    };
+    setSources(items => [...items, cloned]);
+    setSelectedId(cloned.id);
+  };
+
+  const arrangeSpread = () => {
+    if (sources.length <= 1) return;
+    setSources(items => items.map((s, idx) => {
+      const ratio = idx / (items.length - 1);
+      const newPan = Number((0.85 - ratio * 1.70).toFixed(2));
+      return {
+        ...s,
+        pan: newPan,
+        destinationPan: mode === 'fixed' ? newPan : Number((-newPan).toFixed(2))
+      };
+    }));
+  };
+
+  const arrangeStereoPair = () => {
+    setSources(items => items.map((s, idx) => {
+      const isLeft = idx % 2 === 0;
+      const pan = isLeft ? 0.75 : -0.75;
+      return {
+        ...s,
+        pan,
+        destinationPan: mode === 'fixed' ? pan : -pan
+      };
+    }));
+  };
+
+  const arrangeCrossSweep = () => {
+    setSources(items => items.map((s, idx) => {
+      const fromLeft = idx % 2 === 0;
+      return {
+        ...s,
+        pan: fromLeft ? 0.8 : -0.8,
+        destinationPan: fromLeft ? -0.8 : 0.8,
+        travelTime: 6.0 + (idx % 3) * 2.0
+      };
+    }));
+  };
+
+  const arrangeCenter = () => {
+    setSources(items => items.map(s => ({
+      ...s,
+      pan: 0,
+      destinationPan: 0
+    })));
   };
 
   // Convert pan [-1, +1] to backend coordinates (X=1.0, Y=pan*2.0, Z=0.0)
@@ -640,16 +857,30 @@ function Studio({ user, logout }) {
                       </span>
                     </div>
                   </div>
-                  <button
-                    className="track-remove-btn"
-                    title="Remove Track"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSources(items => items.filter(item => item.id !== s.id));
-                    }}
-                  >
-                    ×
-                  </button>
+                  <div className="track-card-actions">
+                    <button
+                      type="button"
+                      className="track-duplicate-btn"
+                      title="Clone Track to Opposite Ear Coordinate"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        duplicateSource(s.id);
+                      }}
+                    >
+                      ⧉
+                    </button>
+                    <button
+                      type="button"
+                      className="track-remove-btn"
+                      title="Remove Track"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSources(items => items.filter(item => item.id !== s.id));
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -773,6 +1004,12 @@ function Studio({ user, logout }) {
           updateSource={updateSource}
           mode={mode}
           timelineTime={timelineTime}
+          duplicateSource={duplicateSource}
+          arrangeSpread={arrangeSpread}
+          arrangeStereoPair={arrangeStereoPair}
+          arrangeCrossSweep={arrangeCrossSweep}
+          arrangeCenter={arrangeCenter}
+          setSources={setSources}
         />
         <TapeDeckTimeline
           sources={sources}

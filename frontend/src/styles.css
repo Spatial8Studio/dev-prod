@@ -615,18 +615,44 @@ header.studio-header {
   color: var(--text-muted);
 }
 
-.track-remove-btn {
-  border: 0;
-  background: transparent;
-  color: var(--text-faint);
-  font-size: 18px;
+.track-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.track-duplicate-btn {
+  border: 1px solid var(--border-dark);
+  background: var(--bg-card);
+  color: var(--text-main);
+  font-size: 13px;
   padding: 2px 6px;
-  box-shadow: none;
+  box-shadow: 1px 1px 0px var(--border-dark);
+  cursor: pointer;
+  transition: all 0.08s;
+}
+
+.track-duplicate-btn:hover {
+  background: #ebf8ff;
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
+}
+
+.track-remove-btn {
+  border: 1px solid var(--border-dark);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-size: 13px;
+  padding: 2px 6px;
+  box-shadow: 1px 1px 0px var(--border-dark);
+  cursor: pointer;
+  transition: all 0.08s;
 }
 
 .track-remove-btn:hover {
+  background: #fff5f5;
+  border-color: var(--accent-red);
   color: var(--accent-red);
-  background: transparent;
 }
 
 /* --------------------------------------------------------------------------
@@ -987,6 +1013,153 @@ header.studio-header {
   font-size: 10px;
   color: var(--accent-red);
   font-family: var(--font-mono);
+}
+
+.stage-arrangement-presets {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #ffffff;
+  border: 1px dashed var(--border-dark);
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+
+.stage-arrangement-presets .preset-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+}
+
+.stage-arrangement-presets .preset-btn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 4px 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-dark);
+  box-shadow: 1px 1px 0px var(--border-dark);
+  cursor: pointer;
+  transition: all 0.08s;
+}
+
+.stage-arrangement-presets .preset-btn:hover {
+  background: #fff8f5;
+  border-color: var(--accent-red);
+  color: var(--accent-red);
+}
+
+.multi-audio-roster-card {
+  background: #ffffff;
+  border: 1px solid var(--border-dark);
+  padding: 14px 18px;
+  box-shadow: var(--shadow-press);
+  display: grid;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.roster-table-wrapper {
+  overflow-x: auto;
+}
+
+.roster-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.roster-table th {
+  text-align: left;
+  padding: 6px 10px;
+  background: var(--border-light);
+  border: 1px solid var(--border-dark);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.roster-table td {
+  padding: 8px 10px;
+  border: 1px solid var(--border-light);
+  vertical-align: middle;
+}
+
+.roster-table tr:hover {
+  background: #faf8f5;
+  cursor: pointer;
+}
+
+.roster-table tr.row-selected {
+  background: #fff8f5;
+  border-left: 3px solid var(--accent-red);
+}
+
+.track-name-cell strong {
+  display: block;
+  color: var(--text-main);
+}
+
+.track-name-cell small {
+  color: var(--text-muted);
+}
+
+.roster-pan-tag {
+  display: inline-block;
+  padding: 2px 6px;
+  background: #ffffff;
+  border: 1px solid var(--border-dark);
+  font-size: 10px;
+}
+
+.roster-metric-tag {
+  display: inline-block;
+  padding: 2px 6px;
+  border: 1px solid;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.roster-metric-tag.blue {
+  border-color: #bee3f8;
+  background: #ebf8ff;
+  color: #2b6cb0;
+}
+
+.roster-metric-tag.red {
+  border-color: #fed7d7;
+  background: #fff5f5;
+  color: #c53030;
+}
+
+.roster-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.roster-btn {
+  border: 1px solid var(--border-dark);
+  background: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 3px 6px;
+  box-shadow: 1px 1px 0px var(--border-dark);
+  cursor: pointer;
+}
+
+.roster-btn.clone:hover {
+  background: #ebf8ff;
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
+}
+
+.roster-btn.delete:hover {
+  background: #fff5f5;
+  border-color: var(--accent-red);
+  color: var(--accent-red);
 }
 
 /* --------------------------------------------------------------------------

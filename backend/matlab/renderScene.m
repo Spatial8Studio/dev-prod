@@ -28,7 +28,11 @@ for k = 1:numel(sources)
     end
     [audio, rate] = audioread(sourceOutput);
     if isempty(sampleRate), sampleRate = rate; end
-    if rate ~= sampleRate, error("All source sample rates must match."); end
+    if rate ~= sampleRate
+        t_old = (0:size(audio, 1) - 1)' / rate;
+        t_new = (0:1/sampleRate:t_old(end))';
+        audio = interp1(t_old, audio, t_new, 'linear', 0);
+    end
     if size(audio, 2) == 1, audio = [audio audio]; end
     if isempty(mixed), mixed = zeros(size(audio)); end
     if size(audio, 1) > size(mixed, 1), mixed(end+1:size(audio,1), :) = 0; end
