@@ -1,4 +1,4 @@
-# Spatial8 Studio — Research Paper Analysis
+# Research Paper Analysis
 
 > **Reference Paper**: Comunità, M., Gerino, A., & Picinali, L. (2022).  
 > *PlugSonic: a web- and mobile-based platform for dynamic and navigable binaural audio.*  
