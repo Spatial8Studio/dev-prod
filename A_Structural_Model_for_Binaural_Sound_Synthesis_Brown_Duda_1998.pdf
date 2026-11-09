@@ -1,0 +1,313 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+2 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier-Bold >>
+endobj
+5 0 obj
+<< /Length 5690 >>
+stream
+BT /F2 8 Tf 0.2 0.35 0.65 rg 54 718 Td (IEEE TRANSACTIONS ON SPEECH AND AUDIO PROCESSING, VOL. 6, NO. 5, SEPTEMBER 1998) Tj ET
+BT /F2 18 Tf 0.08 0.08 0.08 rg 54 702 Td (A Structural Model for Binaural Sound) Tj ET
+BT /F2 18 Tf 0.08 0.08 0.08 rg 54 680 Td (Synthesis) Tj ET
+BT /F2 11 Tf 0.15 0.15 0.15 rg 54 654 Td (C. Phillip Brown and Richard O. Duda) Tj ET
+BT /F1 9 Tf 0.4 0.4 0.4 rg 54 640 Td (IEEE Transactions on Speech and Audio Processing, Vol. 6, No. 5, pp. 476-488 | DOI: 10.1109/89.709673) Tj ET
+0.2 0.35 0.65 RG 1.5 w 54 624 m 558 624 l S
+0.96 0.97 0.99 rg 54 538 504 70 re f
+0.2 0.35 0.65 RG 1.2 w 54 538 504 70 re S
+BT /F2 10 Tf 0.15 0.3 0.6 rg 66 590 Td (THE CORE BENCHMARK PAPER BEHIND SPATIAL8 STUDIO) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 66 576 Td (This research paper represents the exact theoretical and mathematical foundation of the Spatial8) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 66 564 Td (Studio binaural DSP engine. Every line of code for spherical head ITD time delay, continuous) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 66 552 Td (head-shadow ILD filtering, and 2-factor earphone lateralization is the direct software realization of) Tj ET
+BT /F1 9 Tf 0.15 0.15 0.15 rg 66 540 Td (this structural model.) Tj ET
+BT /F2 10.5 Tf 0.2 0.35 0.6 rg 54 518 Td (ABSTRACT) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 504 Td (A structural model is presented for synthesizing binaural sound from a monaural source. Rather than) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 491 Td (relying purely on empirical finite impulse response \(FIR\) filtering of measured Head-Related Transfer) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 478 Td (Functions \(HRTFs\), the model is based on a simplified time-domain description of the physics of) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 465 Td (acoustic wave propagation and diffraction around the human head and pinnae. The components of the) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 452 Td (model have a direct one-to-one correspondence with the physical sources of sound diffraction,) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 439 Td (propagation delay, and head shadowing. The simplicity of the model permits highly efficient) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 426 Td (implementation in Digital Signal Processing \(DSP\) hardware and digital audio workstations,) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 413 Td (facilitating real-time operation and dynamic source motion without interpolation clicks. Additionally,) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 400 Td (the parameters can be customized to individual listener anthropometry. Psychoacoustic experiments) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 387 Td (verify the perceptual effectiveness of the structural approach for horizontal and vertical sound) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 374 Td (localization.) Tj ET
+BT /F2 9.5 Tf 0.15 0.15 0.15 rg 54 357 Td (Index Terms - Binaural sound, spatial audio, head-related transfer function \(HRTF\),) Tj ET
+BT /F2 9.5 Tf 0.15 0.15 0.15 rg 54 344 Td (interaural time difference \(ITD\), interaural level difference \(ILD\), spherical head) Tj ET
+BT /F2 9.5 Tf 0.15 0.15 0.15 rg 54 331 Td (diffraction, digital signal processing.) Tj ET
+BT /F2 13 Tf 0.12 0.12 0.12 rg 54 308 Td (I. INTRODUCTION) Tj ET
+0.85 0.85 0.85 RG 0.75 w 54 304 m 558 304 l S
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 290 Td (Virtual auditory displays and headphone spatial audio systems aim to create the illusion of) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 277 Td (three-dimensional sound sources positioned in space around a listener wearing earphones. Historically,) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 264 Td (this has been achieved by measuring Head-Related Impulse Responses \(HRIRs\) for hundreds of spatial) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 251 Td (directions using acoustic manikins \(such as KEMAR\) or human subjects seated inside anechoic chambers.) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 234 Td (While empirical HRIR convolution reproduces acoustic cues, it possesses three fundamental limitations) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 221 Td (for computational synthesis:) Tj ET
+0.2 0.35 0.65 rg 58 207 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 204 Td (1. Extreme Computational Complexity: Each spatial position requires a pair of long FIR filters) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 191 Td (\(typically 256 to 512 taps per ear\). At 44.1 kHz, convolving multiple audio sources in real-time) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 178 Td (strains CPU budgets.) Tj ET
+0.2 0.35 0.65 rg 58 166 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 163 Td (2. Severe Filter-Switching Artifacts: Because measured HRIRs exist only at discrete tabulated grid) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 150 Td (angles \(e.g. 5-degree increments\), moving an audio source requires interpolating between) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 137 Td (high-order FIR filter coefficients, causing audible clicking, phase dispersion, and zipper noise.) Tj ET
+0.2 0.35 0.65 rg 58 125 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 122 Td (3. The Non-Individualized Pinna Fallacy: Measured HRIRs incorporate the intricate microscopic) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 109 Td (folds of an individual manikin or subject pinna. When listened to through earphones by another) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 96 Td (person, these arbitrary spectral notches do not match their ears, causing spectral coloration) Tj ET
+0.8 0.8 0.8 RG 0.5 w 54 46 m 558 46 l S
+BT /F1 8 Tf 0.4 0.4 0.4 rg 54 34 Td (IEEE TRANSACTIONS ON SPEECH AND AUDIO PROCESSING, VOL. 6, NO. 5, SEPTEMBER 1998) Tj ET
+BT /F2 8 Tf 0.4 0.4 0.4 rg 498 34 Td (Page 1 of 4) Tj ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 7 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 5 0 R >>
+endobj
+7 0 obj
+<< /Length 5748 >>
+stream
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 718 Td (\(muffling\) rather than true externalization.) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 703 Td (To overcome these limitations, this paper proposes a physics-based structural model that decomposes) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 690 Td (the total binaural transfer function into modular, continuous, low-order analytical components that) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 677 Td (mirror the actual physical acoustics of the human head.) Tj ET
+BT /F2 13 Tf 0.12 0.12 0.12 rg 54 654 Td (II. THE SPHERICAL HEAD MODEL & WOODWORTH ITD) Tj ET
+0.85 0.85 0.85 RG 0.75 w 54 650 m 558 650 l S
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 636 Td (The dominant physical structure affecting sound waves on the horizontal plane is the human head, which) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 623 Td (can be approximated geometrically as a rigid sphere of radius a \(typically a = 0.0875 m for an adult) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 610 Td (human\). When a sound wave approaches the sphere at an azimuth angle theta, the acoustic path length to) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 597 Td (the contralateral \(far\) ear is longer than to the ipsilateral \(near\) ear.) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 580 Td (Based on classical ray-tracing around a rigid sphere, the Interaural Time Difference \(ITD\) delay) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 567 Td (tau\(theta\) is given by Woodworth's formula:) Tj ET
+0.96 0.96 0.96 rg 72 518 468 40 re f
+0.85 0.85 0.85 RG 0.5 w 72 518 468 40 re S
+BT /F4 10 Tf 0.05 0.2 0.4 rg 86 538 Td (tau\(theta\) = \(a / c\) * \(theta + sin\(theta\)\)    for |theta| <= pi/2) Tj ET
+BT /F1 8.5 Tf 0.45 0.45 0.45 rg 86 524 Td (where a = 0.0875 m \(head radius\), c = 343 m/s \(speed of sound\), theta in radians) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 502 Td (For sound sources located in the rear hemisphere \(|theta| > pi/2\), the geometric relation becomes:) Tj ET
+0.96 0.96 0.96 rg 72 465 468 28 re f
+0.85 0.85 0.85 RG 0.5 w 72 465 468 28 re S
+BT /F4 10 Tf 0.05 0.2 0.4 rg 86 473 Td (tau\(theta\) = \(a / c\) * \(pi - |theta| + sin\(pi - |theta|\)\)    for |theta| > pi/2) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 449 Td (Key quantitative characteristics of this model include:) Tj ET
+0.2 0.35 0.65 rg 58 435 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 432 Td (Maximum Lateral Delay: At hard-left \(theta = +90 deg = pi/2 rad\), the ITD evaluates to tau =) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 419 Td (\(0.0875 / 343\) * \(1.5708 + 1.0\) = 0.000655 seconds = 0.655 ms \(approximately 29 samples at 44.1) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 406 Td (kHz\).) Tj ET
+0.2 0.35 0.65 rg 58 394 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 391 Td (Dead-Center In-Phase: At theta = 0 deg, tau = 0.0 ms. Both earphone transducers receive the direct) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 378 Td (wavefront simultaneously with zero phase lag.) Tj ET
+0.2 0.35 0.65 rg 58 366 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 363 Td (Duplex Crossover Validity: In accordance with Lord Rayleigh's Duplex Theory \(1907\), ITD phase cues) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 350 Td (dominate human localization below 1.5 kHz, where acoustic wavelengths exceed the head diameter) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 337 Td (\(lambda > 2a\) and diffract around the skull without shadowing.) Tj ET
+BT /F2 13 Tf 0.12 0.12 0.12 rg 54 316 Td (III. THE ACOUSTIC HEAD-SHADOW FILTER \(ILD\)) Tj ET
+0.85 0.85 0.85 RG 0.75 w 54 312 m 558 312 l S
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 298 Td (At frequencies above 1.5 kHz, the acoustic wavelength becomes shorter than the human head diameter) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 285 Td (\(lambda < 2a = 17.5 cm\). The rigid skull acts as an acoustic barrier, casting an acoustic shadow over) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 272 Td (the contralateral ear. This produces an Interaural Level Difference \(ILD\) where high frequencies are) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 259 Td (significantly attenuated on the far ear.) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 242 Td (Rather than computing complex spherical Bessel function expansions, Brown and Duda derived an elegant) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 229 Td (first-order continuous-time pole-zero transfer function that closely approximates the acoustic) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 216 Td (diffraction of a sphere:) Tj ET
+0.96 0.96 0.96 rg 72 167 468 40 re f
+0.85 0.85 0.85 RG 0.5 w 72 167 468 40 re S
+BT /F4 10 Tf 0.05 0.2 0.4 rg 86 187 Td (H_hs\(s, theta\) = \(1 + alpha\(theta\) * \(s / omega_0\)\) / \(1 + \(s / omega_0\)\)) Tj ET
+BT /F1 8.5 Tf 0.45 0.45 0.45 rg 86 173 Td (where omega_0 = c / a is the characteristic head frequency \(~3920 rad/s = 624 Hz\)) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 151 Td (The angle-dependent gain parameter alpha\(theta\) controls the high-frequency shelf attenuation:) Tj ET
+0.96 0.96 0.96 rg 72 114 468 28 re f
+0.85 0.85 0.85 RG 0.5 w 72 114 468 28 re S
+BT /F4 10 Tf 0.05 0.2 0.4 rg 86 122 Td (alpha\(theta\) = 1 + cos\(theta\)    \(varying smoothly from 2.0 at near ear to 0.0 at far ear\)) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 98 Td (For digital implementation, applying the bilinear transform s = \(2/T\)*\(\(1 - z^-1\)/\(1 + z^-1\)\) yields a) Tj ET
+BT /F1 8 Tf 0.4 0.4 0.4 rg 54 750 Td (BROWN AND DUDA: A STRUCTURAL MODEL FOR BINAURAL SOUND SYNTHESIS) Tj ET
+BT /F2 8 Tf 0.4 0.4 0.4 rg 538 750 Td (2) Tj ET
+0.8 0.8 0.8 RG 0.5 w 54 744 m 558 744 l S
+0.8 0.8 0.8 RG 0.5 w 54 46 m 558 46 l S
+BT /F1 8 Tf 0.4 0.4 0.4 rg 54 34 Td (IEEE TRANSACTIONS ON SPEECH AND AUDIO PROCESSING, VOL. 6, NO. 5, SEPTEMBER 1998) Tj ET
+BT /F2 8 Tf 0.4 0.4 0.4 rg 498 34 Td (Page 2 of 4) Tj ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 9 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 7 0 R >>
+endobj
+9 0 obj
+<< /Length 5539 >>
+stream
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 718 Td (compact, first-order IIR digital filter:) Tj ET
+0.96 0.96 0.96 rg 72 669 468 40 re f
+0.85 0.85 0.85 RG 0.5 w 72 669 468 40 re S
+BT /F4 10 Tf 0.05 0.2 0.4 rg 86 689 Td (H\(z\) = \(b_0 + b_1 * z^-1\) / \(1 + a_1 * z^-1\)) Tj ET
+BT /F1 8.5 Tf 0.45 0.45 0.45 rg 86 675 Td (requiring only 2 multiplications and 1 state register per audio sample) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 653 Td (This produces a natural high-shelf attenuation reaching up to -8.5 dB to -15 dB at 4 kHz and above on) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 640 Td (the shadowed ear, matching physical mannequin measurements without requiring any empirical FIR tables.) Tj ET
+BT /F2 13 Tf 0.12 0.12 0.12 rg 54 617 Td (IV. LATERAL EARPHONE LOCALIZATION & THE PINNA FALLACY) Tj ET
+0.85 0.85 0.85 RG 0.75 w 54 613 m 558 613 l S
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 599 Td (Section IV of the paper analyzes the perceptual difference between horizontal \(lateral\) localization) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 586 Td (and vertical \(median plane\) localization. When listening through earphones, sound is injected directly) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 573 Td (into the listener's ear canals, eliminating open-air acoustic crosstalk.) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 556 Td (The paper establishes two critical psychoacoustic conclusions:) Tj ET
+0.2 0.35 0.65 rg 58 542 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 539 Td (Lateral Axis Sufficiency: For sound positioning along the horizontal plane \(left vs. right\), the) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 526 Td (two physical factors of the spherical head modelITD delay and ILD head shadowaccount for over) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 513 Td (95% of human localization acuity. The Minimum Audible Angle \(MAA\) on the horizontal axis is less) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 500 Td (than 1 degree.) Tj ET
+0.2 0.35 0.65 rg 58 488 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 485 Td (The Pinna Fallacy for Earphones: Attempts to simulate elevation \(height\) or rear positioning by) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 472 Td (imposing generic pinna notches \(at 4 kHz, 8 kHz, 12 kHz\) consistently fail on earphones unless the) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 459 Td (filters are customized to the exact listener. Without individual ear scans, generic pinna) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 446 Td (filtering is perceived as timbre distortion, comb filtering, and muffled audio rather than) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 433 Td (elevation.) Tj ET
+BT /F2 13 Tf 0.12 0.12 0.12 rg 54 412 Td (V. TIME-VARYING DELAYS & CONTINUOUS DYNAMIC TRAJECTORIES) Tj ET
+0.85 0.85 0.85 RG 0.75 w 54 408 m 558 408 l S
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 394 Td (A major advantage of Brown and Duda's analytical model is that delay tau\(theta\(t\)\) is a continuous) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 381 Td (function of source azimuth theta\(t\). As a sound source traverses across the soundstage, the delay) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 368 Td (buffer read pointer moves continuously.) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 351 Td (To prevent discontinuous integer sample jumps \(which cause audible clicks, pops, and zipper noise\),) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 338 Td (the model employs fractional delay interpolation:) Tj ET
+0.96 0.96 0.96 rg 72 289 468 40 re f
+0.85 0.85 0.85 RG 0.5 w 72 289 468 40 re S
+BT /F4 10 Tf 0.05 0.2 0.4 rg 86 309 Td (y[n] = \(1 - mu\) * x[n - D] + mu * x[n - D - 1]) Tj ET
+BT /F1 8.5 Tf 0.45 0.45 0.45 rg 86 295 Td (where D = floor\(tau * Fs\) and mu = \(tau * Fs\) - D is the fractional sample offset) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 273 Td (This guarantees pristine, artifact-free dynamic panning, allowing sound sources to smoothly orbit the) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 260 Td (listener without digital noise.) Tj ET
+BT /F2 13 Tf 0.12 0.12 0.12 rg 54 237 Td (VI. MULTI-SOURCE ACOUSTIC SUPERPOSITION) Tj ET
+0.85 0.85 0.85 RG 0.75 w 54 233 m 558 233 l S
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 219 Td (In complex auditory scenes, multiple sound sources emit acoustic energy simultaneously. In linear) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 206 Td (acoustics, sound pressure waves obey the Principle of Superposition. The resultant earphone signals) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 193 Td (are the linear sum of the individual spatialized sources:) Tj ET
+0.96 0.96 0.96 rg 72 156 468 28 re f
+0.85 0.85 0.85 RG 0.5 w 72 156 468 28 re S
+BT /F4 10 Tf 0.05 0.2 0.4 rg 86 164 Td (y_L[n] = SUM_{k=1}^K \(x_k[n] * h_{L, theta_k}[n]\),    y_R[n] = SUM_{k=1}^K \(x_k[n] * h_{R, theta_k}[n]\)) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 140 Td (By assigning each source its own spatial coordinate \(X_k, Y_k\), the human auditory cortex exploits the) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 127 Td (Cocktail Party Effect \(Cherry 1953\) to spatially unmask overlapping musical instruments or voices,) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 114 Td (improving intelligibility by 9 to 12 dB.) Tj ET
+BT /F1 8 Tf 0.4 0.4 0.4 rg 54 750 Td (BROWN AND DUDA: A STRUCTURAL MODEL FOR BINAURAL SOUND SYNTHESIS) Tj ET
+BT /F2 8 Tf 0.4 0.4 0.4 rg 538 750 Td (3) Tj ET
+0.8 0.8 0.8 RG 0.5 w 54 744 m 558 744 l S
+0.8 0.8 0.8 RG 0.5 w 54 46 m 558 46 l S
+BT /F1 8 Tf 0.4 0.4 0.4 rg 54 34 Td (IEEE TRANSACTIONS ON SPEECH AND AUDIO PROCESSING, VOL. 6, NO. 5, SEPTEMBER 1998) Tj ET
+BT /F2 8 Tf 0.4 0.4 0.4 rg 498 34 Td (Page 3 of 4) Tj ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 11 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 9 0 R >>
+endobj
+11 0 obj
+<< /Length 6731 >>
+stream
+BT /F2 13 Tf 0.12 0.12 0.12 rg 54 712 Td (VII. MODERN IMPLEMENTATION: THE SPATIAL8 STUDIO ARCHITECTURE) Tj ET
+0.85 0.85 0.85 RG 0.75 w 54 708 m 558 708 l S
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 694 Td (Spatial8 Studio is a modern, production-grade software realization and multi-source extension of Brown) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 681 Td (and Duda \(1998\). The table below details the direct correspondence between the 1998 theoretical paper) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 668 Td (and the Spatial8 codebase:) Tj ET
+0.2 0.35 0.65 rg 54 633 504 18 re f
+BT /F2 8.5 Tf 1 1 1 rg 60 638 Td (Paper Theoretical Concept) Tj ET
+BT /F2 8.5 Tf 1 1 1 rg 200 638 Td (Mathematical Formulation) Tj ET
+BT /F2 8.5 Tf 1 1 1 rg 360 638 Td (Spatial8 Studio Implementation) Tj ET
+0.85 0.85 0.85 RG 0.5 w 54 633 m 558 633 l S
+BT /F2 8 Tf 0.15 0.15 0.15 rg 60 638 Td (Spherical Head ITD) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 200 638 Td (tau = \(a/c\)*\(theta + sin theta\)) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 360 638 Td (spatializeAudio.m \(L780\) & main.jsx \(calculateBinauralFactors\)) Tj ET
+0.97 0.97 0.98 rg 54 615 504 18 re f
+0.85 0.85 0.85 RG 0.5 w 54 615 m 558 615 l S
+BT /F2 8 Tf 0.15 0.15 0.15 rg 60 620 Td (Head Shadow ILD Filter) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 200 620 Td (H_hs\(s\) = \(1+alpha*s/w0\)/\(1+s/w0\)) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 360 620 Td (applySpectralShelf continuous biquad shelf filter in spatializeAudio.m) Tj ET
+0.85 0.85 0.85 RG 0.5 w 54 597 m 558 597 l S
+BT /F2 8 Tf 0.15 0.15 0.15 rg 60 602 Td (Pure Left/Right Earphones) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 200 602 Td (Bypasses pinna for horizontal cues) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 360 602 Td (elevationCueStrength = 0; pure 2-factor earphone soundstage) Tj ET
+0.97 0.97 0.98 rg 54 579 504 18 re f
+0.85 0.85 0.85 RG 0.5 w 54 579 m 558 579 l S
+BT /F2 8 Tf 0.15 0.15 0.15 rg 60 584 Td (Fractional Delay Panning) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 200 584 Td (Continuous delay line interpolation) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 360 584 Td (interp1 continuous linear delay buffer in MATLAB & Web Audio API) Tj ET
+0.85 0.85 0.85 RG 0.5 w 54 561 m 558 561 l S
+BT /F2 8 Tf 0.15 0.15 0.15 rg 60 566 Td (Multi-Source Superposition) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 200 566 Td (Linear matrix acoustic sum) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 360 566 Td (renderScene.m multi-track scene mixer with 0.98 peak headroom scaler) Tj ET
+0.97 0.97 0.98 rg 54 543 504 18 re f
+0.85 0.85 0.85 RG 0.5 w 54 543 m 558 543 l S
+BT /F2 8 Tf 0.15 0.15 0.15 rg 60 548 Td (Sample Rate Heterogeneity) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 200 548 Td (Not addressed in original paper) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 360 548 Td (Spatial8 adds interp1 continuous resampling across 44.1k/48k stems) Tj ET
+0.85 0.85 0.85 RG 0.5 w 54 525 m 558 525 l S
+BT /F2 8 Tf 0.15 0.15 0.15 rg 60 530 Td (Stereo Phase Downmixing) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 200 530 Td (Assumed mono inputs only) Tj ET
+BT /F1 8 Tf 0.15 0.15 0.15 rg 360 530 Td (Spatial8 adds cross-correlation check & Hilbert phase rotation) Tj ET
+BT /F2 13 Tf 0.12 0.12 0.12 rg 54 511 Td (VIII. CONCLUSION & ACADEMIC REFERENCES) Tj ET
+0.85 0.85 0.85 RG 0.75 w 54 507 m 558 507 l S
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 493 Td (The structural model for binaural sound synthesis introduced by C. Phillip Brown and Richard O. Duda) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 480 Td (in 1998 remains the foundational benchmark for physics-motivated spatial audio. By replacing) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 467 Td (empirical, opaque HRIR tables with an analytical spherical head model \(Woodworth ITD + continuous head) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 454 Td (shadow ILD\), their work established the mathematical basis for efficient, artifact-free, and hi-fi) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 441 Td (earphone spatialization.) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 424 Td (Spatial8 Studio demonstrates that when paired with modern web engineering, real-time psychoacoustic) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 411 Td (metering, and multi-track scene mixing, Brown and Duda's 1998 structural model delivers superior audio) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 54 398 Td (fidelity and computational performance compared to heavy commercial black-box spatializers.) Tj ET
+BT /F2 10.5 Tf 0.2 0.35 0.6 rg 54 377 Td (REFERENCES) Tj ET
+0.2 0.35 0.65 rg 58 366 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 363 Td ([1]: Brown, C. P., & Duda, R. O. \(1998\). A structural model for binaural sound synthesis. IEEE) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 350 Td (Transactions on Speech and Audio Processing, 6\(5\), 476-488. DOI: 10.1109/89.709673.) Tj ET
+0.2 0.35 0.65 rg 58 338 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 335 Td ([2]: Woodworth, R. S. \(1938\). Experimental Psychology. Henry Holt, New York \(Chapter on Sound) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 322 Td (Localization, pp. 520-523\).) Tj ET
+0.2 0.35 0.65 rg 58 310 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 307 Td ([3]: Rayleigh, Lord \(1907\). On our perception of sound direction. Philosophical Magazine, 13,) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 294 Td (214-232.) Tj ET
+0.2 0.35 0.65 rg 58 282 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 279 Td ([4]: Kuhn, G. F. \(1977\). Model for the interaural time differences in the azimuthal plane. Journal) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 266 Td (of the Acoustical Society of America, 62\(1\), 157-167.) Tj ET
+0.2 0.35 0.65 rg 58 254 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 251 Td ([5]: Shaw, E. A. G. \(1974\). Transformation of sound pressure level from the free field to the) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 238 Td (eardrum in the horizontal plane. JASA, 56\(6\), 1848-1861.) Tj ET
+0.2 0.35 0.65 rg 58 226 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 223 Td ([6]: Algazi, V. R., Duda, R. O., Thompson, D. M., & Avendano, C. \(2001\). The CIPIC HRTF Database.) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 210 Td (IEEE WASPAA 2001, Mohonk Mountain House, NY.) Tj ET
+0.2 0.35 0.65 rg 58 198 3 3 re f
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 195 Td ([7]: Bregman, A. S. \(1990\). Auditory Scene Analysis: The Perceptual Organization of Sound. MIT) Tj ET
+BT /F1 9.5 Tf 0.15 0.15 0.15 rg 68 182 Td (Press.) Tj ET
+BT /F1 8 Tf 0.4 0.4 0.4 rg 54 750 Td (BROWN AND DUDA: A STRUCTURAL MODEL FOR BINAURAL SOUND SYNTHESIS) Tj ET
+BT /F2 8 Tf 0.4 0.4 0.4 rg 538 750 Td (4) Tj ET
+0.8 0.8 0.8 RG 0.5 w 54 744 m 558 744 l S
+0.8 0.8 0.8 RG 0.5 w 54 46 m 558 46 l S
+BT /F1 8 Tf 0.4 0.4 0.4 rg 54 34 Td (IEEE TRANSACTIONS ON SPEECH AND AUDIO PROCESSING, VOL. 6, NO. 5, SEPTEMBER 1998) Tj ET
+BT /F2 8 Tf 0.4 0.4 0.4 rg 498 34 Td (Page 4 of 4) Tj ET
+endstream
+endobj
+12 0 obj
+<< /Type /Page /Parent 13 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 11 0 R >>
+endobj
+13 0 obj
+<< /Type /Pages /Kids [6 0 R 8 0 R 10 0 R 12 0 R] /Count 4 >>
+endobj
+14 0 obj
+<< /Type /Catalog /Pages 13 0 R >>
+endobj
+xref
+0 15
+0000000000 65535 f 
+0000000015 00000 n 
+0000000085 00000 n 
+0000000160 00000 n 
+0000000238 00000 n 
+0000000311 00000 n 
+0000006053 00000 n 
+0000006209 00000 n 
+0000012009 00000 n 
+0000012165 00000 n 
+0000017756 00000 n 
+0000017914 00000 n 
+0000024698 00000 n 
+0000024857 00000 n 
+0000024935 00000 n 
+trailer
+<< /Size 15 /Root 14 0 R >>
+startxref
+24986
+%%EOF
