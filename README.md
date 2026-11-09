@@ -1,6 +1,6 @@
-# Spatial8 Studio · Left & Right Earphone Spatial Audio
+# Left & Right Earphone Spatial Audio
 
-Spatial8 Studio is a specialized web workstation and digital signal processing (DSP) engine designed for **binaural audio spatialization tailored specifically for left and right earphones**.
+specialized web workstation and digital signal processing (DSP) engine designed for **binaural audio spatialization tailored specifically for left and right earphones**.
 
 Unlike traditional 3-D audio engines that attempt to simulate elevation (above/below) and front/rear positioning using synthetic spectral tricks, Spatial8 focuses strictly on the **two physical psychoacoustic factors** that two-channel earphones can physically and unambiguously reproduce:
 1. **Interaural Time Difference (ITD)**
